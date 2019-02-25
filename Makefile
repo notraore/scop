@@ -6,7 +6,7 @@
 #    By: bano <bano@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/06/17 16:13:57 by notraore          #+#    #+#              #
-#    Updated: 2019/01/31 08:14:37 by bano             ###   ########.fr        #
+#    Updated: 2019/02/26 00:02:07 by bano             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -22,7 +22,7 @@ CC			= 	gcc
 CFLAGS		= 	-Wall -Wextra -Werror
 INC			=	-I./includes/
 FRMPATH		=	-I./include/GLFW/
-FRMWK		=	-framework OpenGl
+FRMWK		=	-framework OpenGl -lglfw -lGLEW
 
 CG = \033[92m
 CY = \033[93m
