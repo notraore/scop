@@ -189,14 +189,14 @@ int					main(int argc, char **argv)
 		// color[1] = fmod(color[1]+ 0.002, 1);
 		// color[2] = fmod(color[2] + 0.003, 1);
 		// glColor3f(color[0], color[1], color[2]);
-		glRotatef(0.25, 0, -1, 0);
+		glRotatef(0.25, 1, -1, 0);
 		// glRotatef(0.35, 1, 1, 1);
 		// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, color);
 		// glEnableVertexAttribArray(1);
 		// glDrawArrays(GL_POINTS, 0, i / 3);
-		// glDrawArrays(GL_LINE_STRIP, 0, i/3);
+		glDrawArrays(GL_LINE_STRIP, 0, i/3);
 		// glDrawArrays(GL_QUADS, 0, i / 3);
-		glDrawArrays(GL_TRIANGLES, 0, 42*6);
+		// glDrawArrays(GL_TRIANGLES, 0, 42*6);
 		// glDrawArrays(GL_TRIANGLE_FAN, 0, i / 3);
 		// glDrawArrays(GL_TRIANGLE_STRIP, 0, i / 3);
 		// add_movement(vertex, create_tvec3(0.001, 0, 0), i);
