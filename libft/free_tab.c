@@ -18,7 +18,11 @@ void		free_tab(char **str)
 
 	i = 0;
 	while (str[i])
-		free(str[i++]);
+	{
+		free(str[i]);
+		str[i] = NULL;
+		i++;
+	}
 	free(str);
-	// str = NULL;
+	str = NULL;
 }

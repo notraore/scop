@@ -47,14 +47,41 @@ void				init_glversion(void)
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 }
 
+// t_mat4				setup_camera()
+// {
+// 	t_mat4		new;
+
+// 	t_mat4		proj;
+// 	t_mat4		view;
+// 	t_mat4		model;
+
+// 	view = 
+
+
+// 	return (new);
+// }
+
+void				add_movement(float *value, t_vec3 xyz, int i)
+{
+	int		count;
+
+	count = 0;
+	while (count < i)
+	{
+		value[count] += xyz.x;
+		// value[count + 1] += xyz.y;
+		// value[count + 2] += xyz.z;
+		count++;
+	}
+}
+
 int					main(int argc, char **argv)
 {
 	if (!glfwInit())
 		ft_kill("Can't init GLFW.");
-	// GLFWwindow *env.window;
 	t_glenv		env;
 
-	env.window = glfwCreateWindow(480, 480, "Scop - 42", NULL, NULL);
+	env.window = glfwCreateWindow(980, 980, "Scop - 42", NULL, NULL);
 	if (!env.window)
 		ft_kill("Can't create window.");
 
@@ -67,72 +94,68 @@ int					main(int argc, char **argv)
 	int			frames;
 	char		*line;
 	char		**split;
-	float		vertex[126];
-	t_vtx		xyz[42];
+	// float		*vertex;
+	float		vertex[200000];
+	t_vec3		xyz[200000];
 	int			nbr = 0;
-	float		color[3] = {0.5, 1, 0.5};
 
-	int			fd;
-	int			i = 0;
-	int			ver = 0;
+	int		fd;
+	int		i = 0;
+	int		ver = 0;
+	int		times = 0;
 	fd = open(argv[1], O_RDONLY);
 	while (get_next_line(fd, &line) == 1)
 	{
+		split = ft_strsplit(line, ' ');
 		if (line[0] == 'v')
 		{
-			split = ft_strsplit(line, ' ');
-			xyz[ver].x = ft_atod(split[1]);
-			xyz[ver].y = ft_atod(split[2]);
-			xyz[ver].z = ft_atod(split[3]);
-			// printf("xyz[0] = %f || xyz[1] = %f || xyz[2] = %f\n", xyz[ver].x, xyz[ver].y, xyz[ver].z);
-			ver++;
-			// vertex[i] = ft_atof(split[1]);
-			// i++;
-			// vertex[i] = ft_atof(split[2]);
-			// i++;
-			// vertex[i] = ft_atof(split[3]);
-			// i++;
-			// printf("split[0] = %s || split[1] = %s || split[2] = %s || split[3] = %s\n", split[0], split[1], split[2], split[3]);
-			// printf("vertex[0] = %f || vertex[1] = %f || vertex[2] = %f\n", vertex[i - 3], vertex[i - 2], vertex[i - 1]);
+			xyz[times].x = ft_atod(split[1]);
+			xyz[times].y = ft_atod(split[2]);
+			xyz[times].z = ft_atod(split[3]);
+			times++;
 		}
 		else if (line[0] == 'f')
 		{
-			split = ft_strsplit(line, ' ');
-
+			nbr = 1;
+			while (nbr < 4)
+			{
+				vertex[i] = xyz[ft_atoi(split[nbr]) - 1].x;
+				vertex[i + 1] = xyz[ft_atoi(split[nbr]) - 1].y;
+				vertex[i + 2] = xyz[ft_atoi(split[nbr]) - 1].z;
+				i += 3;
+				nbr++;
+			}
+			nbr = 1;
 			if (split[4])
 			{
-				while (nbr < 4)
+				while (nbr < 5)
 				{
-					vertex[i] = xyz[ft_atoi(split[1])].x;
-					// printf("ver[ver] = %f ", xyz[ft_atoi(split[1])].x);
-					vertex[i + 1] = xyz[ft_atoi(split[1])].y;
-					// printf("ver[ver] = %f ", xyz[ft_atoi(split[1])].y);
-					vertex[i + 2] = xyz[ft_atoi(split[1])].z;
-					// printf("ver[ver] = %f\n", xyz[ft_atoi(split[1])].z);
+					vertex[i] = xyz[ft_atoi(split[nbr]) - 1].x;
+					vertex[i + 1] = xyz[ft_atoi(split[nbr]) - 1].y;
+					vertex[i + 2] = xyz[ft_atoi(split[nbr]) - 1].z;
+					i += 3;
 					nbr++;
+					if (nbr == 2)
+						nbr = 3;
 				}
-
-				vertex[i + 3] = xyz[ft_atoi(split[1])].x;
-				vertex[i + 4] = xyz[ft_atoi(split[3])].y;
-				vertex[i + 5] = xyz[ft_atoi(split[4])].z;
-				i += 6;
-				// printf("Four || i = %d\n", i);
-			}
-			else
-			{
-				vertex[i] = xyz[ft_atoi(split[3])].x;
-				vertex[i + 1] = xyz[ft_atoi(split[3])].y;
-				vertex[i + 2] = xyz[ft_atoi(split[3])].z;
+				nbr--;
+				vertex[i] = xyz[ft_atoi(split[nbr]) - 1].x;
+				vertex[i + 1] = xyz[ft_atoi(split[nbr]) - 1].y;
+				vertex[i + 2] = xyz[ft_atoi(split[nbr]) - 1].z;
 				i += 3;
 			}
-			// printf("line = %s\n", line);
+			free_tab(split);
+			free(line);
 		}
 	}
-	// ver = 0;
+	// printf("times = [%d]\n", times);
+	i--;
+	printf("i = [%d]\n", i);
+	ver = 0;
 	// while (ver < i)
 	// {
-	// 	printf("vertex[%d] = %f\n", ver, vertex[ver]);
-	// 	ver++;
+	// 	printf("vertex[%d] = %f || vertex[%d] = %f || vertex[%d] = %f\n", ver, vertex[ver], ver + 1, vertex[ver + 1], ver + 2, vertex[ver + 2]);
+	// 	ver +=3 ;
 	// }
 	last_time = glfwGetTime();
 	frames = 0;
@@ -142,8 +165,8 @@ int					main(int argc, char **argv)
 		frames++;
 		if (current_time - last_time >= 0.2f)
 		{
-			ft_putnbr(frames);
-			ft_putendl(" FPS");
+			// ft_putnbr(frames);
+			// ft_putendl(" FPS");
 			frames = 0;
 			last_time += 1.0;
 		}
@@ -152,21 +175,39 @@ int					main(int argc, char **argv)
 		env.ratio = env.width / (double)env.height;
 		glViewport(0, 0, env.width, env.height);
 
-		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertex);
+		// unsigned int		buffer;
+		// glGenBuffers(1, &buffer);
+		// glBindBuffer(GL_ARRAY_BUFFER, buffer);
+		// glBufferData(GL_ARRAY_BUFFER, 42*3, vertex, GL_STATIC_DRAW);
+
+		// glBindBuffer(GL_ARRAY_BUFFER, buffer);
+
 		glEnableVertexAttribArray(0);
+		glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 0, vertex);
+
 		// color[0] = fmod(color[0] + 0.001, 1);
 		// color[1] = fmod(color[1]+ 0.002, 1);
 		// color[2] = fmod(color[2] + 0.003, 1);
 		// glColor3f(color[0], color[1], color[2]);
-		// glRotatef(0.5, 0, 1, 0);
+		glRotatef(0.25, 0, -1, 0);
+		// glRotatef(0.35, 1, 1, 1);
 		// glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 0, color);
 		// glEnableVertexAttribArray(1);
-		glDrawArrays(GL_TRIANGLES, 0, 42);
-		// glDrawArrays(GL_TRIANGLES, 0, 42);
-
+		// glDrawArrays(GL_POINTS, 0, i / 3);
+		// glDrawArrays(GL_LINE_STRIP, 0, i/3);
+		// glDrawArrays(GL_QUADS, 0, i / 3);
+		glDrawArrays(GL_TRIANGLES, 0, 42*6);
+		// glDrawArrays(GL_TRIANGLE_FAN, 0, i / 3);
+		// glDrawArrays(GL_TRIANGLE_STRIP, 0, i / 3);
+		// add_movement(vertex, create_tvec3(0.001, 0, 0), i);
 		glfwSwapBuffers(env.window);
 		glfwPollEvents();
 	}
+	// t_mat4		trans_cube = translation_mat4(create_tvec3(16, 0, 0));
+	// t_vec4		cube = create_tvec4(10, 10, 10, 1);
+	// cube = mult_mat4_vec4(trans_cube, cube);
+	// print_vec4(cube);
+	// print_mat4(scale_mat4(create_tvec3(10, 10, 10)));
 	glfwDestroyWindow(env.window);
 	glfwTerminate();
 	return 0;

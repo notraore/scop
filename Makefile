@@ -14,7 +14,9 @@ NAME		= 	scop
 LIBFT 		= 	libft/libft.a
 FRMWLIB		= 	lib/libglfw.3.2.dylib
 
-SRCS		= 	main.c
+SRCS		= 	main.c \
+				matrice.c \
+				vector.c
 
 OBJS		= 	$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 
@@ -22,7 +24,8 @@ CC			= 	gcc
 CFLAGS		= 	-Wall -Wextra -Werror
 INC			=	-I./includes/
 FRMPATH		=	-I./include/GLFW/
-FRMWK		=	-framework OpenGl -lglfw -lGLEW
+FRMWK		=	-framework OpenGl
+#-lglfw -lGLEW
 
 CG = \033[92m
 CY = \033[93m
