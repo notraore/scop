@@ -21,21 +21,23 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height)
 }
 
 static const char* vs =
-"uniform mat4 MVP;\n"
-"attribute vec3 vCol;\n"
-"attribute vec2 vPos;\n"
-"varying vec3 color;\n"
+"#version 330 core\n"
+"layout (location = 0) in vec3 aPos;\n"
+
 "void main()\n"
 "{\n"
-"    gl_Position = MVP * vec4(vPos, 0.0, 1.0);\n"
-"    color = vCol;\n"
+    "gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 "}\n";
+
 static const char* vf =
-"varying vec3 color;\n"
+"#version 330 core\n"
+"out vec4 FragColor;\n"
+
 "void main()\n"
 "{\n"
-"    gl_FragColor = vec4(color, 1.0);\n"
+    "FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
 "}\n";
+
 
 
 void				input_key(GLFWwindow *window)
@@ -82,18 +84,83 @@ int					main(void)
 		return -1;
 	}
 
-	int vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+	GLint compiled;
+	GLuint vertex_shader = glCreateShader(GL_VERTEX_SHADER);
+	if (vertex_shader == 0 )
+		ft_kill("shader not created");
+	
 	glShaderSource(vertex_shader, 1, &vs, NULL);
 	glCompileShader(vertex_shader);
+	glGetShaderiv (vertex_shader, GL_COMPILE_STATUS, &compiled );
 
-	int fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
+	if (!compiled)
+	{
+		GLint infoLen = 0;
+
+		glGetShaderiv (vertex_shader, GL_INFO_LOG_LENGTH, &infoLen);
+
+		if (infoLen > 1)
+		{
+			char *infoLog = malloc (sizeof(char) * infoLen );
+         	glGetShaderInfoLog (vertex_shader, infoLen, NULL, infoLog );
+        	printf( "Error compiling shader:\n%s\n", infoLog );            
+        	free ( infoLog );
+     	}
+    	glDeleteShader (vertex_shader);
+     	return 0;
+	}
+
+	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment_shader, 1, &vf, NULL);
 	glCompileShader(fragment_shader);
+	glGetShaderiv (fragment_shader, GL_COMPILE_STATUS, &compiled );
+	GLint infoLen = 0;
+	if (!compiled)
+	{
+		
 
-	int	program = glCreateProgram();
+		glGetShaderiv (fragment_shader, GL_INFO_LOG_LENGTH, &infoLen);
+
+		if (infoLen > 1)
+		{
+			char *infoLog = malloc (sizeof(char) * infoLen );
+         	glGetShaderInfoLog (fragment_shader, infoLen, NULL, infoLog );
+        	printf( "Error compiling shader:\n%s\n", infoLog );            
+        	free ( infoLog );
+     	}
+    	glDeleteShader (fragment_shader);
+     	return 0;
+	}
+
+	GLuint	program = glCreateProgram();
+
+	if ( program == 0 )
+      ft_kill("Program error not created");
+	
     glAttachShader(program, vertex_shader);
     glAttachShader(program, fragment_shader);
     glLinkProgram(program);
+
+	glGetProgramiv ( program, GL_LINK_STATUS, &compiled );
+
+   if ( !compiled ) 
+   {
+      glGetProgramiv ( program, GL_INFO_LOG_LENGTH, &infoLen );
+      
+      if ( infoLen > 1 )
+      {
+         char *infoLog2 = malloc (sizeof(char) * infoLen );
+
+         glGetProgramInfoLog ( program, infoLen, NULL, infoLog2 );
+         printf( "Error linking program:\n%s\n", infoLog2 );            
+         
+         free ( infoLog2 );
+      }
+
+      glDeleteProgram ( program );
+      return 0;
+   }
+
 
 	float vertices[] = {
 		-0.5f, -0.5f, 0.0f, // left  

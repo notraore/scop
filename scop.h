@@ -11,6 +11,7 @@
 // #include "glad/khrplatform.h"
 // #include <GLFW/glfw3.h>
 #include <OpenGL/gl.h>
+#include <stdbool.h>
 
 typedef struct s_glenv		t_glenv;
 
