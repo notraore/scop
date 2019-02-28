@@ -7,10 +7,15 @@
 // #include <GL/glew.h>
 #define GLFW_INCLUDE_NONE
 #include <glfw3.h>
+#include <glad.h>
+// #include "glad/khrplatform.h"
 // #include <GLFW/glfw3.h>
 #include <OpenGL/gl.h>
 
 typedef struct s_glenv		t_glenv;
+
+typedef struct s_shader		t_shader;
+
 typedef struct s_vec3		t_vec3;
 typedef struct s_vec4		t_vec4;
 typedef struct s_mat4		t_mat4;
@@ -36,6 +41,12 @@ struct			s_vec4
 	double		y;
 	double		z;
 	double		w;
+};
+
+struct			s_shader
+{
+	char		*vs_str;
+	char		*vf_str;
 };
 
 struct			s_mat4
