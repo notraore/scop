@@ -61,6 +61,50 @@ void				win_update(void *f(float), GLFWwindow *win)
 	delta = (now - last) * 10.0f;
 }
 
+int					checkShader(GLuint shader, GLint compiled)
+{
+	if (!compiled)
+	{
+		GLint infoLen = 0;
+
+		glGetShaderiv (shader, GL_INFO_LOG_LENGTH, &infoLen);
+
+		if (infoLen > 1)
+		{
+			char *infoLog = malloc (sizeof(char) * infoLen );
+         	glGetShaderInfoLog (shader, infoLen, NULL, infoLog );
+        	printf( "Error compiling shader:\n%s\n", infoLog );            
+        	free ( infoLog );
+     	}
+    	glDeleteShader (shader);
+     	return 0;
+	}
+	return (1);
+}
+
+int					checkProgram(GLuint program, GLint compiled)
+{
+	if ( !compiled ) 
+   {
+	  GLint infoLen = 0;
+      glGetProgramiv ( program, GL_INFO_LOG_LENGTH, &infoLen );
+      
+      if ( infoLen > 1 )
+      {
+         char *infoLog2 = malloc (sizeof(char) * infoLen );
+
+         glGetProgramInfoLog ( program, infoLen, NULL, infoLog2 );
+         printf( "Error linking program:\n%s\n", infoLog2 );            
+         
+         free ( infoLog2 );
+      }
+
+      glDeleteProgram ( program );
+      return 0;
+   }
+   return (1);
+}
+
 int					main(void)
 {
 	if (!glfwInit())
@@ -93,44 +137,16 @@ int					main(void)
 	glCompileShader(vertex_shader);
 	glGetShaderiv (vertex_shader, GL_COMPILE_STATUS, &compiled );
 
-	if (!compiled)
-	{
-		GLint infoLen = 0;
-
-		glGetShaderiv (vertex_shader, GL_INFO_LOG_LENGTH, &infoLen);
-
-		if (infoLen > 1)
-		{
-			char *infoLog = malloc (sizeof(char) * infoLen );
-         	glGetShaderInfoLog (vertex_shader, infoLen, NULL, infoLog );
-        	printf( "Error compiling shader:\n%s\n", infoLog );            
-        	free ( infoLog );
-     	}
-    	glDeleteShader (vertex_shader);
-     	return 0;
-	}
+	if (!checkShader(vertex_shader, compiled))
+		ft_kill("Shader compilation failed");
 
 	GLuint fragment_shader = glCreateShader(GL_FRAGMENT_SHADER);
 	glShaderSource(fragment_shader, 1, &vf, NULL);
 	glCompileShader(fragment_shader);
 	glGetShaderiv (fragment_shader, GL_COMPILE_STATUS, &compiled );
-	GLint infoLen = 0;
-	if (!compiled)
-	{
-		
 
-		glGetShaderiv (fragment_shader, GL_INFO_LOG_LENGTH, &infoLen);
-
-		if (infoLen > 1)
-		{
-			char *infoLog = malloc (sizeof(char) * infoLen );
-         	glGetShaderInfoLog (fragment_shader, infoLen, NULL, infoLog );
-        	printf( "Error compiling shader:\n%s\n", infoLog );            
-        	free ( infoLog );
-     	}
-    	glDeleteShader (fragment_shader);
-     	return 0;
-	}
+	if (!checkShader(fragment_shader, compiled))
+		ft_kill("Shader compilation failed");
 
 	GLuint	program = glCreateProgram();
 
@@ -143,39 +159,35 @@ int					main(void)
 
 	glGetProgramiv ( program, GL_LINK_STATUS, &compiled );
 
-   if ( !compiled ) 
-   {
-      glGetProgramiv ( program, GL_INFO_LOG_LENGTH, &infoLen );
-      
-      if ( infoLen > 1 )
-      {
-         char *infoLog2 = malloc (sizeof(char) * infoLen );
-
-         glGetProgramInfoLog ( program, infoLen, NULL, infoLog2 );
-         printf( "Error linking program:\n%s\n", infoLog2 );            
-         
-         free ( infoLog2 );
-      }
-
-      glDeleteProgram ( program );
-      return 0;
-   }
-
+	if (!checkProgram(program, compiled))
+	{
+		ft_kill("Program compilation failed");
+	}
+   
 
 	float vertices[] = {
-		-0.5f, -0.5f, 0.0f, // left  
-		 0.5f, -0.5f, 0.0f, // right 
-		 0.0f,  0.5f, 0.0f  // top   
+		0.5f,  0.5f, 0.0f,  // top right
+		0.5f, -0.5f, 0.0f,  // bottom right
+		-0.5f, -0.5f, 0.0f,  // bottom left
+		-0.5f,  0.5f, 0.0f   // top left 
 	};
 
+	unsigned int indices[] = {  // note that we start from 0!
+		0, 1, 3,   // first triangle
+		1, 2, 3    // second triangle
+	};  
+	
 	unsigned int	vao;
 	unsigned int	vbo;
+	unsigned int	ebo;
 
 	glGenVertexArrays(1, &vao);
 	glGenBuffers(1, &vbo);
-
+	glGenBuffers(1, &ebo);
 	glBindVertexArray(vao);
 
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, ebo);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -210,8 +222,10 @@ int					main(void)
 
 		glUseProgram(program);
 		glBindVertexArray(vao);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
-	
+		// glDrawArrays(GL_TRIANGLES, 0, 6);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+
 		glfwSwapBuffers(env.window);
 		glfwPollEvents();
 	}
