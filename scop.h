@@ -24,9 +24,37 @@ typedef struct s_mat4		t_mat4;
 struct			s_glenv
 {
 	GLFWwindow			*window;
-	double				ratio;
-	int					width;
-	int					height;
+	/*SHADERS CREATION*/
+	GLuint				program;
+	GLuint				vertex_shader;
+	GLuint				fragment_shader;
+	GLint				compiled;
+
+	/*VERTEX ARRAY AND VERTEX BUFFER*/
+	unsigned int		vao;
+	unsigned int		vbo;
+	unsigned int		ebo;
+
+	/*FPS COUNTER*/
+	double				current_time;
+	double				last_time;
+	int					frames;
+
+	/*Parsing file*/
+	char				*line;
+	char				**split;
+	int					fd;
+	/*File Info*/
+	int					face_nbr;
+	int					vtx_nbr;
+	bool				four;
+
+	float				vertices[4142*3];
+	unsigned int		indices[200000];
+	int					indices_nbr;
+
+	int					nbr;
+	int					ind;
 };
 
 struct			s_vec3
