@@ -52,15 +52,32 @@ void		print_mat4(t_mat4 to_print)
 	ft_putendl("]");
 }
 
-// t_vec4		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector)
-// t_mat4		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector)
+// t_mat4		create_rot_matrice(t_mat4 *to_rot, float degree, t_vec3 axis)
+// {
+// 	to_rot[0][0] = 1.0f;
+// 	to_rot[0][0] = 0.0f;
+// 	to_rot[0][0] = 0.0f;
+// 	to_rot[0][0] = 0.0f;
+
+// 	to_rot[0][0] = 0;
+// 	to_rot[0][0] = ;
+// 	to_rot[0][0] = ;
+// 	to_rot[0][0] = 0.0f;
+
+// 	to_rot[0][0] = ;
+// 	to_rot[0][0] = ;
+// 	to_rot[0][0] = ;
+// 	to_rot[0][0] = 0.0f;
+
+// 	to_rot[0][0] = ;
+// 	to_rot[0][0] = ;
+// 	to_rot[0][0] = ;
+// 	to_rot[0][0] = 1.0f;
+
+// }
+
 void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector)
 {
-	// t_mat4		multiplied;
-
-	// multiplied = *to_mult;
-	// t_vec4		multiplied;
-
 	to_mult->m[0][0] = to_mult->m[0][0] * vector->x;
 	to_mult->m[0][1] = to_mult->m[0][1] * vector->y;
 	to_mult->m[0][2] = to_mult->m[0][2] * vector->z;
@@ -80,28 +97,6 @@ void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector)
 	to_mult->m[3][1] = to_mult->m[3][0] * vector->y;
 	to_mult->m[3][2] = to_mult->m[3][0] * vector->z;
 	to_mult->m[3][3] = to_mult->m[3][3] * vector->w;
-
-	// multiplied.x = to_mult->m[0][0] * vector->x;
-	// multiplied.x += to_mult->m[0][1] * vector->y;
-	// multiplied.x += to_mult->m[0][2] * vector->z;
-	// multiplied.x += to_mult->m[0][3] * 1.0f;;
-
-	// multiplied.y = to_mult->m[1][0] * vector->x;
-	// multiplied.y += to_mult->m[1][0] * vector->y;
-	// multiplied.y += to_mult->m[1][0] * vector->z;
-	// multiplied.y += to_mult->m[1][0] * 1.0f;
-
-	// multiplied.z = to_mult->m[2][0] * vector->x;
-	// multiplied.z += to_mult->m[2][0] * vector->y;
-	// multiplied.z += to_mult->m[2][0] * vector->z;
-	// multiplied.z += to_mult->m[2][3] * 1.0f;
-
-	// multiplied.w = to_mult->m[3][0] * vector->x;
-	// multiplied.w += to_mult->m[3][0] * vector->y;
-	// multiplied.w += to_mult->m[3][0] * vector->z;
-	// multiplied.w += to_mult->m[3][3] * 1.0f;
-	// print_vec4(multiplied);
-	// return (multiplied);
 }
 
 t_mat4		create_mat4(float homogene)

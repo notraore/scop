@@ -86,6 +86,10 @@ void				input_key(t_glenv *env)
 		env->offset.x -= 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		env->offset.x += 0.02;
+	else if (glfwGetKey(env->window, GLFW_KEY_W) == GLFW_PRESS)
+		env->offset.z += 0.02;
+	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
+		env->offset.z -= 0.02;
 }
 
 void				win_update(void *f(float), GLFWwindow *win)
