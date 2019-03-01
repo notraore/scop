@@ -22,9 +22,11 @@ static const char* vs =
 "out vec3 ourColor;\n"
 "out vec2 TexCoord;\n"
 
+"uniform mat4 transform;\n"
+
 "void main()\n"
 "{\n"
-	"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+	"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0) * transform;\n"
 	"ourColor = aColor;\n"
 	"TexCoord = aTexCoord;\n"
 "}\n";
@@ -72,10 +74,19 @@ void				framebuffer_size_callback(GLFWwindow* window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
-void				input_key(GLFWwindow *window)
+void				input_key(t_glenv *env)
 {
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
+	if (glfwGetKey(env->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(env->window, true);
+	else if (glfwGetKey(env->window, GLFW_KEY_UP) == GLFW_PRESS)
+		env->vector.y += 0.02;
+	else if (glfwGetKey(env->window, GLFW_KEY_DOWN) == GLFW_PRESS)
+		env->vector.y -= 0.02;
+	else if (glfwGetKey(env->window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		env->vector.x -= 0.02;
+	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+		env->vector.x += 0.02;
+	printf("vx = %f ||vy = %f ||vz = %f\n", env->vector.x, env->vector.y, env->vector.z);
 }
 
 void				win_update(void *f(float), GLFWwindow *win)
@@ -148,12 +159,6 @@ void				generate_buff_arr(t_glenv *env)
 
 void				vertices_setter(t_glenv *env)
 {
-	// float vertt[18] = {
-	// 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,	// bottom right
-	// -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,	// bottom left
-	// 0.0f, 0.5f, 0.0f,  0.0f, 0.0f, 1.0f
-	// };
-
 	printf(" sizeof(env->vertices) = %lu\n",  sizeof(env->vertices));
 	printf(" sizeof(env->indices) = %lu\n",  sizeof(env->indices));
 	generate_buff_arr(env);
@@ -250,14 +255,6 @@ void				store_faces(t_glenv *env)
 	env->indices_nbr += 3;
 }
 
-// void				store_color(t_glenv *env, int *i)
-// {
-// 	int tmp;
-
-// 	i = 0;
-// 	tmp = env-
-// }
-
 void				load_texture(t_glenv *env)
 {
 	glGenTextures(1, &env->texture);
@@ -287,10 +284,11 @@ void				parse_obj(t_glenv *env, char *srcpath)
 						1.0f, 0.0f, 0.0f,	// bottom right
 						0.0f, 1.0f, 0.0f,	// bottom left
 						0.0f, 0.0f, 1.0f};
-	float texCoords[6] = {
-		0.0, 0.0,
+	float texCoords[8] = {
+		1.0, 1.0,
 		1.0, 0.0,
-		0.5, 1.0,
+		0.0, 0.0,
+		0.0, 1.0,
 	};
 
 	i = 0;
@@ -312,8 +310,8 @@ void				parse_obj(t_glenv *env, char *srcpath)
 			env->vertices[i + 5] = color[(i + 2) % 9];
 
 			/*Texture*/
-			env->vertices[i + 6] = texCoords[(i) % 6];
-			env->vertices[i + 7] = texCoords[(i + 1) % 6];
+			env->vertices[i + 6] = texCoords[(i) % 8];
+			env->vertices[i + 7] = texCoords[(i + 1) % 8];
 			// printf("i = %d\n", (i + 2) % 9);
 			// printf("v.x = %f || v.y = %f || v.z = %f ||  clrv.z = %f ||  clrv.z = %f ||  clrv.z = %f\n", env->vertices[i], env->vertices[i + 1], env->vertices[i + 2], env->vertices[i + 3], env->vertices[i + 4], env->vertices[i + 5]);
 			env->vtx_nbr++;
@@ -340,10 +338,14 @@ int					main(int argc, char **argv)
 {
 	t_glenv		env;
 
+
 	if (!glfwInit())
 		ft_kill("Can't init GLFW.");
 	init_glversion();
 	ft_bzero(&env, sizeof(env));
+
+	env.mat = create_translation_mat4();
+	print_mat4(env.mat);
 	env.nbr = 1;
 	env.ind = 0;
 	if (argc == 2)
@@ -360,14 +362,19 @@ int					main(int argc, char **argv)
 	env.last_time = glfwGetTime();
 	while (!glfwWindowShouldClose(env.window))
 	{
-		input_key(env.window);
+		input_key(&env);
 		print_fps_counter(&env);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(env.program);
+
+		env.transformLoc = glGetUniformLocation(env.program, "transform");
+		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &env.mat.m[0][0]);
+		env.mat = make_translation_mat4(&env, &env.vector);
+
 		glBindVertexArray(env.vao);
-		// glDrawArrays(GL_TRIANGLES, 0, env.indices_nbr);
 		glDrawElements(GL_TRIANGLES, env.indices_nbr, GL_UNSIGNED_INT, 0);
+		// glDrawArrays(GL_TRIANGLES, 0, env.indices_nbr);
 		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glfwSwapBuffers(env.window);
 		glfwPollEvents();
