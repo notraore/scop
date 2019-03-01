@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/28 18:01:29 by notraore          #+#    #+#             */
-/*   Updated: 2019/02/28 18:01:29 by notraore         ###   ########.fr       */
+/*   Updated: 2019/03/01 23:43:06 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -79,17 +79,23 @@ void				input_key(t_glenv *env)
 	if (glfwGetKey(env->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(env->window, true);
 	else if (glfwGetKey(env->window, GLFW_KEY_UP) == GLFW_PRESS)
-		env->offset.y += 0.02;
+		env->new_pos.y += 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		env->offset.y -= 0.02;
+		env->new_pos.y -= 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		env->offset.x -= 0.02;
+		env->new_pos.x -= 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		env->offset.x += 0.02;
+		env->new_pos.x += 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_W) == GLFW_PRESS)
-		env->offset.z += 0.02;
+		env->new_pos.z += 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
-		env->offset.z -= 0.02;
+		env->new_pos.z -= 0.02;
+	else if (glfwGetKey(env->window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	{
+		env->new_size.x += 0.02;
+		env->new_size.y += 0.02;
+		env->new_size.z += 0.02;
+	}
 }
 
 void				win_update(void *f(float), GLFWwindow *win)
@@ -358,9 +364,13 @@ int					main(int argc, char **argv)
 	load_texture(&env);
 	vertices_setter(&env);
 	env.last_time = glfwGetTime();
-	env.offset.x = 0;
-	env.offset.y = 0;
-	env.offset.z = 0;
+	env.new_pos.x = 0;
+	env.new_pos.y = 0;
+	env.new_pos.z = 0;
+
+	env.new_size.x = 1;
+	env.new_size.y = 1;
+	env.new_size.z = 1;
 	while (!glfwWindowShouldClose(env.window))
 	{
 		input_key(&env);
@@ -370,11 +380,18 @@ int					main(int argc, char **argv)
 
 
 		env.transform = create_mat4(1.0f);
-		env.transform = translate_mat4(&env.transform, &env.offset);
-		print_mat4(env.transform);
+		// env.scale = create_mat4(1.0f);
+		env.trans = create_mat4(1.0f);
+		// env.scale = rescale_mat4(&env.scale, &env.new_size);
+		env.transform = translate_mat4(&env.trans, &env.new_pos);
+		// env.transform = mat4_mult_mat4(&env.scale, &env.trans);
 
 
 		glUseProgram(env.program);
+
+		// env.new_size.x += 0.0001;
+		// env.new_size.y += 0.0001;
+		// env.new_size.z += 0.0001;
 
 		env.transformLoc = glGetUniformLocation(env.program, "transform");
 		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &env.transform.m[0][0]);

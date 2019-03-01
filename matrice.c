@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   matrice.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 11:30:44 by notraore          #+#    #+#             */
-/*   Updated: 2019/02/27 11:30:44 by notraore         ###   ########.fr       */
+/*   Updated: 2019/03/01 22:47:01 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,6 +75,29 @@ void		print_mat4(t_mat4 to_print)
 // 	to_rot[0][0] = 1.0f;
 
 // }
+
+void		make_rescale(t_mat4 *to_scale, t_vec3 *vector)
+{
+	to_scale->m[0][0] = vector->x;
+	// to_scale->m[0][1] = 0.0f;
+	// to_scale->m[0][2] = 0.0f;
+	// to_scale->m[0][3] = 0.0f;
+
+	// to_scale->m[1][0] = 0.0f;
+	to_scale->m[1][1] = vector->y;
+	// to_scale->m[1][2] = 0.0f;
+	// to_scale->m[1][3] = 0.0f;
+
+	// to_scale->m[2][0] = 0.0f;
+	// to_scale->m[2][1] = 0.0f;
+	to_scale->m[2][2] = vector->z;
+	// to_scale->m[2][3] = 0.0f;
+
+// 	to_scale->m[3][0] = 0.0f;
+// 	to_scale->m[3][1] = 0.0f;
+// 	to_scale->m[3][2] = 0.0f;
+	to_scale->m[3][3] = 1.0;
+}
 
 void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector)
 {
@@ -148,6 +171,32 @@ void		make_trans(t_mat4 *translated, t_vec3 *new_pos)
 	translated->m[3][3] = 1.0;
 }
 
+t_mat4		mat4_mult_mat4(t_mat4 *a, t_mat4 *b)
+{
+	t_mat4		a_mult_b;
+
+	a_mult_b.m[0][0] = a->m[0][0] * b->m[0][0];
+	a_mult_b.m[0][1] = a->m[0][1] * b->m[0][1];
+	a_mult_b.m[0][2] = a->m[0][2] * b->m[0][2];
+	a_mult_b.m[0][3] = a->m[0][3] * b->m[0][3];
+
+	a_mult_b.m[1][0] = a->m[1][0] * b->m[1][0];
+	a_mult_b.m[1][1] = a->m[1][1] * b->m[1][1];
+	a_mult_b.m[1][2] = a->m[1][2] * b->m[1][2];
+	a_mult_b.m[1][3] = a->m[1][3] * b->m[1][3];
+
+	a_mult_b.m[2][0] = a->m[2][0] * b->m[2][0];
+	a_mult_b.m[2][1] = a->m[2][1] * b->m[2][1];
+	a_mult_b.m[2][2] = a->m[2][2] * b->m[2][2];
+	a_mult_b.m[2][3] = a->m[2][3] * b->m[2][3];
+
+	a_mult_b.m[3][0] = a->m[3][0] * b->m[3][0];
+	a_mult_b.m[3][1] = a->m[3][1] * b->m[3][1];
+	a_mult_b.m[3][2] = a->m[3][2] * b->m[3][2];
+	a_mult_b.m[3][3] = a->m[3][3] * b->m[3][3];
+	return(a_mult_b);
+}
+
 t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos)
 {
 	t_mat4		translated;
@@ -155,9 +204,21 @@ t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos)
 
 	next_pos = create_tvec4(new_pos->x, new_pos->y, new_pos->z, 1.0f);
 	printf("%f || %f | %f\n", new_pos->x, new_pos->y, new_pos->z );
-	translated = create_mat4(1.0f);
+	// translated = create_mat4(1.0f);
 	make_trans(&translated, new_pos);
-	// print_mat4(translated);
 	mult_mat4_vec4(transform, &next_pos);
 	return (translated);
+}
+
+t_mat4		rescale_mat4(t_mat4 *transform, t_vec3 *new_size)
+{
+	t_mat4		scaled;
+	t_vec4		next_size;
+
+	next_size = create_tvec4(new_size->x, new_size->y, new_size->z, 1.0f);
+	printf("%f || %f | %f\n", new_size->x, new_size->y, new_size->z );
+	// scaled = create_mat4(1.0f);
+	make_rescale(&scaled, new_size);
+	mult_mat4_vec4(transform, &next_size);
+	return (scaled);
 }
