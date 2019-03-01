@@ -15,19 +15,31 @@
 static const char* vs =
 "#version 330 core\n"
 "layout (location = 0) in vec3 aPos;\n"
+"layout (location = 1) in vec3 aColor;\n"
+"layout (location = 2) in vec2 aTexCoord;\n"
+
+"out vec3 ourColor;\n"
+"out vec2 TexCoord;\n"
 
 "void main()\n"
 "{\n"
 	"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+	"ourColor = aColor;\n"
+	"TexCoord = aTexCoord;\n"
 "}\n";
 
 static const char* vf =
 "#version 330 core\n"
 "out vec4 FragColor;\n"
 
+"in vec3 ourColor;\n"
+"in vec2 TexCoord;\n"
+
+"uniform sampler2D ourTexture;\n"
+
 "void main()\n"
 "{\n"
-	"FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+	"FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);\n"
 "}\n";
 
 void				print_fps_counter(t_glenv *env)
@@ -135,13 +147,28 @@ void				generate_buff_arr(t_glenv *env)
 
 void				vertices_setter(t_glenv *env)
 {
+	// float vertt[18] = {
+	// 0.5f, -0.5f, 0.0f,  1.0f, 0.0f, 0.0f,	// bottom right
+	// -0.5f, -0.5f, 0.0f,  0.0f, 1.0f, 0.0f,	// bottom left
+	// 0.0f, 0.5f, 0.0f,  0.0f, 0.0f, 1.0f
+	// };
+
+	printf(" sizeof(env->vertices) = %lu\n",  sizeof(env->vertices));
+	printf(" sizeof(env->indices) = %lu\n",  sizeof(env->indices));
 	generate_buff_arr(env);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(env->indices), env->indices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, env->vbo);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(env->vertices), env->vertices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+	glEnableVertexAttribArray(1);
+
+	glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+	glEnableVertexAttribArray(2);
 	glBindBuffer(GL_ARRAY_BUFFER, 0); 
 	glBindVertexArray(0);
 }
@@ -201,11 +228,11 @@ void				store_faces(t_glenv *env)
 	while (env->ind < tmp)
 	{
 		env->indices[env->ind] = ft_atoi(env->split[i]) - 1;
+		printf("indice = %d\n", env->ind);
 		env->ind++;
 		i++;
 	}
 	i = 1;
-
 	if (env->four == true)
 	{
 		tmp = env->ind + 3;
@@ -222,9 +249,47 @@ void				store_faces(t_glenv *env)
 	env->indices_nbr += 3;
 }
 
+// void				store_color(t_glenv *env, int *i)
+// {
+// 	int tmp;
+
+// 	i = 0;
+// 	tmp = env-
+// }
+
+void				load_texture(t_glenv *env)
+{
+	glGenTextures(1, &env->texture);
+	glBindTexture(GL_TEXTURE_2D, env->texture);
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+	env->data = stbi_load("texture/wall.jpg", &env->tex_width, &env->tex_height, &env->nrChannels, 0);
+	if (env->data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->tex_width, env->tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, env->data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+		ft_putendl("Failed to load the texture.");
+	stbi_image_free(env->data);
+}
+
 void				parse_obj(t_glenv *env, char *srcpath)
 {
 	int i;
+	float color[9] = {
+						1.0f, 0.0f, 0.0f,	// bottom right
+						0.0f, 1.0f, 0.0f,	// bottom left
+						0.0f, 0.0f, 1.0f};
+	float texCoords[6] = {
+		0.0, 0.0,
+		1.0, 0.0,
+		0.5, 1.0
+	};
 
 	i = 0;
 	env->fd = open(srcpath, O_RDONLY);
@@ -236,11 +301,22 @@ void				parse_obj(t_glenv *env, char *srcpath)
 		if(env->line[0] == 'v')
 		{
 			env->vertices[i] = ft_atof(env->split[1]);
-
 			env->vertices[i + 1] = ft_atof(env->split[2]);
 			env->vertices[i + 2] = ft_atof(env->split[3]);
+
+			/*Shader Color*/
+			env->vertices[i + 3] = color[i % 9];
+			env->vertices[i + 4] = color[(i + 1) % 9];
+			env->vertices[i + 5] = color[(i + 2) % 9];
+
+			/*Texture*/
+			env->vertices[i + 6] = texCoords[(i) % 6];
+			env->vertices[i + 7] = texCoords[(i + 1) % 6];
+			// printf("i = %d\n", (i + 2) % 9);
+			// printf("v.x = %f || v.y = %f || v.z = %f ||  clrv.z = %f ||  clrv.z = %f ||  clrv.z = %f\n", env->vertices[i], env->vertices[i + 1], env->vertices[i + 2], env->vertices[i + 3], env->vertices[i + 4], env->vertices[i + 5]);
 			env->vtx_nbr++;
-			i += 3;
+			// store_color(env);
+			i += 8;
 		}
 		else if (env->line[0] == 'f')
 		{
@@ -273,7 +349,6 @@ int					main(int argc, char **argv)
 	int i = 0;
 	while (i < env.vtx_nbr * 3)
 	{
-		printf("v.x = %f || v.y = %f || v.z = %f\n", env.vertices[i], env.vertices[i + 1], env.vertices[i + 2]);
 		i += 3;
 	}
 	create_env(&env);
@@ -288,10 +363,9 @@ int					main(int argc, char **argv)
 		glClear(GL_COLOR_BUFFER_BIT);
 		glUseProgram(env.program);
 		glBindVertexArray(env.vao);
-
-		// glDrawArrays(GL_TRIANGLES, 0, 126);
+		// glDrawArrays(GL_TRIANGLES, 0, env.indices_nbr);
 		glDrawElements(GL_TRIANGLES, env.indices_nbr, GL_UNSIGNED_INT, 0);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glfwSwapBuffers(env.window);
 		glfwPollEvents();
 	}

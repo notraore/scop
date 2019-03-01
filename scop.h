@@ -5,11 +5,12 @@
 #include <stdio.h>
 
 // #include <GL/glew.h>
-#define GLFW_INCLUDE_NONE
 #include <glfw3.h>
 #include <glad.h>
+#include "stb_image.h"
 // #include "glad/khrplatform.h"
 // #include <GLFW/glfw3.h>
+
 #include <OpenGL/gl.h>
 #include <stdbool.h>
 
@@ -49,10 +50,16 @@ struct			s_glenv
 	int					vtx_nbr;
 	bool				four;
 
-	float				vertices[4142*3];
+	float				vertices[200000];
 	unsigned int		indices[200000];
 	int					indices_nbr;
 
+	/*TEXTURE*/
+	unsigned int		texture;
+	int					tex_width;
+	int					tex_height;
+	int					nrChannels;
+	unsigned char		*data;
 	int					nbr;
 	int					ind;
 };

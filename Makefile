@@ -15,6 +15,8 @@ LIBFT 		= 	libft/libft.a
 FRMWLIB		= 	lib/libglfw.3.2.dylib
 GLADLIB		=	glad/libglad.a
 
+STBLIB		=	stb/libstb.a
+
 SRCS		= 	main.c \
 				matrice.c \
 				vector.c
@@ -26,6 +28,7 @@ CFLAGS		= 	-Wall -Wextra -Werror
 INC			=	-I./includes/
 FRMPATH		=	-I./include/GLFW/
 GLADPATH	=	-I./glad/
+STBPATH		=	-I./stb/
 FRMWK		=	-framework OpenGl 
 #-lglfw -lGLEW
 
@@ -37,7 +40,7 @@ all:		$(NAME)
 
 $(NAME):	$(OBJS)
 			@ make -C ./libft all
-			@ $(CC) $(LIBFT) $(CFLAGS) $(GLADPATH) $(FRMPATH) $(FRMWLIB) $(GLADLIB) $(FRMWK) -o $@ $^
+			@ $(CC) $(LIBFT) $(CFLAGS) $(GLADPATH) $(STBPATH) $(FRMPATH) $(FRMWLIB) $(GLADLIB) $(FRMWK) -o $@ $^
 			@ echo "\n\033[92m---> scop program created ✓\033[0m";
 
 objs/%.o:	srcs/%.c
