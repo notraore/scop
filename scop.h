@@ -5,6 +5,7 @@
 #include <stdio.h>
 
 // #include <GL/glew.h>
+#define GLFW_INCLUDE_NONE
 #include <glfw3.h>
 #include <glad.h>
 #include "stb_image.h"

@@ -10,6 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
+#define STB_IMAGE_IMPLEMENTATION
 #include "scop.h"
 
 static const char* vs =
@@ -267,6 +268,7 @@ void				load_texture(t_glenv *env)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
+	stbi_set_flip_vertically_on_load(true);
 	env->data = stbi_load("texture/wall.jpg", &env->tex_width, &env->tex_height, &env->nrChannels, 0);
 	if (env->data)
 	{
@@ -288,7 +290,7 @@ void				parse_obj(t_glenv *env, char *srcpath)
 	float texCoords[6] = {
 		0.0, 0.0,
 		1.0, 0.0,
-		0.5, 1.0
+		0.5, 1.0,
 	};
 
 	i = 0;
@@ -353,6 +355,7 @@ int					main(int argc, char **argv)
 	}
 	create_env(&env);
 	createShaderProg(&env);
+	load_texture(&env);
 	vertices_setter(&env);
 	env.last_time = glfwGetTime();
 	while (!glfwWindowShouldClose(env.window))
