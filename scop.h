@@ -82,11 +82,8 @@ struct			s_glenv
 	unsigned int		transformLoc;
 	unsigned int		id;
 	/*Translation vector*/
-	t_mat4				mat;
-	float				newx;
-	float				newy;
-	float				newz;
-	t_vec3				vector;
+	t_mat4				transform;
+	t_vec3				offset;
 };
 
 struct			s_vec4
@@ -107,12 +104,12 @@ struct			s_shader
 
 
 /* matrice.c */
-t_mat4			create_translation_mat4(void);
-t_mat4			translation_mat4(t_vec3 *vec);
-void			print_mat4(t_mat4 to_print);
-void			add_translation(t_glenv *e, t_vec3 *vec, t_mat4 *new);
-t_mat4			make_translation_mat4(t_glenv *e, t_vec3 *vec);
-
+t_mat4		create_mat4(float homogene);
+void		print_mat4(t_mat4 to_print);
+// t_mat4		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector);
+void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector);
+// t_vec4		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector);
+t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos);
 
 /* vector.c */
 t_vec4		create_tvec4(double x, double y, double z, double w);

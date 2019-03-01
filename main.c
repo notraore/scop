@@ -79,14 +79,13 @@ void				input_key(t_glenv *env)
 	if (glfwGetKey(env->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(env->window, true);
 	else if (glfwGetKey(env->window, GLFW_KEY_UP) == GLFW_PRESS)
-		env->vector.y += 0.02;
+		env->offset.y += 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		env->vector.y -= 0.02;
+		env->offset.y -= 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		env->vector.x -= 0.02;
+		env->offset.x -= 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		env->vector.x += 0.02;
-	printf("vx = %f ||vy = %f ||vz = %f\n", env->vector.x, env->vector.y, env->vector.z);
+		env->offset.x += 0.02;
 }
 
 void				win_update(void *f(float), GLFWwindow *win)
@@ -159,8 +158,6 @@ void				generate_buff_arr(t_glenv *env)
 
 void				vertices_setter(t_glenv *env)
 {
-	printf(" sizeof(env->vertices) = %lu\n",  sizeof(env->vertices));
-	printf(" sizeof(env->indices) = %lu\n",  sizeof(env->indices));
 	generate_buff_arr(env);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(env->indices), env->indices, GL_STATIC_DRAW);
@@ -234,7 +231,6 @@ void				store_faces(t_glenv *env)
 	while (env->ind < tmp)
 	{
 		env->indices[env->ind] = ft_atoi(env->split[i]) - 1;
-		printf("indice = %d\n", env->ind);
 		env->ind++;
 		i++;
 	}
@@ -329,9 +325,9 @@ void				parse_obj(t_glenv *env, char *srcpath)
 		}
 		free_tab(env->split);
 	}
-	printf("face nbr = %d\n", env->face_nbr);
-	printf("vertex nbr = %d\n", env->vtx_nbr);
-	printf("indice nbr = %d\n", env->indices_nbr);
+	// printf("face nbr = %d\n", env->face_nbr);
+	// printf("vertex nbr = %d\n", env->vtx_nbr);
+	// printf("indice nbr = %d\n", env->indices_nbr);
 }
 
 int					main(int argc, char **argv)
@@ -344,8 +340,6 @@ int					main(int argc, char **argv)
 	init_glversion();
 	ft_bzero(&env, sizeof(env));
 
-	env.mat = create_translation_mat4();
-	print_mat4(env.mat);
 	env.nbr = 1;
 	env.ind = 0;
 	if (argc == 2)
@@ -360,18 +354,26 @@ int					main(int argc, char **argv)
 	load_texture(&env);
 	vertices_setter(&env);
 	env.last_time = glfwGetTime();
+	env.offset.x = 0;
+	env.offset.y = 0;
+	env.offset.z = 0;
 	while (!glfwWindowShouldClose(env.window))
 	{
 		input_key(&env);
 		print_fps_counter(&env);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
+
+
+		env.transform = create_mat4(1.0f);
+		env.transform = translate_mat4(&env.transform, &env.offset);
+		print_mat4(env.transform);
+
+
 		glUseProgram(env.program);
 
 		env.transformLoc = glGetUniformLocation(env.program, "transform");
-		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &env.mat.m[0][0]);
-		env.mat = make_translation_mat4(&env, &env.vector);
-
+		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &env.transform.m[0][0]);
 		glBindVertexArray(env.vao);
 		glDrawElements(GL_TRIANGLES, env.indices_nbr, GL_UNSIGNED_INT, 0);
 		// glDrawArrays(GL_TRIANGLES, 0, env.indices_nbr);
