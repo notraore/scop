@@ -6,7 +6,7 @@
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/28 18:01:29 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/01 23:43:06 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/03 00:05:36 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -90,11 +90,17 @@ void				input_key(t_glenv *env)
 		env->new_pos.z += 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
 		env->new_pos.z -= 0.02;
-	else if (glfwGetKey(env->window, GLFW_KEY_SPACE) == GLFW_PRESS)
+	else if (glfwGetKey(env->window, GLFW_KEY_X) == GLFW_PRESS)
 	{
-		env->new_size.x += 0.02;
-		env->new_size.y += 0.02;
-		env->new_size.z += 0.02;
+		env->new_size.x += 0.001;
+		env->new_size.y += 0.001;
+		env->new_size.z += 0.001;
+	}
+	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
+	{
+		env->new_size.x -= 0.001;
+		env->new_size.y -= 0.001;
+		env->new_size.z -= 0.001;
 	}
 }
 
@@ -378,14 +384,13 @@ int					main(int argc, char **argv)
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-
 		env.transform = create_mat4(1.0f);
-		// env.scale = create_mat4(1.0f);
+		env.scale = create_mat4(1.0f);
 		env.trans = create_mat4(1.0f);
-		// env.scale = rescale_mat4(&env.scale, &env.new_size);
-		env.transform = translate_mat4(&env.trans, &env.new_pos);
-		// env.transform = mat4_mult_mat4(&env.scale, &env.trans);
-
+		env.trans = translate_mat4(&env.trans, &env.new_pos);
+		env.scale = rescale_mat4(&env.scale, &env.new_size);
+		print_mat4(env.transform);
+		env.transform = mat4_plus_mat4(&env.scale, &env.trans);
 
 		glUseProgram(env.program);
 

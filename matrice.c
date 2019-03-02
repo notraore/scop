@@ -6,7 +6,7 @@
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 11:30:44 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/01 22:47:01 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/03 00:03:45 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -197,13 +197,39 @@ t_mat4		mat4_mult_mat4(t_mat4 *a, t_mat4 *b)
 	return(a_mult_b);
 }
 
+t_mat4		mat4_plus_mat4(t_mat4 *a, t_mat4 *b)
+{
+	t_mat4		a_plus_b;
+
+	a_plus_b.m[0][0] = a->m[0][0] + b->m[0][0];
+	a_plus_b.m[0][1] = a->m[0][1] + b->m[0][1];
+	a_plus_b.m[0][2] = a->m[0][2] + b->m[0][2];
+	a_plus_b.m[0][3] = a->m[0][3] + b->m[0][3];
+
+	a_plus_b.m[1][0] = a->m[1][0] + b->m[1][0];
+	a_plus_b.m[1][1] = a->m[1][1] + b->m[1][1];
+	a_plus_b.m[1][2] = a->m[1][2] + b->m[1][2];
+	a_plus_b.m[1][3] = a->m[1][3] + b->m[1][3];
+
+	a_plus_b.m[2][0] = a->m[2][0] + b->m[2][0];
+	a_plus_b.m[2][1] = a->m[2][1] + b->m[2][1];
+	a_plus_b.m[2][2] = a->m[2][2] + b->m[2][2];
+	a_plus_b.m[2][3] = a->m[2][3] + b->m[2][3];
+
+	a_plus_b.m[3][0] = a->m[3][0] + b->m[3][0];
+	a_plus_b.m[3][1] = a->m[3][1] + b->m[3][1];
+	a_plus_b.m[3][2] = a->m[3][2] + b->m[3][2];
+	a_plus_b.m[3][3] = a->m[3][3] + b->m[3][3];
+	return(a_plus_b);
+}
+
 t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos)
 {
 	t_mat4		translated;
 	t_vec4		next_pos;
 
 	next_pos = create_tvec4(new_pos->x, new_pos->y, new_pos->z, 1.0f);
-	printf("%f || %f | %f\n", new_pos->x, new_pos->y, new_pos->z );
+	// printf("%f || %f | %f\n", new_pos->x, new_pos->y, new_pos->z );
 	// translated = create_mat4(1.0f);
 	make_trans(&translated, new_pos);
 	mult_mat4_vec4(transform, &next_pos);
@@ -212,13 +238,13 @@ t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos)
 
 t_mat4		rescale_mat4(t_mat4 *transform, t_vec3 *new_size)
 {
-	t_mat4		scaled;
+	// t_mat4		scaled;
 	t_vec4		next_size;
 
 	next_size = create_tvec4(new_size->x, new_size->y, new_size->z, 1.0f);
 	printf("%f || %f | %f\n", new_size->x, new_size->y, new_size->z );
 	// scaled = create_mat4(1.0f);
-	make_rescale(&scaled, new_size);
-	mult_mat4_vec4(transform, &next_size);
-	return (scaled);
+	make_rescale(transform, new_size);
+	// mult_mat4_vec4(transform, &next_size);
+	return (*transform);
 }

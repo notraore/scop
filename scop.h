@@ -117,6 +117,7 @@ t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos);
 void		make_rescale(t_mat4 *to_scale, t_vec3 *vector);
 t_mat4		rescale_mat4(t_mat4 *transform, t_vec3 *new_size);
 t_mat4		mat4_mult_mat4(t_mat4 *a, t_mat4 *b);
+t_mat4		mat4_plus_mat4(t_mat4 *a, t_mat4 *b);
 
 /* vector.c */
 t_vec4		create_tvec4(double x, double y, double z, double w);
