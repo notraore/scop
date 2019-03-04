@@ -73,6 +73,70 @@ void		print_mat4(t_mat4 to_print)
 //
 // }*/
 
+void make_rot_x(t_mat4 *to_rotate, float degree)
+{
+	const float PI = 3.1415926;
+
+	to_rotate->m[0][0] = 1.0f;
+	to_rotate->m[0][1] = 0.0f;
+	to_rotate->m[0][2] = 0.0f;
+	to_rotate->m[0][3] = 0.0f;
+	to_rotate->m[1][0] = 0.0f;
+	to_rotate->m[1][1] = cosf((degree * PI) / 180);
+	to_rotate->m[1][2] = -sinf((degree * PI) / 180);
+	to_rotate->m[1][3] = 0.0f;
+	to_rotate->m[2][0] = 0.0f;
+	to_rotate->m[2][1] = 0.0f;
+	to_rotate->m[2][2] = sinf((degree * PI) / 180);
+	to_rotate->m[2][3] = cosf((degree * PI) / 180);
+	to_rotate->m[3][0] = 0.0f;
+	to_rotate->m[3][1] = 0.0f;
+	to_rotate->m[3][2] = 0.0f;
+	to_rotate->m[3][3] = 1.0f;
+}
+
+
+void make_rot_y(t_mat4 *to_rotate, float degree)
+{
+	to_rotate->m[0][0] = degree;
+	to_rotate->m[0][1] = 0.0f;
+	to_rotate->m[0][2] = 0.0f;
+	to_rotate->m[0][3] = 0.0f;
+	to_rotate->m[1][0] = 0.0f;
+	to_rotate->m[1][1] = 0.0f;
+	to_rotate->m[1][2] = 0.0f;
+	to_rotate->m[1][3] = 0.0f;
+	to_rotate->m[2][0] = 0.0f;
+	to_rotate->m[2][1] = 0.0f;
+	to_rotate->m[2][2] = 0.0f;
+	to_rotate->m[2][3] = 0.0f;
+	to_rotate->m[3][0] = 0.0f;
+	to_rotate->m[3][1] = 0.0f;
+	to_rotate->m[3][2] = 0.0f;
+	to_rotate->m[3][3] = 0.0f;
+}
+
+
+void make_rot_z(t_mat4 *to_rotate, float degree)
+{
+	to_rotate->m[0][0] = degree;
+	to_rotate->m[0][1] = 0.0f;
+	to_rotate->m[0][2] = 0.0f;
+	to_rotate->m[0][3] = 0.0f;
+	to_rotate->m[1][0] = 0.0f;
+	to_rotate->m[1][1] = 0.0f;
+	to_rotate->m[1][2] = 0.0f;
+	to_rotate->m[1][3] = 0.0f;
+	to_rotate->m[2][0] = 0.0f;
+	to_rotate->m[2][1] = 0.0f;
+	to_rotate->m[2][2] = 0.0f;
+	to_rotate->m[2][3] = 0.0f;
+	to_rotate->m[3][0] = 0.0f;
+	to_rotate->m[3][1] = 0.0f;
+	to_rotate->m[3][2] = 0.0f;
+	to_rotate->m[3][3] = 0.0f;
+}
+
 void		make_rescale(t_mat4 *to_scale, t_vec3 *vector)
 {
 	to_scale->m[0][0] = vector->x;
@@ -200,6 +264,27 @@ t_mat4		mat4_plus_mat4(t_mat4 *a, t_mat4 *b)
 	a_plus_b.m[3][2] = a->m[3][2] + b->m[3][2];
 	a_plus_b.m[3][3] = a->m[3][3] + b->m[3][3];
 	return (a_plus_b);
+}
+
+t_mat4		rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis, t_vec3 *new_rot)
+{
+	t_mat4	rotated;
+	t_vec4	next_rot;
+
+	(void)axis;
+	// if (axis[0].x == 1.0f)
+
+	next_rot = create_tvec4(new_rot->x, new_rot->y, new_rot->z, 1.0f);
+
+	make_rot_x(&rotated, degree);
+
+	// else if (axis[1].x == 1.0f)
+	// 	make_rot_y(&rotated, degree);
+	// else if (axis[2].x == 1.0f)
+	// 	make_rot_z(&rotated, degree);
+	mult_mat4_vec4(transform, &next_rot);
+
+	return (rotated);
 }
 
 t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos)

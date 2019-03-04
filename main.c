@@ -92,15 +92,15 @@ void				input_key(t_glenv *env)
 		env->new_pos.z -= 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_X) == GLFW_PRESS)
 	{
-		env->new_size.x += 0.001;
-		env->new_size.y += 0.001;
-		env->new_size.z += 0.001;
+		env->new_size.x += 0.02;
+		env->new_size.y += 0.02;
+		env->new_size.z += 0.02;
 	}
 	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
 	{
-		env->new_size.x -= 0.001;
-		env->new_size.y -= 0.001;
-		env->new_size.z -= 0.001;
+		env->new_size.x -= 0.02;
+		env->new_size.y -= 0.02;
+		env->new_size.z -= 0.02;
 	}
 }
 
@@ -370,6 +370,12 @@ int					main(int argc, char **argv)
 	env.new_size.x = 1;
 	env.new_size.y = 1;
 	env.new_size.z = 1;
+	env.new_axis.x = 1;
+	env.new_axis.y = 0;
+	env.new_axis.z = 0;
+	env.new_rot.x = 0;
+	env.new_rot.y = 0;
+	env.new_rot.z = 0;
 	while (!glfwWindowShouldClose(env.window))
 	{
 		input_key(&env);
@@ -379,10 +385,15 @@ int					main(int argc, char **argv)
 		env.transform = create_mat4(1.0f);
 		env.scale = create_mat4(1.0f);
 		env.trans = create_mat4(1.0f);
+		env.rotate = create_mat4(1.0f);
 		env.trans = translate_mat4(&env.trans, &env.new_pos);
 		env.scale = rescale_mat4(&env.scale, &env.new_size);
+		env.rotate = rotate_mat4(&env.rotate, 1.5708f, &env.new_axis, &env.new_rot);
+		// env.rotate = rotate_mat4(&env.rotate, (float)glfwGetTime(), &env.new_rot);
+
 		print_mat4(env.transform);
 		env.transform = mat4_plus_mat4(&env.scale, &env.trans);
+		env.transform = mat4_plus_mat4(&env.transform, &env.rotate);
 		glUseProgram(env.program);
 		// env.new_size.x += 0.0001;
 		// env.new_size.y += 0.0001;

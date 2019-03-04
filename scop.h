@@ -86,9 +86,12 @@ struct			s_glenv
 
 	t_mat4				scale;
 	t_mat4				trans;
+	t_mat4				rotate;
 
 	t_vec3				new_pos;
 	t_vec3				new_size;
+	t_vec3				new_rot;
+	t_vec3				new_axis;
 };
 
 struct			s_vec4
@@ -113,7 +116,7 @@ t_mat4		create_mat4(float homogene);
 void		print_mat4(t_mat4 to_print);
 void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector);
 t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos);
-
+t_mat4		rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis, t_vec3 *new_rot);
 void		make_rescale(t_mat4 *to_scale, t_vec3 *vector);
 t_mat4		rescale_mat4(t_mat4 *transform, t_vec3 *new_size);
 t_mat4		mat4_mult_mat4(t_mat4 *a, t_mat4 *b);
