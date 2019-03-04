@@ -14,42 +14,22 @@
 
 void		print_mat4(t_mat4 to_print)
 {
-	ft_putstr("[");
-	ft_putnbr(to_print.m[0][0]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[0][1]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[0][2]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[0][3]);
-	ft_putendl("]");
-	ft_putstr("[");
-	ft_putnbr(to_print.m[1][0]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[1][1]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[1][2]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[1][3]);
-	ft_putendl("]");
-	ft_putstr("[");
-	ft_putnbr(to_print.m[2][0]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[2][1]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[2][2]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[2][3]);
-	ft_putendl("]");
-	ft_putstr("[");
-	ft_putnbr(to_print.m[3][0]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[3][1]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[3][2]);
-	ft_putstr(" ");
-	ft_putnbr(to_print.m[3][3]);
-	ft_putendl("]");
+	printf( "[%f ", to_print.m[0][0]);
+	printf( "%f ", to_print.m[0][1]);
+	printf( "%f ", to_print.m[0][2]);
+	printf( "%f]\n", to_print.m[0][3]);
+	printf( "[%f ", to_print.m[1][0]);
+	printf( "%f ", to_print.m[1][1]);
+	printf( "%f ", to_print.m[1][2]);
+	printf( "%f]\n", to_print.m[1][3]);
+	printf( "[%f ", to_print.m[2][0]);
+	printf( "%f ", to_print.m[2][1]);
+	printf( "%f ", to_print.m[2][2]);
+	printf( "%f]\n", to_print.m[2][3]);
+	printf( "[%f ", to_print.m[3][0]);
+	printf( "%f ", to_print.m[3][1]);
+	printf( "%f ", to_print.m[3][2]);
+	printf( "%f]\n", to_print.m[3][3]);
 }
 //
 // t_mat4		create_rot_matrice(t_mat4 *to_rot, float degree, t_vec3 axis)
@@ -73,22 +53,51 @@ void		print_mat4(t_mat4 to_print)
 //
 // }*/
 
+t_vec3		extract_vec3(t_mat4 *matrix)
+{
+	t_vec3		extracted;
+
+	extracted.x = matrix->m[0][0] + matrix->m[0][1] + matrix->m[0][2] + matrix->m[0][3];
+	extracted.y = matrix->m[1][0] + matrix->m[1][1] + matrix->m[1][2] + matrix->m[1][3];
+	extracted.z = matrix->m[2][0] + matrix->m[2][1] + matrix->m[2][2] + matrix->m[2][3];
+	return (extracted);
+}
+
 void make_rot_x(t_mat4 *to_rotate, float degree)
 {
-	const float PI = 3.1415926;
-
-	to_rotate->m[0][0] = 1.0f;
-	to_rotate->m[0][1] = 0.0f;
-	to_rotate->m[0][2] = 0.0f;
-	to_rotate->m[0][3] = 0.0f;
-	to_rotate->m[1][0] = 0.0f;
+	// to_rotate->m[0][0] = 1.0f;
+	// to_rotate->m[0][1] = 0.0f;
+	// to_rotate->m[0][2] = 0.0f;
+	// to_rotate->m[0][3] = 0.0f;
+	// to_rotate->m[1][0] = 0.0f;
 	to_rotate->m[1][1] = cosf((degree * PI) / 180);
 	to_rotate->m[1][2] = -sinf((degree * PI) / 180);
+	// to_rotate->m[1][3] = 0.0f;
+	// to_rotate->m[2][0] = 0.0f;
+	to_rotate->m[2][1] = sinf((degree * PI) / 180);
+	to_rotate->m[2][2] = cosf((degree * PI) / 180);
+	// to_rotate->m[2][3] = 0.0f;
+	// to_rotate->m[3][0] = 0.0f;
+	// to_rotate->m[3][1] = 0.0f;
+	// to_rotate->m[3][2] = 0.0f;
+	// to_rotate->m[3][3] = 1.0f;
+}
+
+
+void make_rot_y(t_mat4 *to_rotate, float degree)
+{
+	to_rotate->m[0][0] = cosf((degree * PI) / 180);
+	// to_rotate->m[0][1] = 0.0f;
+	to_rotate->m[0][2] = sinf((degree * PI) / 180);
+	to_rotate->m[0][3] = 0.0f;
+	to_rotate->m[1][0] = 0.0f;
+	to_rotate->m[1][1] = 1.0f;
+	to_rotate->m[1][2] = 0.0f;
 	to_rotate->m[1][3] = 0.0f;
-	to_rotate->m[2][0] = 0.0f;
+	to_rotate->m[2][0] = -sinf((degree * PI) / 180);
 	to_rotate->m[2][1] = 0.0f;
-	to_rotate->m[2][2] = sinf((degree * PI) / 180);
-	to_rotate->m[2][3] = cosf((degree * PI) / 180);
+	to_rotate->m[2][2] = cosf((degree * PI) / 180);
+	to_rotate->m[2][3] = 0.0f;
 	to_rotate->m[3][0] = 0.0f;
 	to_rotate->m[3][1] = 0.0f;
 	to_rotate->m[3][2] = 0.0f;
@@ -96,45 +105,27 @@ void make_rot_x(t_mat4 *to_rotate, float degree)
 }
 
 
-void make_rot_y(t_mat4 *to_rotate, float degree)
-{
-	to_rotate->m[0][0] = degree;
-	to_rotate->m[0][1] = 0.0f;
-	to_rotate->m[0][2] = 0.0f;
-	to_rotate->m[0][3] = 0.0f;
-	to_rotate->m[1][0] = 0.0f;
-	to_rotate->m[1][1] = 0.0f;
-	to_rotate->m[1][2] = 0.0f;
-	to_rotate->m[1][3] = 0.0f;
-	to_rotate->m[2][0] = 0.0f;
-	to_rotate->m[2][1] = 0.0f;
-	to_rotate->m[2][2] = 0.0f;
-	to_rotate->m[2][3] = 0.0f;
-	to_rotate->m[3][0] = 0.0f;
-	to_rotate->m[3][1] = 0.0f;
-	to_rotate->m[3][2] = 0.0f;
-	to_rotate->m[3][3] = 0.0f;
-}
-
-
 void make_rot_z(t_mat4 *to_rotate, float degree)
 {
-	to_rotate->m[0][0] = degree;
-	to_rotate->m[0][1] = 0.0f;
-	to_rotate->m[0][2] = 0.0f;
-	to_rotate->m[0][3] = 0.0f;
-	to_rotate->m[1][0] = 0.0f;
-	to_rotate->m[1][1] = 0.0f;
-	to_rotate->m[1][2] = 0.0f;
-	to_rotate->m[1][3] = 0.0f;
-	to_rotate->m[2][0] = 0.0f;
-	to_rotate->m[2][1] = 0.0f;
-	to_rotate->m[2][2] = 0.0f;
-	to_rotate->m[2][3] = 0.0f;
-	to_rotate->m[3][0] = 0.0f;
-	to_rotate->m[3][1] = 0.0f;
-	to_rotate->m[3][2] = 0.0f;
-	to_rotate->m[3][3] = 0.0f;
+	to_rotate->m[0][0] = cosf((degree * PI) / 180);
+	to_rotate->m[0][1] = -sinf((degree * PI) / 180);
+	// to_rotate->m[0][2] = 0.0f;
+	// to_rotate->m[0][3] = 0.0f;
+
+	to_rotate->m[1][0] = sinf((degree * PI) / 180);
+	to_rotate->m[1][1] = cosf((degree * PI) / 180);
+	// to_rotate->m[1][2] = 0.0f;
+	// to_rotate->m[1][3] = 0.0f;
+
+	// to_rotate->m[2][0] = 0.0f;
+	// to_rotate->m[2][1] = 0.0f;
+	// to_rotate->m[2][2] = 1.0f;
+	// to_rotate->m[2][3] = 0.0f;
+
+	// to_rotate->m[3][0] = 0.0f;
+	// to_rotate->m[3][1] = 0.0f;
+	// to_rotate->m[3][2] = 0.0f;
+	to_rotate->m[3][3] = 1.0f;
 }
 
 void		make_rescale(t_mat4 *to_scale, t_vec3 *vector)
@@ -155,26 +146,6 @@ void		make_rescale(t_mat4 *to_scale, t_vec3 *vector)
 // 	to_scale->m[3][1] = 0.0f;
 // 	to_scale->m[3][2] = 0.0f;*/
 	to_scale->m[3][3] = 1.0;
-}
-
-void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector)
-{
-	to_mult->m[0][0] = to_mult->m[0][0] * vector->x;
-	to_mult->m[0][1] = to_mult->m[0][1] * vector->y;
-	to_mult->m[0][2] = to_mult->m[0][2] * vector->z;
-	to_mult->m[0][3] = to_mult->m[0][3] * vector->w;
-	to_mult->m[1][0] = to_mult->m[1][0] * vector->x;
-	to_mult->m[1][1] = to_mult->m[1][0] * vector->y;
-	to_mult->m[1][2] = to_mult->m[1][0] * vector->z;
-	to_mult->m[1][3] = to_mult->m[1][0] * vector->w;
-	to_mult->m[2][0] = to_mult->m[2][0] * vector->x;
-	to_mult->m[2][1] = to_mult->m[2][0] * vector->y;
-	to_mult->m[2][2] = to_mult->m[2][0] * vector->z;
-	to_mult->m[2][3] = to_mult->m[2][3] * vector->w;
-	to_mult->m[3][0] = to_mult->m[3][0] * vector->x;
-	to_mult->m[3][1] = to_mult->m[3][0] * vector->y;
-	to_mult->m[3][2] = to_mult->m[3][0] * vector->z;
-	to_mult->m[3][3] = to_mult->m[3][3] * vector->w;
 }
 
 t_mat4		create_mat4(float homogene)
@@ -202,21 +173,21 @@ t_mat4		create_mat4(float homogene)
 
 void		make_trans(t_mat4 *translated, t_vec3 *new_pos)
 {
-	translated->m[0][0] = 1.0;
-	translated->m[0][1] = 0.0;
-	translated->m[0][2] = 0.0;
+	// translated->m[0][0] = 1.0;
+	// translated->m[0][1] = 0.0;
+	// translated->m[0][2] = 0.0;
 	translated->m[0][3] = new_pos->x;
-	translated->m[1][0] = 0.0;
-	translated->m[1][1] = 1.0;
-	translated->m[1][2] = 0.0;
+	// translated->m[1][0] = 0.0;
+	// translated->m[1][1] = 1.0;
+	// translated->m[1][2] = 0.0;
 	translated->m[1][3] = new_pos->y;
-	translated->m[2][0] = 0.0;
-	translated->m[2][1] = 0.0;
-	translated->m[2][2] = 1.0;
+	// translated->m[2][0] = 0.0;
+	// translated->m[2][1] = 0.0;
+	// translated->m[2][2] = 1.0;
 	translated->m[2][3] = new_pos->z;
-	translated->m[3][0] = 0.0;
-	translated->m[3][1] = 0.0;
-	translated->m[3][2] = 0.0;
+	// translated->m[3][0] = 0.0;
+	// translated->m[3][1] = 0.0;
+	// translated->m[3][2] = 0.0;
 	translated->m[3][3] = 1.0;
 }
 
@@ -266,49 +237,105 @@ t_mat4		mat4_plus_mat4(t_mat4 *a, t_mat4 *b)
 	return (a_plus_b);
 }
 
+void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector)
+{
+	to_mult->m[0][0] = to_mult->m[0][0] * vector->x;
+	to_mult->m[0][1] = to_mult->m[0][1] * vector->x;
+	to_mult->m[0][2] = to_mult->m[0][2] * vector->x;
+	to_mult->m[0][3] = to_mult->m[0][3] * vector->x;
+
+	to_mult->m[1][0] = to_mult->m[1][0] * vector->y;
+	to_mult->m[1][1] = to_mult->m[1][1] * vector->y;
+	to_mult->m[1][2] = to_mult->m[1][2] * vector->y;
+	to_mult->m[1][3] = to_mult->m[1][3] * vector->y;
+	
+	to_mult->m[2][0] = to_mult->m[2][0] * vector->z;
+	to_mult->m[2][1] = to_mult->m[2][1] * vector->z;
+	to_mult->m[2][2] = to_mult->m[2][2] * vector->z;
+	to_mult->m[2][3] = to_mult->m[2][3] * vector->z;
+
+	to_mult->m[3][0] = to_mult->m[3][0] * vector->w;
+	to_mult->m[3][1] = to_mult->m[3][1] * vector->w;
+	to_mult->m[3][2] = to_mult->m[3][2] * vector->w;
+	to_mult->m[3][3] = to_mult->m[3][3] * vector->w;
+}
+
+// void		mult_mat4_rot_vec4_x(t_mat4 *to_mult, t_vec4 *vector)
+// {
+// 	// to_mult->m[0][0] = to_mult->m[0][0] * vector->x;
+// 	// to_mult->m[0][1] = to_mult->m[0][1] * vector->y;
+// 	// to_mult->m[0][2] = to_mult->m[0][2] * vector->z;
+// 	// to_mult->m[0][3] = to_mult->m[0][3] * vector->w;
+
+// 	// to_mult->m[1][0] = to_mult->m[1][0] * vector->x;
+// 	to_mult->m[1][1] = (to_mult->m[1][1] * vector->y) + (to_mult[1][2] * vector.z);
+// 	to_mult->m[1][2] = (to_mult->m[1][2] * vector->y) + (to_mult[1][1]);
+// 	// to_mult->m[1][3] = to_mult->m[1][3] * vector->w;
+
+// 	// to_mult->m[2][0] = to_mult->m[2][0] * vector->x;
+// 	to_mult->m[2][1] = to_mult->m[2][1] * vector->y;
+// 	to_mult->m[2][2] = to_mult->m[2][2] * vector->z;
+// 	// to_mult->m[2][3] = to_mult->m[2][3] * vector->w;
+
+// 	// to_mult->m[3][0] = to_mult->m[3][0] * vector->x;
+// 	// to_mult->m[3][1] = to_mult->m[3][1] * vector->y;
+// 	// to_mult->m[3][2] = to_mult->m[3][2] * vector->z;
+// 	to_mult->m[3][3] = to_mult->m[3][3] * vector->w;
+// }
+
 t_mat4		rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis, t_vec3 *new_rot)
 {
-	t_mat4	rotated;
-	t_vec4	next_rot;
-
 	(void)axis;
-	// if (axis[0].x == 1.0f)
+	t_vec4	next_rot;
 
 	next_rot = create_tvec4(new_rot->x, new_rot->y, new_rot->z, 1.0f);
 
-	make_rot_x(&rotated, degree);
+	// make_rot_x(&rotated, degree);
+	// make_rot_x(&rotated, degree);
+	make_rot_y(transform, degree);
 
 	// else if (axis[1].x == 1.0f)
 	// 	make_rot_y(&rotated, degree);
 	// else if (axis[2].x == 1.0f)
 	// 	make_rot_z(&rotated, degree);
-	mult_mat4_vec4(transform, &next_rot);
+	// mult_mat4_vec4(transform, &next_rot);
 
-	return (rotated);
+	return (*transform);
 }
 
-t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos)
+void		v_rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis)
+{
+	(void)axis;
+	// (void)transform;
+	// make_rot_x(&rotated, degree);
+	// make_rot_x(&rotated, degree);
+	if (axis->x == 1.0f)
+		make_rot_x(transform, degree);
+	if (axis->y == 1.0f)
+		make_rot_y(transform, degree);
+	if (axis->z == 1.0f)
+		make_rot_z(transform, degree);
+	// mult_mat4_vec4(transform, &next_rot);
+}
+
+t_mat4		translate_mat4(t_vec3 *new_pos)
 {
 	t_mat4		translated;
 	t_vec4		next_pos;
 
 	next_pos = create_tvec4(new_pos->x, new_pos->y, new_pos->z, 1.0f);
-	//  printf("%f || %f | %f\n", new_pos->x, new_pos->y, new_pos->z );*/
-	// translated = create_mat4(1.0f);*/
+	translated = create_mat4(1.0f);
 	make_trans(&translated, new_pos);
-	mult_mat4_vec4(transform, &next_pos);
 	return (translated);
 }
 
-t_mat4		rescale_mat4(t_mat4 *transform, t_vec3 *new_size)
+t_mat4		rescale_mat4(t_vec3 *new_size)
 {
 	t_vec4	next_size;
-	// t_mat4		scaled;
+	t_mat4		scaled;
 
 	next_size = create_tvec4(new_size->x, new_size->y, new_size->z, 1.0f);
-	printf("%f || %f | %f\n", new_size->x, new_size->y, new_size->z);
 	// scaled = create_mat4(1.0f);
-	make_rescale(transform, new_size);
-	// mult_mat4_vec4(transform, &next_size);
-	return (*transform);
+	make_rescale(&scaled, new_size);
+	return (scaled);
 }

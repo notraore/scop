@@ -1,5 +1,6 @@
 #ifndef SCOP_H
 #define SCOP_H
+#define PI 3.1415926
 
 #include "./libft/libft.h"
 #include <stdio.h>
@@ -14,7 +15,10 @@
 // #include <GLFW/glfw3.h>
 
 #include <OpenGL/gl.h>
+
+
 #include <stdbool.h>
+
 
 typedef struct s_vec3		t_vec3;
 typedef struct s_glenv		t_glenv;
@@ -26,9 +30,9 @@ typedef struct s_mat4		t_mat4;
 
 struct			s_vec3
 {
-	double		x;
-	double		y;
-	double		z;
+	float		x;
+	float		y;
+	float		z;
 };
 
 struct			s_mat4
@@ -115,14 +119,17 @@ struct			s_shader
 t_mat4		create_mat4(float homogene);
 void		print_mat4(t_mat4 to_print);
 void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector);
-t_mat4		translate_mat4(t_mat4 *transform, t_vec3 *new_pos);
-t_mat4		rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis, t_vec3 *new_rot);
+t_mat4		translate_mat4(t_vec3 *new_pos);
+t_mat4		rotate_mat4(t_mat4 *, float degree, t_vec3 *axis, t_vec3 *new_rot);
+// void		v_rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis, t_vec3 *pos);
+// t_mat4		v_rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis);
 void		make_rescale(t_mat4 *to_scale, t_vec3 *vector);
-t_mat4		rescale_mat4(t_mat4 *transform, t_vec3 *new_size);
+t_mat4		rescale_mat4(t_vec3 *new_size);
 t_mat4		mat4_mult_mat4(t_mat4 *a, t_mat4 *b);
 t_mat4		mat4_plus_mat4(t_mat4 *a, t_mat4 *b);
 
 /* vector.c */
+t_vec3		extract_vec3(t_mat4 *matrix);
 t_vec4		create_tvec4(double x, double y, double z, double w);
 t_vec3		create_tvec3(double x, double y, double z);
 

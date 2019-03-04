@@ -48,11 +48,7 @@ void		print_vec4(t_vec4 vec)
 
 void		print_vec3(t_vec3 vec)
 {
-	ft_putstr("[");
-	ft_putnbr(vec.x);
-	ft_putstr(" ");
-	ft_putnbr(vec.y);
-	ft_putstr(" ");
-	ft_putnbr(vec.z);
-	ft_putendl("]");
+	printf("[%f ", vec.x);
+	printf("%f ", vec.y);
+	printf("%f]\n", vec.z);
 }
