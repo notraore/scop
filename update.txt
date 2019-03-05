@@ -1,0 +1,11 @@
+i = rotation z
+o = rotation y
+p = rotation x
+
++La scale est ok
++la rotaton est ok sur tous les axes
+
+Manque la translation qui fait un peu nimporte quoi, je sais pas si il faut l'additionner ou la multiplier
+
+Essaie de voir pour la translation si t'es auch sinon avance sur le parser et je vois quand j'arrive.
+Jai envie de chier.
