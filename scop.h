@@ -96,6 +96,7 @@ struct			s_glenv
 	t_vec3				new_size;
 	t_vec3				new_rot;
 	t_vec3				new_axis;
+	float				degree;
 };
 
 struct			s_vec4
@@ -120,7 +121,6 @@ t_mat4		create_mat4(float homogene);
 void		print_mat4(t_mat4 to_print);
 void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector);
 t_mat4		translate_mat4(t_vec3 *new_pos);
-t_mat4		rotate_mat4(t_mat4 *, float degree, t_vec3 *axis, t_vec3 *new_rot);
 // void		v_rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis, t_vec3 *pos);
 // t_mat4		v_rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis);
 void		make_rescale(t_mat4 *to_scale, t_vec3 *vector);
@@ -132,8 +132,15 @@ t_mat4		mat4_plus_mat4(t_mat4 *a, t_mat4 *b);
 t_vec3		extract_vec3(t_mat4 *matrix);
 t_vec4		create_tvec4(double x, double y, double z, double w);
 t_vec3		create_tvec3(double x, double y, double z);
+void		mult_mat4_vec3(t_mat4 *to_mult, t_vec3 *vector);
 
 void		print_vec4(t_vec4 vec);
 void		print_vec3(t_vec3 vec);
+
+/*Rotation*/
+t_mat4		rotate_mat4(float degree, t_vec3 *axis);
+t_mat4		make_rot_x(float degree);
+t_mat4		make_rot_y(float degree);
+t_mat4		make_rot_z(float degree);
 
 #endif

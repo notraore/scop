@@ -91,11 +91,26 @@ void				input_key(t_glenv *env)
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
 		env->new_pos.z -= 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
-		env->new_rot.x += 3.0f;
-	// else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
-	// 	env->new_rot.y += 5.0f;
-	// else if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_PRESS)
-	// 	env->new_rot.z += 5.0f;
+	{
+		env->new_axis.x = 0;
+		env->new_axis.y = 0;
+		env->new_axis.z = 1;
+		env->degree += 3.0f;
+	}
+	else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
+	{
+		env->new_axis.x = 0;
+		env->new_axis.y = 1;
+		env->new_axis.z = 0;
+		env->degree += 3.0f;
+	}
+	else if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_PRESS)
+	{
+		env->new_axis.x = 1;
+		env->new_axis.y = 0;
+		env->new_axis.z = 0;
+		env->degree += 3.0f;
+	}
 	else if (glfwGetKey(env->window, GLFW_KEY_X) == GLFW_PRESS)
 	{
 		env->new_size.x += 0.02;
@@ -382,6 +397,15 @@ int					main(int argc, char **argv)
 	env.new_rot.x = 0;
 	env.new_rot.y = 0;
 	env.new_rot.z = 0;
+
+	/*****************************************************************************************/
+	t_vec3		sca_vec;
+	t_vec3		tra_vec;
+	t_vec3		rot_vec;
+
+	// env.trans = translate_mat4(&env.new_pos);
+	// env.rotate = rotate_mat4(&env.transform, env.new_rot.x, &env.new_axis, &env.new_rot);
+	/*****************************************************************************************/
 	while (!glfwWindowShouldClose(env.window))
 	{
 		input_key(&env);
@@ -395,20 +419,19 @@ int					main(int argc, char **argv)
 		env.trans = create_mat4(1.0f);
 		env.rotate = create_mat4(1.0f);
 
-		// env.scale = rescale_mat4(&env.new_size);
-		// env.trans = translate_mat4(&env.new_pos);
-		env.transform = rotate_mat4(&env.transform, env.new_rot.x, &env.new_axis, &env.new_rot);
-		// env.transform = mat4_plus_mat4(&env.trans, &env.scale);
-		
-		// env.rotate = rotate_mat4(&env.rotate, (float)glfwGetTime(), &env.new_axis, &env.new_rot);
+		env.scale = rescale_mat4(&env.new_size);
+		env.transform = rotate_mat4(env.degree, &env.new_axis);
 
-		// env.transform = mat4_mult_mat4(&env.scale, &env.rotate);
-		// env.transform = mat4_plus_mat4(&env.transform, &env.rotate);
-		// env.transform = mat4_plus_mat4(&env.transform, &env.trans);
+		tra_vec = extract_vec3(&env.trans);
+		sca_vec = extract_vec3(&env.scale);
+		rot_vec = extract_vec3(&env.rotate);
+
+		mult_mat4_vec3(&env.transform, &sca_vec);
+
+		printf("\n");
 		print_mat4(env.transform);
+		printf("\n");
 		glUseProgram(env.program);
-
-		// env.new_rot.x += 5.00;
 
 		env.transformLoc = glGetUniformLocation(env.program, "transform");
 		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &env.transform.m[0][0]);
