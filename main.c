@@ -419,8 +419,11 @@ int					main(int argc, char **argv)
 		env.trans = create_mat4(1.0f);
 		env.rotate = create_mat4(1.0f);
 
+		env.transform = translate_mat4(&env.new_pos);
+
+		env.transform = rotate_mat4(&env.transform, env.degree, &env.new_axis);
+
 		env.scale = rescale_mat4(&env.new_size);
-		env.transform = rotate_mat4(env.degree, &env.new_axis);
 
 		tra_vec = extract_vec3(&env.trans);
 		sca_vec = extract_vec3(&env.scale);
@@ -428,8 +431,12 @@ int					main(int argc, char **argv)
 
 		mult_mat4_vec3(&env.transform, &sca_vec);
 
+
+		// env.transform = translate_mat4(&env.new_pos);
+
+
 		printf("\n");
-		print_mat4(env.transform);
+		// print_mat4(env.transform);
 		printf("\n");
 		glUseProgram(env.program);
 

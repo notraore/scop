@@ -63,18 +63,18 @@ t_vec3		extract_vec3(t_mat4 *matrix)
 	return (extracted);
 }
 
-t_mat4		make_rot_x(float degree)
+t_mat4		make_rot_x(t_mat4 *transform, float degree)
 {
 	t_mat4		to_rotate;
 
 	to_rotate.m[0][0] = 1.0f;
 	to_rotate.m[0][1] = 0.0f;
 	to_rotate.m[0][2] = 0.0f;
-	to_rotate.m[0][3] = 0.0f;
+	to_rotate.m[0][3] = transform->m[0][3];
 	to_rotate.m[1][0] = 0.0f;
 	to_rotate.m[1][1] = cosf((degree * PI) / 180);
 	to_rotate.m[1][2] = -sinf((degree * PI) / 180);
-	to_rotate.m[1][3] = 0.0f;
+	to_rotate.m[1][3] = transform->m[1][3];
 	to_rotate.m[2][0] = 0.0f;
 	to_rotate.m[2][1] = sinf((degree * PI) / 180);
 	to_rotate.m[2][2] = cosf((degree * PI) / 180);
@@ -87,18 +87,18 @@ t_mat4		make_rot_x(float degree)
 }
 
 
-t_mat4		make_rot_y(float degree)
+t_mat4		make_rot_y(t_mat4 *transform, float degree)
 {
 	t_mat4		to_rotate;
 
 	to_rotate.m[0][0] = cosf((degree * PI) / 180);
 	to_rotate.m[0][1] = 0.0f;
 	to_rotate.m[0][2] = sinf((degree * PI) / 180);
-	to_rotate.m[0][3] = 0.0f;
+	to_rotate.m[0][3] = transform->m[0][3];
 	to_rotate.m[1][0] = 0.0f;
 	to_rotate.m[1][1] = 1.0f;
 	to_rotate.m[1][2] = 0.0f;
-	to_rotate.m[1][3] = 0.0f;
+	to_rotate.m[1][3] = transform->m[1][3];
 	to_rotate.m[2][0] = -sinf((degree * PI) / 180);
 	to_rotate.m[2][1] = 0.0f;
 	to_rotate.m[2][2] = cosf((degree * PI) / 180);
@@ -111,18 +111,18 @@ t_mat4		make_rot_y(float degree)
 }
 
 
-t_mat4		make_rot_z(float degree)
+t_mat4		make_rot_z(t_mat4 *transform, float degree)
 {
 	t_mat4		to_rotate;
 
 	to_rotate.m[0][0] = cosf((degree * PI) / 180);
 	to_rotate.m[0][1] = -sinf((degree * PI) / 180);
 	to_rotate.m[0][2] = 0.0f;
-	to_rotate.m[0][3] = 0.0f;
+	to_rotate.m[0][3] = transform->m[0][3];
 	to_rotate.m[1][0] = sinf((degree * PI) / 180);
 	to_rotate.m[1][1] = cosf((degree * PI) / 180);
 	to_rotate.m[1][2] = 0.0f;
-	to_rotate.m[1][3] = 0.0f;
+	to_rotate.m[1][3] = transform->m[1][3];
 	to_rotate.m[2][0] = 0.0f;
 	to_rotate.m[2][1] = 0.0f;
 	to_rotate.m[2][2] = 1.0f;
@@ -315,17 +315,19 @@ void		mult_mat4_vec3(t_mat4 *to_mult, t_vec3 *vector)
 // 	to_mult->m[3][3] = to_mult->m[3][3] * vector->w;
 // }
 
-t_mat4		rotate_mat4(float degree, t_vec3 *axis)
+t_mat4		rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis)
 {
-	t_mat4		new;
+	// t_mat4		transform;
 
 	if (axis->x == 1.0f)
-		new = make_rot_x(degree);
+		*transform = make_rot_x(transform, degree);
 	if (axis->y == 1.0f)
-		new = make_rot_y(degree);
+		*transform = make_rot_y(transform, degree);
 	if (axis->z == 1.0f)
-		new = make_rot_z(degree);
-	return (new);
+		*transform = make_rot_z(transform, degree);
+
+	print_mat4(*transform);
+	return (*transform);
 }
 
 
@@ -337,6 +339,7 @@ t_mat4		translate_mat4(t_vec3 *new_pos)
 	next_pos = create_tvec4(new_pos->x, new_pos->y, new_pos->z, 1.0f);
 	translated = create_mat4(1.0f);
 	make_trans(&translated, new_pos);
+
 	return (translated);
 }
 

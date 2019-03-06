@@ -138,9 +138,9 @@ void		print_vec4(t_vec4 vec);
 void		print_vec3(t_vec3 vec);
 
 /*Rotation*/
-t_mat4		rotate_mat4(float degree, t_vec3 *axis);
-t_mat4		make_rot_x(float degree);
-t_mat4		make_rot_y(float degree);
-t_mat4		make_rot_z(float degree);
+t_mat4		rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis);
+t_mat4		make_rot_x(t_mat4 *transform, float degree);
+t_mat4		make_rot_y(t_mat4 *transform, float degree);
+t_mat4		make_rot_z(t_mat4 *transform, float degree);
 
 #endif
