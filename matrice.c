@@ -197,6 +197,26 @@ void		make_trans(t_mat4 *translated, t_vec3 *new_pos)
 	translated->m[3][3] = 1.0;
 }
 
+void		make_cam_trans(t_mat4 *translated, t_vec3 *new_pos)
+{
+	translated->m[0][0] = 1.0;
+	translated->m[0][1] = 0.0;
+	translated->m[0][2] = 0.0;
+	translated->m[0][3] = -new_pos->x;
+	translated->m[1][0] = 0.0;
+	translated->m[1][1] = 1.0;
+	translated->m[1][2] = 0.0;
+	translated->m[1][3] = -new_pos->y;
+	translated->m[2][0] = 0.0;
+	translated->m[2][1] = 0.0;
+	translated->m[2][2] = 1.0;
+	translated->m[2][3] = -new_pos->z;
+	translated->m[3][0] = 0.0;
+	translated->m[3][1] = 0.0;
+	translated->m[3][2] = 0.0;
+	translated->m[3][3] = 1.0;
+}
+
 t_mat4		mat4_mult_mat4(t_mat4 *a, t_mat4 *b)
 {
 	t_mat4		a_mult_b;
@@ -292,23 +312,23 @@ void		mult_mat4_vec3(t_mat4 *to_mult, t_vec3 *vector)
 	to_mult->m[3][3] = to_mult->m[3][3] * 1;
 }
 
-t_mat4		lookat(t_vec3 *pos, t_vec3 *dir, t_vec3 *up)
+t_mat4		lookat(t_vec3 *right, t_vec3 *up, t_vec3 *dir)
 {
 	t_mat4		lookat;
 
-	lookat.m[0][0] = pos->x;
-	lookat.m[0][1] = pos->y;
-	lookat.m[0][2] = pos->z;
+	lookat.m[0][0] = right->x;
+	lookat.m[0][1] = right->y;
+	lookat.m[0][2] = right->z;
 	lookat.m[0][3] = 0.0;
 
-	lookat.m[1][0] = dir->x;
-	lookat.m[1][1] = dir->y;
-	lookat.m[1][2] = dir->z;
+	lookat.m[1][0] = up->x;
+	lookat.m[1][1] = up->y;
+	lookat.m[1][2] = up->z;
 	lookat.m[1][3] = 0.0;
 	
-	lookat.m[2][0] = up->x;
-	lookat.m[2][1] = up->y;
-	lookat.m[2][2] = up->z;
+	lookat.m[2][0] = dir->x;
+	lookat.m[2][1] = dir->y;
+	lookat.m[2][2] = dir->z;
 	lookat.m[2][3] = 0.0;
 
 	lookat.m[3][0] = 0.0;

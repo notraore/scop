@@ -22,11 +22,11 @@ static const char *vs =
 "out vec3 ourColor;\n"
 "out vec2 TexCoord;\n"
 
-"uniform mat4 transform;\n"
+"uniform mat4 mvp;\n"
 
 "void main()\n"
 "{\n"
-	"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0) * transform;\n"
+	"gl_Position = mvp * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 	"ourColor = aColor;\n"
 	"TexCoord = aTexCoord;\n"
 "}\n";
@@ -248,7 +248,7 @@ void				create_shader_prog(t_glenv *env)
 
 void				create_env(t_glenv *env)
 {
-	if (!(env->window = glfwCreateWindow(980, 980, "Scop - 42", NULL, NULL)))
+	if (!(env->window = glfwCreateWindow(800, 600, "Scop - 42", NULL, NULL)))
 		ft_kill("Can't create window.");
 	glfwMakeContextCurrent(env->window);
 	glfwSetFramebufferSizeCallback(env->window, framebuffer_size_callback);
@@ -366,6 +366,28 @@ void				parse_obj(t_glenv *env, char *srcpath)
 	// printf("indice nbr = %d\n", env->indices_nbr);
 }
 
+t_mat4				perspective(float fovy, float aspect, float near, float far)
+{
+	t_mat4		perspected;
+	
+	float		rad;
+	float		tan_half;
+
+	rad = fovy * (PI / 180);
+	// rad = fovy;
+	tan_half = tan(rad / 2);
+
+
+	perspected = create_mat4(0.0f);
+
+	perspected.m[0][0] = 1 / (aspect * tan_half);
+	perspected.m[1][1] = 1 / tan_half;
+	perspected.m[2][2] = -(far + near) / (far - near);
+	perspected.m[2][3] = -1.0;	
+	perspected.m[3][2] = -(2 * far * near) / (far - near);
+	return (perspected);
+}
+
 int					main(int argc, char **argv)
 {
 	t_glenv		env;
@@ -393,28 +415,19 @@ int					main(int argc, char **argv)
 	env.new_size = create_tvec3(1, 1, 1);
 	env.new_axis = create_tvec3(1, 0, 0);
 
-
-	env.cam_pos = create_tvec3(0, 0, 3);
-	env.cam_dir = create_tvec3(0, 0, 0);
-	env.cam_up = create_tvec3(0, 1, 0);
-
+	env.transform = create_mat4(1.0f);
+	t_mat4		model;
 	t_mat4		view;
+	t_mat4		proj;
 
-	view = lookat(&env.cam_pos, &env.cam_dir, &env.cam_up);
+	t_vec3		v1;
+	t_vec3		v2;
+	t_vec3		v3;
 
-	print_vec3(env.cam_dir);
+	v1 = create_tvec3(4.0f, 3.0f, 3.0f);
+	v2 = create_tvec3(0.0f, 0.0f, 0.0f);
+	v2 = create_tvec3(0.0f, 1.0f, 0.0f);
 
-	// print_vec3(env.cam_dir);
-
-	// return(0);
-
-
-	/*****************************************************************************************/
-	t_vec3		sca_vec;
-
-	// env.trans = translate_mat4(&env.new_pos);
-	// env.rotate = rotate_mat4(&env.transform, env.new_rot.x, &env.new_axis, &env.new_rot);
-	/*****************************************************************************************/
 	while (!glfwWindowShouldClose(env.window))
 	{
 		input_key(&env);
@@ -423,7 +436,6 @@ int					main(int argc, char **argv)
 		glEnable(GL_DEPTH_TEST);  
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		env.transform = create_mat4(1.0f);
 		env.scale = create_mat4(1.0f);
 		env.trans = create_mat4(1.0f);
 		env.rotate = create_mat4(1.0f);
@@ -433,23 +445,35 @@ int					main(int argc, char **argv)
 		env.transform = rotate_mat4(&env.transform, env.degree, &env.new_axis);
 
 		env.scale = rescale_mat4(&env.new_size);
-		sca_vec = extract_vec3(&env.scale);
+		env.sca_vec = extract_vec3(&env.scale);
 
-		mult_mat4_vec3(&env.transform, &sca_vec);
+		mult_mat4_vec3(&env.transform, &env.sca_vec);
 
-		// env.transform = mat4_mult_mat4(&view, &env.transform);
+		model = create_mat4(1.0);
+		view = lookat(&v1, &v2, &v3);
+		proj = perspective(45.0f, 800 / 600, 0.1f, 100.0f);
 
-		printf("\n");
+		env.transform = mat4_mult_mat4(&env.transform, &proj);
+		env.transform = mat4_mult_mat4(&env.transform, &view);
+		env.transform = mat4_mult_mat4(&env.transform, &model);
 		print_mat4(env.transform);
-		printf("\n");
+		
+
+
+		// printf("\n");
+		// printf("\n");
 		glUseProgram(env.program);
 
-		env.transformLoc = glGetUniformLocation(env.program, "transform");
+		env.transformLoc = glGetUniformLocation(env.program, "mvp");
 		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &env.transform.m[0][0]);
+
+		// cam_transform = glGetUniformLocation(env.program, "mvp");
+		// glUniformMatrix4fv(cam_transform, 1, GL_FALSE, &view.m[0][0]);
+
 		glBindVertexArray(env.vao);
 		glDrawElements(GL_TRIANGLES, env.indices_nbr, GL_UNSIGNED_INT, 0);
 		// glDrawArrays(GL_TRIANGLES, 0, env.indices_nbr);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glfwSwapBuffers(env.window);
 		glfwPollEvents();
 	}

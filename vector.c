@@ -79,3 +79,13 @@ t_vec3	v_v_subs(t_vec3 *a, t_vec3 *b)
 	r.z = a->z - b->z;
 	return (r);
 }
+
+t_vec3	v_v_mult(t_vec3 *a, t_vec3 *b)
+{
+	t_vec3	r;
+
+	r.x = (a->y * b->z) - (a->z * b->y);
+	r.y = (a->z * b->x) - (a->x * b->z);
+	r.z = (a->x * b->y) - (a->y * b->x);
+	return (r);
+}
