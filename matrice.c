@@ -292,41 +292,40 @@ void		mult_mat4_vec3(t_mat4 *to_mult, t_vec3 *vector)
 	to_mult->m[3][3] = to_mult->m[3][3] * 1;
 }
 
-// void		mult_mat4_rot_vec4_x(t_mat4 *to_mult, t_vec4 *vector)
-// {
-// 	// to_mult->m[0][0] = to_mult->m[0][0] * vector->x;
-// 	// to_mult->m[0][1] = to_mult->m[0][1] * vector->y;
-// 	// to_mult->m[0][2] = to_mult->m[0][2] * vector->z;
-// 	// to_mult->m[0][3] = to_mult->m[0][3] * vector->w;
+t_mat4		lookat(t_vec3 *pos, t_vec3 *dir, t_vec3 *up)
+{
+	t_mat4		lookat;
 
-// 	// to_mult->m[1][0] = to_mult->m[1][0] * vector->x;
-// 	to_mult->m[1][1] = (to_mult->m[1][1] * vector->y) + (to_mult[1][2] * vector.z);
-// 	to_mult->m[1][2] = (to_mult->m[1][2] * vector->y) + (to_mult[1][1]);
-// 	// to_mult->m[1][3] = to_mult->m[1][3] * vector->w;
+	lookat.m[0][0] = pos->x;
+	lookat.m[0][1] = pos->y;
+	lookat.m[0][2] = pos->z;
+	lookat.m[0][3] = 0.0;
 
-// 	// to_mult->m[2][0] = to_mult->m[2][0] * vector->x;
-// 	to_mult->m[2][1] = to_mult->m[2][1] * vector->y;
-// 	to_mult->m[2][2] = to_mult->m[2][2] * vector->z;
-// 	// to_mult->m[2][3] = to_mult->m[2][3] * vector->w;
+	lookat.m[1][0] = dir->x;
+	lookat.m[1][1] = dir->y;
+	lookat.m[1][2] = dir->z;
+	lookat.m[1][3] = 0.0;
+	
+	lookat.m[2][0] = up->x;
+	lookat.m[2][1] = up->y;
+	lookat.m[2][2] = up->z;
+	lookat.m[2][3] = 0.0;
 
-// 	// to_mult->m[3][0] = to_mult->m[3][0] * vector->x;
-// 	// to_mult->m[3][1] = to_mult->m[3][1] * vector->y;
-// 	// to_mult->m[3][2] = to_mult->m[3][2] * vector->z;
-// 	to_mult->m[3][3] = to_mult->m[3][3] * vector->w;
-// }
+	lookat.m[3][0] = 0.0;
+	lookat.m[3][1] = 0.0;
+	lookat.m[3][2] = 0.0;
+	lookat.m[3][3] = 1.0;
+	return lookat;
+}
 
 t_mat4		rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis)
 {
-	// t_mat4		transform;
-
 	if (axis->x == 1.0f)
 		*transform = make_rot_x(transform, degree);
 	if (axis->y == 1.0f)
 		*transform = make_rot_y(transform, degree);
 	if (axis->z == 1.0f)
 		*transform = make_rot_z(transform, degree);
-
-	print_mat4(*transform);
 	return (*transform);
 }
 

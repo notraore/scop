@@ -347,7 +347,11 @@ void				parse_obj(t_glenv *env, char *srcpath)
 			i += 8;
 		}
 		else if (env->line[0] == 'f')
-		{
+		{	
+			// printf("[0] = %s\n", env->split[0]);
+			// printf("[1] = %s\n", env->split[1]);
+			// printf("[2] = %s\n", env->split[2]);
+			// printf("[3] = %s\n", env->split[3]);
 			if (env->split[4])
 				env->four = true;
 			else
@@ -385,23 +389,28 @@ int					main(int argc, char **argv)
 	load_texture(&env);
 	vertices_setter(&env);
 	env.last_time = glfwGetTime();
-	env.new_pos.x = 0;
-	env.new_pos.y = 0;
-	env.new_pos.z = 0;
-	env.new_size.x = 1;
-	env.new_size.y = 1;
-	env.new_size.z = 1;
-	env.new_axis.x = 1;
-	env.new_axis.y = 0;
-	env.new_axis.z = 0;
-	env.new_rot.x = 0;
-	env.new_rot.y = 0;
-	env.new_rot.z = 0;
+
+	env.new_size = create_tvec3(1, 1, 1);
+	env.new_axis = create_tvec3(1, 0, 0);
+
+
+	env.cam_pos = create_tvec3(0, 0, 3);
+	env.cam_dir = create_tvec3(0, 0, 0);
+	env.cam_up = create_tvec3(0, 1, 0);
+
+	t_mat4		view;
+
+	view = lookat(&env.cam_pos, &env.cam_dir, &env.cam_up);
+
+	print_vec3(env.cam_dir);
+
+	// print_vec3(env.cam_dir);
+
+	// return(0);
+
 
 	/*****************************************************************************************/
 	t_vec3		sca_vec;
-	t_vec3		tra_vec;
-	t_vec3		rot_vec;
 
 	// env.trans = translate_mat4(&env.new_pos);
 	// env.rotate = rotate_mat4(&env.transform, env.new_rot.x, &env.new_axis, &env.new_rot);
@@ -424,19 +433,14 @@ int					main(int argc, char **argv)
 		env.transform = rotate_mat4(&env.transform, env.degree, &env.new_axis);
 
 		env.scale = rescale_mat4(&env.new_size);
-
-		tra_vec = extract_vec3(&env.trans);
 		sca_vec = extract_vec3(&env.scale);
-		rot_vec = extract_vec3(&env.rotate);
 
 		mult_mat4_vec3(&env.transform, &sca_vec);
 
-
-		// env.transform = translate_mat4(&env.new_pos);
-
+		// env.transform = mat4_mult_mat4(&view, &env.transform);
 
 		printf("\n");
-		// print_mat4(env.transform);
+		print_mat4(env.transform);
 		printf("\n");
 		glUseProgram(env.program);
 
@@ -445,7 +449,7 @@ int					main(int argc, char **argv)
 		glBindVertexArray(env.vao);
 		glDrawElements(GL_TRIANGLES, env.indices_nbr, GL_UNSIGNED_INT, 0);
 		// glDrawArrays(GL_TRIANGLES, 0, env.indices_nbr);
-		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		glfwSwapBuffers(env.window);
 		glfwPollEvents();
 	}

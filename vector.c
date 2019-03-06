@@ -52,3 +52,30 @@ void		print_vec3(t_vec3 vec)
 	printf("%f ", vec.y);
 	printf("%f]\n", vec.z);
 }
+
+float		magnitude(t_vec3 *a)
+{
+	return (sqrtf(a->x * a->x + a->y * a->y + a->z * a->z));
+}
+
+t_vec3	normalize(t_vec3 *a)
+{
+	t_vec3	normalized;
+	float		magn;
+
+	magn = magnitude(a);
+	normalized.x = a->x / magn;
+	normalized.y = a->y / magn;
+	normalized.z = a->z / magn;
+	return (normalized);
+}
+
+t_vec3	v_v_subs(t_vec3 *a, t_vec3 *b)
+{
+	t_vec3	r;
+
+	r.x = a->x - b->x;
+	r.y = a->y - b->y;
+	r.z = a->z - b->z;
+	return (r);
+}

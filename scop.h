@@ -97,6 +97,14 @@ struct			s_glenv
 	t_vec3				new_rot;
 	t_vec3				new_axis;
 	float				degree;
+
+	/*CAMERA*/
+	t_vec3				cam_pos;
+	t_vec3				cam_dir;
+	t_vec3				cam_tar;
+	t_vec3				cam_up;
+
+
 };
 
 struct			s_vec4
@@ -133,6 +141,12 @@ t_vec3		extract_vec3(t_mat4 *matrix);
 t_vec4		create_tvec4(double x, double y, double z, double w);
 t_vec3		create_tvec3(double x, double y, double z);
 void		mult_mat4_vec3(t_mat4 *to_mult, t_vec3 *vector);
+
+float		magnitude(t_vec3 *a);
+t_vec3		v_v_subs(t_vec3 *a, t_vec3 *b);
+t_vec3		normalize(t_vec3 *a);
+t_mat4		lookat(t_vec3 *pos, t_vec3 *dir, t_vec3 *up);
+
 
 void		print_vec4(t_vec4 vec);
 void		print_vec3(t_vec3 vec);
