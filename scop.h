@@ -150,6 +150,7 @@ t_vec3		v_v_subs(t_vec3 *a, t_vec3 *b);
 t_vec3		normalize(t_vec3 *a);
 t_vec3		v_v_mult(t_vec3 *a, t_vec3 *b);
 t_mat4		lookat(t_vec3 *pos, t_vec3 *dir, t_vec3 *up);
+t_mat4		mult_mvp(t_mat4 *p, t_mat4 *v, t_mat4 *m);
 void		make_cam_trans(t_mat4 *translated, t_vec3 *new_pos);
 
 

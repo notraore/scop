@@ -87,9 +87,9 @@ void				input_key(t_glenv *env)
 	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		env->new_pos.x += 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_W) == GLFW_PRESS)
-		env->new_pos.z += 0.02;
+		env->new_pos.z += 2.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
-		env->new_pos.z -= 0.02;
+		env->new_pos.z -= 2.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
 	{
 		env->new_axis.x = 0;
@@ -248,7 +248,7 @@ void				create_shader_prog(t_glenv *env)
 
 void				create_env(t_glenv *env)
 {
-	if (!(env->window = glfwCreateWindow(800, 600, "Scop - 42", NULL, NULL)))
+	if (!(env->window = glfwCreateWindow(980, 980, "Scop - 42", NULL, NULL)))
 		ft_kill("Can't create window.");
 	glfwMakeContextCurrent(env->window);
 	glfwSetFramebufferSizeCallback(env->window, framebuffer_size_callback);
@@ -416,9 +416,10 @@ int					main(int argc, char **argv)
 	env.new_axis = create_tvec3(1, 0, 0);
 
 	env.transform = create_mat4(1.0f);
-	t_mat4		model;
+	// t_mat4		model;
 	t_mat4		view;
 	t_mat4		proj;
+	t_mat4		mvp;
 
 	t_vec3		v1;
 	t_vec3		v2;
@@ -449,26 +450,17 @@ int					main(int argc, char **argv)
 
 		mult_mat4_vec3(&env.transform, &env.sca_vec);
 
-		model = create_mat4(1.0);
 		view = lookat(&v1, &v2, &v3);
-		proj = perspective(45.0f, 800 / 600, 0.1f, 100.0f);
-
-		env.transform = mat4_mult_mat4(&env.transform, &proj);
-		env.transform = mat4_mult_mat4(&env.transform, &view);
-		env.transform = mat4_mult_mat4(&env.transform, &model);
-		print_mat4(env.transform);
-		
-
-
-		// printf("\n");
-		// printf("\n");
+		proj = perspective(45.0f, 980 / 980, 0.1f, 100.0f);
+		mvp = mult_mvp(&proj, &view, &env.transform);
+		mvp = mat4_plus_mat4(&mvp, &env.transform);
+		print_mat4(mvp);
+		// env.transform = mat4_mult_mat4(&env.transform, &proj);
 		glUseProgram(env.program);
 
 		env.transformLoc = glGetUniformLocation(env.program, "mvp");
-		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &env.transform.m[0][0]);
+		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &mvp.m[0][0]);
 
-		// cam_transform = glGetUniformLocation(env.program, "mvp");
-		// glUniformMatrix4fv(cam_transform, 1, GL_FALSE, &view.m[0][0]);
 
 		glBindVertexArray(env.vao);
 		glDrawElements(GL_TRIANGLES, env.indices_nbr, GL_UNSIGNED_INT, 0);
