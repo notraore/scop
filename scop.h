@@ -86,6 +86,8 @@ struct			s_glenv
 	unsigned int		transformLoc;
 	unsigned int		id;
 	t_vec3				sca_vec;
+	t_vec3				rot_vec;
+	t_vec3				tra_vec;
 	/*Translation vector*/
 	t_mat4				transform;
 
@@ -125,6 +127,7 @@ struct			s_shader
 };
 
 
+t_mat4		m4_x_m4(t_mat4 *transform, t_mat4 *rotation);
 
 
 /* matrice.c */
@@ -132,23 +135,35 @@ t_mat4		create_mat4(float homogene);
 void		print_mat4(t_mat4 to_print);
 void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector);
 t_mat4		translate_mat4(t_vec3 *new_pos);
-// void		v_rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis, t_vec3 *pos);
-// t_mat4		v_rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis);
+t_mat4		rescale_mat4(t_vec3 *new_size);
+
+
+
+
+
 void		make_rescale(t_mat4 *to_scale, t_vec3 *vector);
 t_mat4		rescale_mat4(t_vec3 *new_size);
-t_mat4		mat4_mult_mat4(t_mat4 *a, t_mat4 *b);
+
+void		mult_mat4_vec3(t_mat4 *to_mult, t_vec3 *vector, t_mat4 *result);
+
 t_mat4		mat4_plus_mat4(t_mat4 *a, t_mat4 *b);
+
+void		plus_mat4_vec3(t_mat4 *to_plus, t_vec3 *vector);
+
+void		mat4_mult_mat4(t_mat4 *a, t_mat4 *b, t_mat4 *result);
 
 /* vector.c */
 t_vec3		extract_vec3(t_mat4 *matrix);
 t_vec4		create_tvec4(double x, double y, double z, double w);
 t_vec3		create_tvec3(double x, double y, double z);
-void		mult_mat4_vec3(t_mat4 *to_mult, t_vec3 *vector);
+// void		mult_mat4_vec3(t_mat4 *to_mult, t_vec3 *vector);
+double		dot_product(t_vec3 *a, t_vec3 *b);
 
 float		magnitude(t_vec3 *a);
 t_vec3		v_v_subs(t_vec3 *a, t_vec3 *b);
 t_vec3		normalize(t_vec3 *a);
 t_vec3		v_v_mult(t_vec3 *a, t_vec3 *b);
+// t_mat4		lookat(t_vec3 *pos, t_vec3 *dir, t_vec3 *up);
 t_mat4		lookat(t_vec3 *pos, t_vec3 *dir, t_vec3 *up);
 t_mat4		mult_mvp(t_mat4 *p, t_mat4 *v, t_mat4 *m);
 void		make_cam_trans(t_mat4 *translated, t_vec3 *new_pos);

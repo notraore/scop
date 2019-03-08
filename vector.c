@@ -70,6 +70,11 @@ t_vec3	normalize(t_vec3 *a)
 	return (normalized);
 }
 
+double		dot_product(t_vec3 *a, t_vec3 *b)
+{
+	return (a->x * b->x + a->y * b->y + a->z * b->z);
+}
+
 t_vec3	v_v_subs(t_vec3 *a, t_vec3 *b)
 {
 	t_vec3	r;

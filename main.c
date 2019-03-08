@@ -26,7 +26,8 @@ static const char *vs =
 
 "void main()\n"
 "{\n"
-	"gl_Position = mvp * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+	"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0) * mvp;\n"
+	// "gl_Position = mvp * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 	"ourColor = aColor;\n"
 	"TexCoord = aTexCoord;\n"
 "}\n";
@@ -83,33 +84,33 @@ void				input_key(t_glenv *env)
 	else if (glfwGetKey(env->window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		env->new_pos.y -= 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		env->new_pos.x -= 0.02;
+		env->new_pos.x -= 0.02f;
 	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		env->new_pos.x += 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_W) == GLFW_PRESS)
-		env->new_pos.z += 2.02;
+		env->new_pos.z += 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
-		env->new_pos.z -= 2.02;
+		env->new_pos.z -= 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
 	{
 		env->new_axis.x = 0;
 		env->new_axis.y = 0;
 		env->new_axis.z = 1;
-		env->degree += 3.0f;
+		env->degree += 1.2f;
 	}
 	else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
 	{
 		env->new_axis.x = 0;
 		env->new_axis.y = 1;
 		env->new_axis.z = 0;
-		env->degree += 3.0f;
+		env->degree += 1.2f;
 	}
 	else if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_PRESS)
 	{
 		env->new_axis.x = 1;
 		env->new_axis.y = 0;
 		env->new_axis.z = 0;
-		env->degree += 3.0f;
+		env->degree += 1.2f;
 	}
 	else if (glfwGetKey(env->window, GLFW_KEY_X) == GLFW_PRESS)
 	{
@@ -248,7 +249,7 @@ void				create_shader_prog(t_glenv *env)
 
 void				create_env(t_glenv *env)
 {
-	if (!(env->window = glfwCreateWindow(980, 980, "Scop - 42", NULL, NULL)))
+	if (!(env->window = glfwCreateWindow(980, 700, "Scop - 42", NULL, NULL)))
 		ft_kill("Can't create window.");
 	glfwMakeContextCurrent(env->window);
 	glfwSetFramebufferSizeCallback(env->window, framebuffer_size_callback);
@@ -366,25 +367,46 @@ void				parse_obj(t_glenv *env, char *srcpath)
 	// printf("indice nbr = %d\n", env->indices_nbr);
 }
 
+double	degree_to_radian(double degree_angle)
+{
+	double		radian_angle;
+
+	radian_angle = degree_angle * (2.0 * PI / 360.0);
+	return (radian_angle);
+}
+
 t_mat4				perspective(float fovy, float aspect, float near, float far)
 {
 	t_mat4		perspected;
 	
 	float		rad;
-	float		tan_half;
+	float		half;
 
-	rad = fovy * (PI / 180);
+	rad = degree_to_radian(fovy);
 	// rad = fovy;
-	tan_half = tan(rad / 2);
+	half = tan(rad / 2);
 
 
 	perspected = create_mat4(0.0f);
 
-	perspected.m[0][0] = 1 / (aspect * tan_half);
-	perspected.m[1][1] = 1 / tan_half;
+	perspected.m[0][0] = (2 * near) / (aspect * half);
+	// perspected.m[0][1] = 0;
+	// perspected.m[0][2] = 0;
+	// perspected.m[0][3] = 0;
+
+	// perspected.m[1][0] = 0;
+	perspected.m[1][1] = 1 / (half);
+	// perspected.m[1][2] = 0;
+	// perspected.m[1][3] = 0;
+
+	// perspected.m[2][0] = 0;
+	// perspected.m[2][1] = 0;
 	perspected.m[2][2] = -(far + near) / (far - near);
-	perspected.m[2][3] = -1.0;	
-	perspected.m[3][2] = -(2 * far * near) / (far - near);
+	perspected.m[2][3] = -1.0;
+
+	// perspected.m[3][0] = 0;
+	// perspected.m[3][1] = 0;
+	perspected.m[3][2] = - (2 * far * near) / (far - near);
 	return (perspected);
 }
 
@@ -414,52 +436,78 @@ int					main(int argc, char **argv)
 
 	env.new_size = create_tvec3(1, 1, 1);
 	env.new_axis = create_tvec3(1, 0, 0);
-
 	env.transform = create_mat4(1.0f);
-	// t_mat4		model;
-	t_mat4		view;
+	/****************************/
+	t_mat4		full_transform;
+	// t_mat4		mvp;
+	/****************************/
 	t_mat4		proj;
-	t_mat4		mvp;
+	t_mat4		view;
 
-	t_vec3		v1;
-	t_vec3		v2;
-	t_vec3		v3;
+	/****************************/
+	t_vec3		pos = create_tvec3(3.0f, 0.0f, -3.0f);
+	t_vec3		dir = create_tvec3(0.0f, 0.0f, 0.0f);
+	t_vec3		up = create_tvec3(0.0f, 1.0f, 0.0f);
 
-	v1 = create_tvec3(4.0f, 3.0f, 3.0f);
-	v2 = create_tvec3(0.0f, 0.0f, 0.0f);
-	v2 = create_tvec3(0.0f, 1.0f, 0.0f);
+	// t_vec3		ex_trans;
+	/****************************/
+
+	t_mat4		rot_x = create_mat4(1.0f);
+	// t_mat4		rot_y;
+	// t_mat4		rot_z;
+	full_transform = create_mat4(1.0f);
 
 	while (!glfwWindowShouldClose(env.window))
 	{
 		input_key(&env);
 		print_fps_counter(&env);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-		glEnable(GL_DEPTH_TEST);  
+		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
+		/******************************/
 		env.scale = create_mat4(1.0f);
 		env.trans = create_mat4(1.0f);
 		env.rotate = create_mat4(1.0f);
-
-		env.transform = translate_mat4(&env.new_pos);
-
-		env.transform = rotate_mat4(&env.transform, env.degree, &env.new_axis);
-
+		/******************************/
+		view = lookat(&pos, &dir, &up);
+		proj = perspective(60.0f, 980.0f / 700.0f, 1.0f, 10000.0f);
+/***************************************************** Kinda working*/
+	// {
+		full_transform = translate_mat4(&env.new_pos);
+		// full_transform = m4_x_m4(&full_transform, &env.trans);
 		env.scale = rescale_mat4(&env.new_size);
-		env.sca_vec = extract_vec3(&env.scale);
 
-		mult_mat4_vec3(&env.transform, &env.sca_vec);
+		// env.trans = translate_mat4(&env.new_pos);
+		// full_transform = m4_x_m4(&full_transform, &env.trans);
+		// full_transform = mat4_plus_mat4(&full_transform, &env.trans);
 
-		view = lookat(&v1, &v2, &v3);
-		proj = perspective(45.0f, 980 / 980, 0.1f, 100.0f);
-		mvp = mult_mvp(&proj, &view, &env.transform);
-		mvp = mat4_plus_mat4(&mvp, &env.transform);
-		print_mat4(mvp);
-		// env.transform = mat4_mult_mat4(&env.transform, &proj);
+		rot_x = make_rot_y(&rot_x, env.degree);
+		full_transform = m4_x_m4(&full_transform, &rot_x);
+
+		full_transform = m4_x_m4(&full_transform, &proj);
+		print_mat4(full_transform);
+		full_transform = m4_x_m4(&full_transform, &view);
+		full_transform = m4_x_m4(&full_transform, &env.scale);
+	// 	if (env.new_axis.x == 1)
+	// 	{
+	// 	}
+	// 	else if (env.new_axis.y == 1)
+	// 	{
+	// 		rot_y = make_rot_y(&rot_y, env.degree);
+	// 		full_transform = m4_x_m4(&full_transform, &rot_y);
+
+	// 	}
+	// 	else if (env.new_axis.z == 1)
+	// 	{
+	// 		rot_z = make_rot_z(&rot_z, env.degree);
+	// 		full_transform = m4_x_m4(&full_transform, &rot_z);
+	// 	}
+	// 	full_transform = m4_x_m4(&full_transform, &env.scale);
+	// 	full_transform = m4_x_m4(&full_transform, &env.trans);
+	// }
 		glUseProgram(env.program);
-
 		env.transformLoc = glGetUniformLocation(env.program, "mvp");
-		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &mvp.m[0][0]);
+		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &full_transform.m[0][0]);
 
 
 		glBindVertexArray(env.vao);
