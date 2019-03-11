@@ -269,13 +269,19 @@ int					store_faces(t_glenv *env)
 				str = ft_strsplit(env->split[i], '/');
 
 				if (tab_len(str) != 2 && tab_len(str) != 3)
+				{
+					free(str);
 					return (0);
+				}
 				if (tab_len(str) == 2 && pos_atoi(str[0], &env->indices[env->ind]) && pos_atoi(str[1], &env->textures[env->ind]))
 				{
 					env->indices[env->ind] -= 1;
 					env->textures[env->ind] -=1;
 					if (!ft_isdigit(env->split[1][ft_strlen(env->split[1]) - 1]))
+					{
+						free(str);
 						return (0);
+					}
 				}
 				else if (tab_len(str) == 3 && pos_atoi(str[0], &env->indices[env->ind]) && pos_atoi(str[1], &env->textures[env->ind]) && pos_atoi(str[2], &env->normales[env->ind]))
 				{
@@ -283,10 +289,17 @@ int					store_faces(t_glenv *env)
 					env->textures[env->ind] -= 1;
 					env->normales[env->ind] -= 1;
 					if (!ft_isdigit(env->split[2][ft_strlen(env->split[2]) - 1]))
+					{
+						free(str);
 						return (0);
+					}
 				}
 				else
+				{
+					free(str);
 					return 0;
+				}
+				free(str);
 			}
 			else
 				return (0);				
@@ -373,7 +386,10 @@ int					parse_obj(t_glenv *env, char *srcpath)
 			i += 8;
 		}
 		else if (env->line[0] == 'f')
-		{	
+		{
+			if (tab_len(env->split) > 5)
+				return (0);
+			// if (tab_len(env->split) > 4)
 			if (env->split[4])
 				env->four = true;
 			else
@@ -381,6 +397,21 @@ int					parse_obj(t_glenv *env, char *srcpath)
 			if (!store_faces(env))
 				return (0);
 			env->face_nbr++;
+		}
+		else if (env->line[0] == 's')
+		{
+			if (tab_len(env->split) > 2)
+				return (0);
+			if (ft_strcmp(env->split[1], "on") == 0)
+			{
+
+			}
+			else if (ft_strcmp(env->split[1], "off") == 0)
+			{
+
+			}
+			else
+				return (0);
 		}
 		free_tab(env->split);
 	}
