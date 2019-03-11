@@ -70,7 +70,9 @@ struct			s_glenv
 
 	float				vertices[200000];
 	unsigned int		indices[200000];
-	int					indices_nbr;
+	unsigned int		textures[200000];
+	unsigned int		normales[200000];
+	unsigned int		indices_nbr;
 
 	/*TEXTURE*/
 	unsigned int		texture;
@@ -93,7 +95,11 @@ struct			s_glenv
 
 	t_mat4				scale;
 	t_mat4				trans;
-	t_mat4				rotate;
+	t_mat4				rotate[3];
+	float				rotx;
+	float				roty;
+	float				rotz;
+	float				scaling;
 
 	t_vec3				new_pos;
 	t_vec3				new_size;
@@ -136,7 +142,7 @@ void		print_mat4(t_mat4 to_print);
 void		mult_mat4_vec4(t_mat4 *to_mult, t_vec4 *vector);
 t_mat4		translate_mat4(t_vec3 *new_pos);
 t_mat4		rescale_mat4(t_vec3 *new_size);
-
+t_mat4		matrix_scale(float value);
 
 
 
@@ -174,8 +180,8 @@ void		print_vec3(t_vec3 vec);
 
 /*Rotation*/
 t_mat4		rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis);
-t_mat4		make_rot_x(t_mat4 *transform, float degree);
-t_mat4		make_rot_y(t_mat4 *transform, float degree);
-t_mat4		make_rot_z(t_mat4 *transform, float degree);
+t_mat4		make_rot_x(float degree);
+t_mat4		make_rot_y(float degree);
+t_mat4		make_rot_z(float degree);
 
 #endif
