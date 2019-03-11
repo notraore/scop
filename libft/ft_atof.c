@@ -29,22 +29,43 @@ double		ft_atof_suite(char *str, int i, double a, bool neg)
 	}
 	return (a);
 }
-double		ft_atof(char *str)
+
+int			parse(char *str)
+{
+	int i;
+
+	i = 0;
+	if (str[i] == '-')
+		i++;
+	while (ft_isdigit(str[i]))
+		i++;
+	if (str[i] != '.')
+		return (0);
+	while (ft_isdigit(str[++i]))
+		i++;
+	if (str[i] != '\0')
+		return (0);
+	return (1);
+}
+
+double		ft_atof(char *str, float *stock)
 {
 	int		i;
 	double	a;
 	bool	neg;
+	int		fail;
 
 	i = 0;
 	a = 0;
+	fail = 0;
 	neg = false;
-	while (!ft_isdigit(str[i]) && str[i] != '-')
-		i++;
+	if (!parse(str))
+		fail++;
 	if (str[i] == '-')
 		neg = true;
 	a = (double)ft_atoi(str + i);
 	while (str[i] != '.' && (ft_isdigit(str[i]) || str[i] == ' ' || str[i] == '-'))
 		i++;
-	a = ft_atof_suite(str, i, a, neg);
-	return (a);
+	*stock = ft_atof_suite(str, i, a, neg);
+	return (fail > 0 ? 0 : 1);
 }

@@ -356,9 +356,9 @@ int					parse_obj(t_glenv *env, char *srcpath)
 		env->split = ft_strsplit(env->line, ' ');
 		if (env->line[0] == 'v')
 		{
-			env->vertices[i] = ft_atof(env->split[1]);
-			env->vertices[i + 1] = ft_atof(env->split[2]);
-			env->vertices[i + 2] = ft_atof(env->split[3]);
+			if (!ft_atof(env->split[1], &env->vertices[i]) || !ft_atof(env->split[2], &env->vertices[i + 1]) || !ft_atof(env->split[3], &env->vertices[i + 2]))
+				return (0);
+
 			/*Shader Color*/
 			env->vertices[i + 3] = color[i % 9];
 			env->vertices[i + 4] = color[(i + 1) % 9];

@@ -92,7 +92,7 @@ int					ft_isdigit(int c);
 int					ft_isalpha(int c);
 int					ft_toupper(int c);
 int					ft_tolower(int c);
-double				ft_atof(char *str);
+double				ft_atof(char *str, float *stock);
 char				*ft_strlowcase(char *str);
 char				*ft_strstr(const char *big, const char *little);
 int					ft_isspace(int c);
