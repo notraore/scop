@@ -183,5 +183,6 @@ t_mat4		rotate_mat4(t_mat4 *transform, float degree, t_vec3 *axis);
 t_mat4		make_rot_x(float degree);
 t_mat4		make_rot_y(float degree);
 t_mat4		make_rot_z(float degree);
+t_mat4		make_translation(t_vec3 *src);
 
 #endif

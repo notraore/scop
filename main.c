@@ -6,7 +6,7 @@
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/28 18:01:29 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/03 00:05:36 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/12 08:18:45 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,27 +95,27 @@ void				input_key(t_glenv *env)
 
 
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
-			env->rotx = 1.0f;
+			env->rotx += 0.02f;
 	else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
-			env->roty = 1.0f;
+			env->roty += 0.02f;
 	else if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_PRESS)
-			env->rotz = 1.0f;
+			env->rotz += 0.02f;
 
 
 
 	else if (glfwGetKey(env->window, GLFW_KEY_X) == GLFW_PRESS)
-		env->scaling += 1;
+		env->scaling += 0.02;
 	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
-		env->scaling -= 1;
+		env->scaling -= 0.02;
 
 
 
-	if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_RELEASE)
-			env->rotx = 0.0f;
-	if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_RELEASE)
-			env->roty = 0.0f;
-	if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_RELEASE)
-			env->rotz = 0.0f;
+	// if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_RELEASE)
+	// 		env->rotx -= 0.02f;
+	// if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_RELEASE)
+	// 		env->roty -= 0.02f;
+	// if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_RELEASE)
+	// 		env->rotz -= 0.02f;
 }
 
 void				win_update(void *f(float), GLFWwindow *win)
@@ -476,8 +476,7 @@ int					main(int argc, char **argv)
 	env.nbr = 1;
 	env.ind = 0;
 	if (argc == 2)
-		if (!parse_obj(&env, argv[1]))
-			ft_kill("Error Parser.");
+		parse_obj(&env, argv[1]);
 	i = 0;
 	while (i < env.vtx_nbr * 3)
 	{
@@ -490,56 +489,57 @@ int					main(int argc, char **argv)
 	env.last_time = glfwGetTime();
 
 	env.new_size = create_tvec3(1, 1, 1);
+	env.new_pos = create_tvec3(0 , 0, 0);
 	env.new_axis = create_tvec3(1, 0, 0);
 	env.transform = create_mat4(1.0f);
 	/****************************/
 	t_mat4		full_transform;
 	// t_mat4		mvp;
 	/****************************/
-	// t_mat4		proj;
-	// t_mat4		view;
+	t_mat4		proj;
+	t_mat4		view;
 
 	/****************************/
-	// t_vec3		pos = create_tvec3(0.0f, 0.0f, -3.0f);
-	// t_vec3		dir = create_tvec3(0.0f, 0.0f, 0.0f);
-	// t_vec3		up = create_tvec3(0.0f, 1.0f, 0.0f);
+	t_vec3		pos = create_tvec3(0.0f, 0.0f, -3.0f);
+	t_vec3		dir = create_tvec3(0.0f, 0.0f, 0.0f);
+	t_vec3		up = create_tvec3(0.0f, 1.0f, 0.0f);
 
 	// t_vec3		ex_trans;
 	/****************************/
 
 	// t_mat4		rot_x = create_mat4(1.0f);
 	// t_mat4		rot_y;
-	// t_mat4		rot_z;
-	full_transform = create_mat4(1.0f);
-	env.scale = create_mat4(1.0f);
-	env.trans = create_mat4(1.0f);
-	env.rotate[0] = create_mat4(1.0f);
-	env.rotate[1] = create_mat4(1.0f);
-	env.rotate[2] = create_mat4(1.0f);
 	env.scaling = 1;
+	// env.trans = create_mat4(1.0f);
 
 	while (!glfwWindowShouldClose(env.window))
 	{
+		full_transform = create_mat4(1.0f);
+		env.scale = create_mat4(1.0f);
+		env.rotate[0] = create_mat4(1.0f);
+		env.rotate[1] = create_mat4(1.0f);
+		env.rotate[2] = create_mat4(1.0f);
 		input_key(&env);
 		print_fps_counter(&env);
 		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		/******************************/
-		/******************************/
-		// view = lookat(&pos, &dir, &up);
+
+		view = lookat(&pos, &dir, &up);
+		proj = perspective(degree_to_radian(45.0f), 980.0f / 700.0f, 1.0f, 10000.0f);
 		env.rotate[0] = make_rot_x(env.rotx);
 		env.rotate[1] = make_rot_y(env.roty);
 		env.rotate[2] = make_rot_z(env.rotz);
 
+		env.trans = make_translation(&env.new_pos);
 		env.scale = matrix_scale(env.scaling);
-		full_transform = m4_x_m4(&full_transform, &env.scale);
+
+		full_transform = m4_x_m4(&full_transform, &env.trans);
 		full_transform = m4_x_m4(&full_transform, &env.rotate[0]);
 		full_transform = m4_x_m4(&full_transform, &env.rotate[1]);
 		full_transform = m4_x_m4(&full_transform, &env.rotate[2]);
-		// full_transform = m4_x_m4(&full_transform, &env.scale);
-		// proj = perspective(degree_to_radian(45.0f), 980.0f / 700.0f, 1.0f, 10000.0f);
-		// env.scale = matrix_scale(&env.new_size);
+		full_transform = m4_x_m4(&full_transform, &env.scale);
+
 		printf("rotx = %f\n", env.rotx);
 		print_mat4(full_transform);
 		printf("\n");
