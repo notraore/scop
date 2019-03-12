@@ -6,7 +6,7 @@
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 11:30:44 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/12 08:12:11 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/12 09:34:55 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -104,19 +104,19 @@ t_mat4		create_mat4(float homogene)
 {
 	t_mat4		create_mat;
 
-	create_mat.m[0][0] = 1.0f;
+	create_mat.m[0][0] = 1.0f; //0
 	create_mat.m[0][1] = 0.0f;
 	create_mat.m[0][2] = 0.0f;
 	create_mat.m[0][3] = 0.0f;
-	create_mat.m[1][0] = 0.0f;
+	create_mat.m[1][0] = 0.0f; //4
 	create_mat.m[1][1] = 1.0f;
 	create_mat.m[1][2] = 0.0f;
 	create_mat.m[1][3] = 0.0f;
-	create_mat.m[2][0] = 0.0f;
+	create_mat.m[2][0] = 0.0f; //8
 	create_mat.m[2][1] = 0.0f;
 	create_mat.m[2][2] = 1.0f;
 	create_mat.m[2][3] = 0.0f;
-	create_mat.m[3][0] = 0.0f;
+	create_mat.m[3][0] = 0.0f; //12
 	create_mat.m[3][1] = 0.0f;
 	create_mat.m[3][2] = 0.0f;
 	create_mat.m[3][3] = homogene;
@@ -128,31 +128,34 @@ t_mat4		lookat(t_vec3 *eye, t_vec3 *center, t_vec3 *up)
 	t_mat4		lookat;
 
 	lookat = create_mat4(1.0f);
-	t_vec3		fcen_eye = v_v_subs(center, eye);
+	t_vec3		f;
+	t_vec3		s;
+	t_vec3		u;
 
-	t_vec3		f_eye = normalize(&fcen_eye);
-	t_vec3		u_up = normalize(up);
+	f = *center;
+	f = v_v_subs(&f, eye);
+	f = normalize(&f);
+	s = f;
+	s = v_v_mult(&s, up);
+	s = normalize(&s);
+	u = s;
+	u = v_v_mult(&u, &f);
 
-	t_vec3		fu_cross = v_v_mult(&fcen_eye, &u_up);
+	lookat.m[0][0] = s.x;
+	lookat.m[1][0] = s.y;
+	lookat.m[2][0] = s.z;
 
-	t_vec3		s_center = normalize(&fu_cross);
-	u_up = v_v_mult(&s_center, &f_eye);
+	lookat.m[0][1] = u.x;
+	lookat.m[1][1] = u.y;
+	lookat.m[2][1] = u.z;
 
-	lookat.m[0][0] = s_center.x;
-	lookat.m[1][0] = s_center.y;
-	lookat.m[2][0] = s_center.z;
+	lookat.m[0][2] = -f.x;
+	lookat.m[1][2] = -f.y;
+	lookat.m[2][2] = -f.z;
 
-	lookat.m[0][1] = u_up.x;
-	lookat.m[1][1] = u_up.y;
-	lookat.m[2][1] = u_up.z;
-
-	lookat.m[0][2] = -f_eye.x;
-	lookat.m[1][2] = -f_eye.y;
-	lookat.m[2][2] = -f_eye.z;
-
-	lookat.m[3][0] = -dot_product(&s_center, eye);
-	lookat.m[3][1] = -dot_product(&u_up, eye);
-	lookat.m[3][2] = dot_product(&f_eye, eye);
+	lookat.m[3][0] = -dot_product(&s, eye);
+	lookat.m[3][1] = -dot_product(&u, eye);
+	lookat.m[3][2] = dot_product(&f, eye);
 	return lookat;
 }
 

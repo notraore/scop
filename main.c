@@ -6,7 +6,7 @@
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/28 18:01:29 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/12 08:18:45 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/12 20:00:21 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,34 +88,38 @@ void				input_key(t_glenv *env)
 	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
 		env->new_pos.x += 0.002f;
 	else if (glfwGetKey(env->window, GLFW_KEY_W) == GLFW_PRESS)
-		env->new_pos.z += 0.002f;
+		env->new_pos.z += 0.009f;
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
-		env->new_pos.z -= 0.002f;
+		env->new_pos.z -= 0.009f;
 
 
 
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
-			env->rotx += 0.02f;
+			env->rotx += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
-			env->roty += 0.02f;
+			env->roty += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_PRESS)
-			env->rotz += 0.02f;
+			env->rotz += 0.2f;
 
 
 
 	else if (glfwGetKey(env->window, GLFW_KEY_X) == GLFW_PRESS)
-		env->scaling += 0.02;
+		env->scaling += 0.002;
 	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
-		env->scaling -= 0.02;
+		env->scaling -= 0.002;
 
 
+	else if (glfwGetKey(env->window, GLFW_KEY_R) == GLFW_PRESS)
+	{
+		env->scaling = 0.5f;
+		env->rotx = 0.0f;
+		env->roty = 0.0f;
+		env->rotz = 0.0f;
 
-	// if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_RELEASE)
-	// 		env->rotx -= 0.02f;
-	// if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_RELEASE)
-	// 		env->roty -= 0.02f;
-	// if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_RELEASE)
-	// 		env->rotz -= 0.02f;
+		env->new_pos.x = 0.0f;
+		env->new_pos.y = 0.0f;
+		env->new_pos.z = 0.0f;
+	}
 }
 
 void				win_update(void *f(float), GLFWwindow *win)
@@ -415,52 +419,26 @@ int					parse_obj(t_glenv *env, char *srcpath)
 		}
 		free_tab(env->split);
 	}
-	// printf("face nbr = %d\n", env->face_nbr);
-	// printf("vertex nbr = %d\n", env->vtx_nbr);
-	// printf("indice nbr = %d\n", env->indices_nbr);
 	return (1);
 }
 
 double	degree_to_radian(double degree_angle)
 {
-	double		radian_angle;
-
-	radian_angle = degree_angle * (2.0 * PI / 360.0);
-	return (radian_angle);
+	return (degree_angle * ((float)PI / 180.0));
 }
 
 t_mat4				perspective(float fovy, float aspect, float near, float far)
 {
 	t_mat4		perspected;
-	
-	float		rad;
 	float		half;
 
-	rad = degree_to_radian(fovy);
-	// rad = fovy;
-	half = tan(rad / 2);
-
-
+	half = tanf(degree_to_radian(fovy) / 2.0f);
 	perspected = create_mat4(0.0f);
-
-	perspected.m[0][0] = (2 * near) / (aspect * half);
-	// perspected.m[0][1] = 0;
-	// perspected.m[0][2] = 0;
-	// perspected.m[0][3] = 0;
-
-	// perspected.m[1][0] = 0;
-	perspected.m[1][1] = 1 / (half);
-	// perspected.m[1][2] = 0;
-	// perspected.m[1][3] = 0;
-
-	// perspected.m[2][0] = 0;
-	// perspected.m[2][1] = 0;
-	perspected.m[2][2] = -(far + near) / (far - near);
+	perspected.m[0][0] = 1.0f / (aspect * half);
+	perspected.m[1][1] = 1.0f / (half);
+	perspected.m[2][2] = -(far + near) / (far - near) * -1;
 	perspected.m[2][3] = -1.0;
-
-	// perspected.m[3][0] = 0;
-	// perspected.m[3][1] = 0;
-	perspected.m[3][2] = - (2 * far * near) / (far - near);
+	perspected.m[3][2] = (2.0f * far * near) / (far - near) * -1;
 	return (perspected);
 }
 
@@ -495,23 +473,27 @@ int					main(int argc, char **argv)
 	/****************************/
 	t_mat4		full_transform;
 	// t_mat4		mvp;
-	/****************************/
-	t_mat4		proj;
 	t_mat4		view;
+	/****************************/
 
 	/****************************/
-	t_vec3		pos = create_tvec3(0.0f, 0.0f, -3.0f);
-	t_vec3		dir = create_tvec3(0.0f, 0.0f, 0.0f);
-	t_vec3		up = create_tvec3(0.0f, 1.0f, 0.0f);
+	// t_vec3		pos = create_tvec3(0.0f, 0.0f, -3.0f);
+	// t_vec3		dir = create_tvec3(0.0f, 0.0f, 0.0f);
+	// t_vec3		up = create_tvec3(0.0f, 1.0f, 0.0f);
+	t_mat4		proj;
 
+	proj = create_mat4(1.0f);
+	view = create_mat4(1.0f);
 	// t_vec3		ex_trans;
 	/****************************/
 
 	// t_mat4		rot_x = create_mat4(1.0f);
 	// t_mat4		rot_y;
-	env.scaling = 1;
+	env.scaling = 4.0f;
+	env.new_pos.z = -10;
 	// env.trans = create_mat4(1.0f);
 
+	proj = perspective(90.0f, 16 / 9.0f, 1.0f, 1000.0f);
 	while (!glfwWindowShouldClose(env.window))
 	{
 		full_transform = create_mat4(1.0f);
@@ -525,22 +507,22 @@ int					main(int argc, char **argv)
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-		view = lookat(&pos, &dir, &up);
-		proj = perspective(degree_to_radian(45.0f), 980.0f / 700.0f, 1.0f, 10000.0f);
+		// view = lookat(&pos, &dir, &up);
 		env.rotate[0] = make_rot_x(env.rotx);
 		env.rotate[1] = make_rot_y(env.roty);
 		env.rotate[2] = make_rot_z(env.rotz);
-
 		env.trans = make_translation(&env.new_pos);
 		env.scale = matrix_scale(env.scaling);
 
+
+		full_transform = m4_x_m4(&full_transform, &proj);
 		full_transform = m4_x_m4(&full_transform, &env.trans);
 		full_transform = m4_x_m4(&full_transform, &env.rotate[0]);
 		full_transform = m4_x_m4(&full_transform, &env.rotate[1]);
 		full_transform = m4_x_m4(&full_transform, &env.rotate[2]);
 		full_transform = m4_x_m4(&full_transform, &env.scale);
+		// full_transform = m4_x_m4(&full_transform, &view);
 
-		printf("rotx = %f\n", env.rotx);
 		print_mat4(full_transform);
 		printf("\n");
 		glUseProgram(env.program);
