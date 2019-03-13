@@ -114,7 +114,7 @@ struct			s_glenv
 	t_vec3				cam_right;
 	t_vec3				cam_up;
 
-
+	bool				autorotate;
 
 };
 

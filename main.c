@@ -6,7 +6,7 @@
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/28 18:01:29 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/12 20:00:21 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/13 00:19:09 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,18 +107,23 @@ void				input_key(t_glenv *env)
 		env->scaling += 0.002;
 	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
 		env->scaling -= 0.002;
-
-
+	else if (glfwGetKey(env->window, GLFW_KEY_A) == GLFW_PRESS)
+	{
+		if (env->autorotate == false)
+			env->autorotate = true;
+		else
+			env->autorotate = false;
+	}
 	else if (glfwGetKey(env->window, GLFW_KEY_R) == GLFW_PRESS)
 	{
-		env->scaling = 0.5f;
+		env->scaling = 9.0f;
 		env->rotx = 0.0f;
 		env->roty = 0.0f;
 		env->rotz = 0.0f;
 
 		env->new_pos.x = 0.0f;
 		env->new_pos.y = 0.0f;
-		env->new_pos.z = 0.0f;
+		env->new_pos.z = -50.0f;
 	}
 }
 
@@ -135,6 +140,11 @@ void				win_update(void *f(float), GLFWwindow *win)
 	glfwPollEvents();
 	now = glfwGetTime();
 	delta = (now - last) * 10.0f;
+}
+
+void				auto_roty(t_glenv *env)
+{
+	env->roty += 0.2f;
 }
 
 int					check_shader(GLuint shader, GLint compiled)
@@ -437,7 +447,7 @@ t_mat4				perspective(float fovy, float aspect, float near, float far)
 	perspected.m[0][0] = 1.0f / (aspect * half);
 	perspected.m[1][1] = 1.0f / (half);
 	perspected.m[2][2] = -(far + near) / (far - near) * -1;
-	perspected.m[2][3] = -1.0;
+	perspected.m[2][3] = -1.5;
 	perspected.m[3][2] = (2.0f * far * near) / (far - near) * -1;
 	return (perspected);
 }
@@ -489,11 +499,11 @@ int					main(int argc, char **argv)
 
 	// t_mat4		rot_x = create_mat4(1.0f);
 	// t_mat4		rot_y;
-	env.scaling = 4.0f;
-	env.new_pos.z = -10;
+	env.scaling = 9.0f;
+	env.new_pos.z = -50;
 	// env.trans = create_mat4(1.0f);
 
-	proj = perspective(90.0f, 16 / 9.0f, 1.0f, 1000.0f);
+	proj = perspective(45.0f, 980 / 700, 1.0f, 100.0f);
 	while (!glfwWindowShouldClose(env.window))
 	{
 		full_transform = create_mat4(1.0f);
@@ -521,8 +531,8 @@ int					main(int argc, char **argv)
 		full_transform = m4_x_m4(&full_transform, &env.rotate[1]);
 		full_transform = m4_x_m4(&full_transform, &env.rotate[2]);
 		full_transform = m4_x_m4(&full_transform, &env.scale);
-		// full_transform = m4_x_m4(&full_transform, &view);
-
+		if (env.autorotate)
+			auto_roty(&env);
 		print_mat4(full_transform);
 		printf("\n");
 		glUseProgram(env.program);
