@@ -6,12 +6,12 @@
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/27 11:30:44 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/12 09:34:55 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/13 15:41:03 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "scop.h"
-
+//			A RETIRER					//
 void		print_mat4(t_mat4 to_print)
 {
 	printf( "[%f ", to_print.m[0][0]);
@@ -31,54 +31,7 @@ void		print_mat4(t_mat4 to_print)
 	printf( "%f ", to_print.m[3][2]);
 	printf( "%f]\n", to_print.m[3][3]);
 }
-
-// t_vec3		extract_vec3(t_mat4 *matrix)
-// {
-// 	t_vec3		extracted;
-
-// 	extracted.x = matrix->m[0][0] + matrix->m[0][1] + matrix->m[0][2] + matrix->m[0][3];
-// 	extracted.y = matrix->m[1][0] + matrix->m[1][1] + matrix->m[1][2] + matrix->m[1][3];
-// 	extracted.z = matrix->m[2][0] + matrix->m[2][1] + matrix->m[2][2] + matrix->m[2][3];
-// 	return (extracted);
-// }
-
-t_mat4		make_rot_x(float degree)
-{
-	t_mat4		to_rotate;
-
-	to_rotate = create_mat4(1.0f);
-	to_rotate.m[1][1] = cosf((degree * PI) / 180);
-	to_rotate.m[1][2] = -sinf((degree * PI) / 180);
-	to_rotate.m[2][1] = sinf((degree * PI) / 180);
-	to_rotate.m[2][2] = cosf((degree * PI) / 180);
-	return (to_rotate);
-}
-
-
-t_mat4		make_rot_y(float degree)
-{
-	t_mat4		to_rotate;
-
-	to_rotate = create_mat4(1.0f);
-	to_rotate.m[0][0] = cosf((degree * PI) / 180);
-	to_rotate.m[0][2] = sinf((degree * PI) / 180);
-	to_rotate.m[2][0] = -sinf((degree * PI) / 180);
-	to_rotate.m[2][2] = cosf((degree * PI) / 180);
-	return (to_rotate);
-}
-
-
-t_mat4		make_rot_z(float degree)
-{
-	t_mat4		to_rotate;
-
-	to_rotate = create_mat4(1.0f);
-	to_rotate.m[0][0] = cosf((degree * PI) / 180);
-	to_rotate.m[0][1] = -sinf((degree * PI) / 180);
-	to_rotate.m[1][0] = sinf((degree * PI) / 180);
-	to_rotate.m[1][1] = cosf((degree * PI) / 180);
-	return (to_rotate);
-}
+/*************************************/
 
 void		make_rescale(t_mat4 *to_scale, t_vec3 *vector)
 {
@@ -104,59 +57,23 @@ t_mat4		create_mat4(float homogene)
 {
 	t_mat4		create_mat;
 
-	create_mat.m[0][0] = 1.0f; //0
+	create_mat.m[0][0] = 1.0f;
 	create_mat.m[0][1] = 0.0f;
 	create_mat.m[0][2] = 0.0f;
 	create_mat.m[0][3] = 0.0f;
-	create_mat.m[1][0] = 0.0f; //4
+	create_mat.m[1][0] = 0.0f;
 	create_mat.m[1][1] = 1.0f;
 	create_mat.m[1][2] = 0.0f;
 	create_mat.m[1][3] = 0.0f;
-	create_mat.m[2][0] = 0.0f; //8
+	create_mat.m[2][0] = 0.0f;
 	create_mat.m[2][1] = 0.0f;
 	create_mat.m[2][2] = 1.0f;
 	create_mat.m[2][3] = 0.0f;
-	create_mat.m[3][0] = 0.0f; //12
+	create_mat.m[3][0] = 0.0f;
 	create_mat.m[3][1] = 0.0f;
 	create_mat.m[3][2] = 0.0f;
 	create_mat.m[3][3] = homogene;
 	return (create_mat);
-}
-
-t_mat4		lookat(t_vec3 *eye, t_vec3 *center, t_vec3 *up)
-{
-	t_mat4		lookat;
-
-	lookat = create_mat4(1.0f);
-	t_vec3		f;
-	t_vec3		s;
-	t_vec3		u;
-
-	f = *center;
-	f = v_v_subs(&f, eye);
-	f = normalize(&f);
-	s = f;
-	s = v_v_mult(&s, up);
-	s = normalize(&s);
-	u = s;
-	u = v_v_mult(&u, &f);
-
-	lookat.m[0][0] = s.x;
-	lookat.m[1][0] = s.y;
-	lookat.m[2][0] = s.z;
-
-	lookat.m[0][1] = u.x;
-	lookat.m[1][1] = u.y;
-	lookat.m[2][1] = u.z;
-
-	lookat.m[0][2] = -f.x;
-	lookat.m[1][2] = -f.y;
-	lookat.m[2][2] = -f.z;
-
-	lookat.m[3][0] = -dot_product(&s, eye);
-	lookat.m[3][1] = -dot_product(&u, eye);
-	lookat.m[3][2] = dot_product(&f, eye);
-	return lookat;
 }
 
 t_mat4		make_translation(t_vec3 *src)

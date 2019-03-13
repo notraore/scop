@@ -6,7 +6,7 @@
 #    By: bano <bano@student.42.fr>                  +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2017/06/17 16:13:57 by notraore          #+#    #+#              #
-#    Updated: 2019/02/26 00:02:07 by bano             ###   ########.fr        #
+#    Updated: 2019/03/13 15:43:12 by bano             ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -19,7 +19,8 @@ STBLIB		=	stb/libstb.a
 
 SRCS		= 	main.c \
 				matrice.c \
-				vector.c
+				vector.c \
+				rotation.c
 
 OBJS		= 	$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 

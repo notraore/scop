@@ -6,7 +6,7 @@
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/28 18:01:29 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/13 00:19:09 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/13 17:56:27 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -70,8 +70,6 @@ void				end_program(t_glenv *env)
 void				framebuffer_size_callback(GLFWwindow *window, int width, int height)
 {
 	(void)window;
-	// make sure the viewport matches the new window dimensions; note that width and
-	// height will be significantly larger than specified on retina displays.
 	glViewport(0, 0, width, height);
 }
 
@@ -79,40 +77,41 @@ void				input_key(t_glenv *env)
 {
 	if (glfwGetKey(env->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(env->window, true);
-	else if (glfwGetKey(env->window, GLFW_KEY_UP) == GLFW_PRESS)
-		env->new_pos.y += 0.002f;
 	else if (glfwGetKey(env->window, GLFW_KEY_DOWN) == GLFW_PRESS)
-		env->new_pos.y -= 0.002f;
-	else if (glfwGetKey(env->window, GLFW_KEY_LEFT) == GLFW_PRESS)
-		env->new_pos.x -= 0.002f;
+		env->new_pos.y += 0.2f;
+	else if (glfwGetKey(env->window, GLFW_KEY_UP) == GLFW_PRESS)
+		env->new_pos.y -= 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
-		env->new_pos.x += 0.002f;
+		env->new_pos.x -= 0.2f;
+	else if (glfwGetKey(env->window, GLFW_KEY_LEFT) == GLFW_PRESS)
+		env->new_pos.x += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_W) == GLFW_PRESS)
-		env->new_pos.z += 0.009f;
+		env->new_pos.z += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
-		env->new_pos.z -= 0.009f;
-
-
-
+		env->new_pos.z -= 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
 			env->rotx += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
 			env->roty += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_PRESS)
 			env->rotz += 0.2f;
-
-
-
 	else if (glfwGetKey(env->window, GLFW_KEY_X) == GLFW_PRESS)
-		env->scaling += 0.002;
+		env->scaling += 0.1;
 	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
-		env->scaling -= 0.002;
+		env->scaling -= 0.1;
 	else if (glfwGetKey(env->window, GLFW_KEY_A) == GLFW_PRESS)
 	{
 		if (env->autorotate == false)
 			env->autorotate = true;
 		else
 			env->autorotate = false;
+	}
+	else if (glfwGetKey(env->window, GLFW_KEY_F) == GLFW_PRESS)
+	{
+		if (env->framed == false)
+			env->framed = true;
+		else
+			env->framed = false;
 	}
 	else if (glfwGetKey(env->window, GLFW_KEY_R) == GLFW_PRESS)
 	{
@@ -385,25 +384,18 @@ int					parse_obj(t_glenv *env, char *srcpath)
 		{
 			if (!ft_atof(env->split[1], &env->vertices[i]) || !ft_atof(env->split[2], &env->vertices[i + 1]) || !ft_atof(env->split[3], &env->vertices[i + 2]))
 				return (0);
-
-			/*Shader Color*/
 			env->vertices[i + 3] = color[i % 9];
 			env->vertices[i + 4] = color[(i + 1) % 9];
 			env->vertices[i + 5] = color[(i + 2) % 9];
-			/*Texture*/
 			env->vertices[i + 6] = tex_coords[(i) % 8];
 			env->vertices[i + 7] = tex_coords[(i + 1) % 8];
-			// printf("i = %d\n", (i + 2) % 9);
-			// printf("v.x = %f || v.y = %f || v.z = %f ||  clrv.z = %f ||  clrv.z = %f ||  clrv.z = %f\n", env->vertices[i], env->vertices[i + 1], env->vertices[i + 2], env->vertices[i + 3], env->vertices[i + 4], env->vertices[i + 5]);
 			env->vtx_nbr++;
-			// store_color(env);
 			i += 8;
 		}
 		else if (env->line[0] == 'f')
 		{
 			if (tab_len(env->split) > 5)
 				return (0);
-			// if (tab_len(env->split) > 4)
 			if (env->split[4])
 				env->four = true;
 			else
@@ -452,99 +444,82 @@ t_mat4				perspective(float fovy, float aspect, float near, float far)
 	return (perspected);
 }
 
+void				render(t_glenv *env)
+{
+	env->transform = create_mat4(1.0f);
+	env->scale = create_mat4(1.0f);
+	env->rotate[0] = create_mat4(1.0f);
+	env->rotate[1] = create_mat4(1.0f);
+	env->rotate[2] = create_mat4(1.0f);
+	env->rotate[0] = make_rot_x(env->rotx);
+	env->rotate[1] = make_rot_y(env->roty);
+	env->rotate[2] = make_rot_z(env->rotz);
+	env->trans = make_translation(&env->new_pos);
+	env->scale = matrix_scale(env->scaling);
+	env->transform = m4_x_m4(&env->transform, &env->proj);
+	env->transform = m4_x_m4(&env->transform, &env->trans);
+	env->transform = m4_x_m4(&env->transform, &env->rotate[0]);
+	env->transform = m4_x_m4(&env->transform, &env->rotate[1]);
+	env->transform = m4_x_m4(&env->transform, &env->rotate[2]);
+	env->transform = m4_x_m4(&env->transform, &env->scale);
+	if (env->autorotate)
+		auto_roty(env);
+	glUseProgram(env->program);
+	env->transformLoc = glGetUniformLocation(env->program, "mvp");
+	glUniformMatrix4fv(env->transformLoc, 1, GL_FALSE, &env->transform.m[0][0]);
+	glBindVertexArray(env->vao);
+	glDrawElements(GL_TRIANGLES, env->indices_nbr, GL_UNSIGNED_INT, 0);
+	glfwSwapBuffers(env->window);
+}
+
+void				init_variables(t_glenv *env)
+{
+	env->last_time = glfwGetTime();
+	env->new_size = create_tvec3(1, 1, 1);
+	env->new_pos = create_tvec3(0 , 0, 0);
+	env->new_axis = create_tvec3(1, 0, 0);
+	env->transform = create_mat4(1.0f);
+	env->scaling = 9.0f;
+	env->new_pos.z = -50;
+	env->proj = create_mat4(1.0f);
+	env->proj = perspective(45.0f, 4 / 3, 1.0f, 100.0f);
+	env->nbr = 1;
+	env->ind = 0;
+	env->autorotate = true;
+}
+
+void				env_shader_texture_vertices_var(t_glenv *env)
+{
+	create_env(env);
+	create_shader_prog(env);
+	load_texture(env);
+	vertices_setter(env);
+	init_variables(env);
+}
+
 int					main(int argc, char **argv)
 {
 	t_glenv		env;
-	int				i;
+	int			i;
 
+	i = 0;
 	if (!glfwInit())
 		ft_kill("Can't init GLFW.");
 	init_glversion();
 	ft_bzero(&env, sizeof(env));
-	env.nbr = 1;
-	env.ind = 0;
 	if (argc == 2)
 		parse_obj(&env, argv[1]);
-	i = 0;
 	while (i < env.vtx_nbr * 3)
-	{
 		i += 3;
-	}
-	create_env(&env);
-	create_shader_prog(&env);
-	load_texture(&env);
-	vertices_setter(&env);
-	env.last_time = glfwGetTime();
-
-	env.new_size = create_tvec3(1, 1, 1);
-	env.new_pos = create_tvec3(0 , 0, 0);
-	env.new_axis = create_tvec3(1, 0, 0);
-	env.transform = create_mat4(1.0f);
-	/****************************/
-	t_mat4		full_transform;
-	// t_mat4		mvp;
-	t_mat4		view;
-	/****************************/
-
-	/****************************/
-	// t_vec3		pos = create_tvec3(0.0f, 0.0f, -3.0f);
-	// t_vec3		dir = create_tvec3(0.0f, 0.0f, 0.0f);
-	// t_vec3		up = create_tvec3(0.0f, 1.0f, 0.0f);
-	t_mat4		proj;
-
-	proj = create_mat4(1.0f);
-	view = create_mat4(1.0f);
-	// t_vec3		ex_trans;
-	/****************************/
-
-	// t_mat4		rot_x = create_mat4(1.0f);
-	// t_mat4		rot_y;
-	env.scaling = 9.0f;
-	env.new_pos.z = -50;
-	// env.trans = create_mat4(1.0f);
-
-	proj = perspective(45.0f, 980 / 700, 1.0f, 100.0f);
+	env_shader_texture_vertices_var(&env);
 	while (!glfwWindowShouldClose(env.window))
 	{
-		full_transform = create_mat4(1.0f);
-		env.scale = create_mat4(1.0f);
-		env.rotate[0] = create_mat4(1.0f);
-		env.rotate[1] = create_mat4(1.0f);
-		env.rotate[2] = create_mat4(1.0f);
 		input_key(&env);
 		print_fps_counter(&env);
-		glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-		// view = lookat(&pos, &dir, &up);
-		env.rotate[0] = make_rot_x(env.rotx);
-		env.rotate[1] = make_rot_y(env.roty);
-		env.rotate[2] = make_rot_z(env.rotz);
-		env.trans = make_translation(&env.new_pos);
-		env.scale = matrix_scale(env.scaling);
-
-
-		full_transform = m4_x_m4(&full_transform, &proj);
-		full_transform = m4_x_m4(&full_transform, &env.trans);
-		full_transform = m4_x_m4(&full_transform, &env.rotate[0]);
-		full_transform = m4_x_m4(&full_transform, &env.rotate[1]);
-		full_transform = m4_x_m4(&full_transform, &env.rotate[2]);
-		full_transform = m4_x_m4(&full_transform, &env.scale);
-		if (env.autorotate)
-			auto_roty(&env);
-		print_mat4(full_transform);
-		printf("\n");
-		glUseProgram(env.program);
-		env.transformLoc = glGetUniformLocation(env.program, "mvp");
-		glUniformMatrix4fv(env.transformLoc, 1, GL_FALSE, &full_transform.m[0][0]);
-
-
-		glBindVertexArray(env.vao);
-		glDrawElements(GL_TRIANGLES, env.indices_nbr, GL_UNSIGNED_INT, 0);
-		// glDrawArrays(GL_TRIANGLES, 0, env.indices_nbr);
-		// glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		glfwSwapBuffers(env.window);
+		render(&env);
 		glfwPollEvents();
 	}
 	end_program(&env);

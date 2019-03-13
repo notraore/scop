@@ -92,6 +92,7 @@ struct			s_glenv
 	t_vec3				tra_vec;
 	/*Translation vector*/
 	t_mat4				transform;
+	t_mat4				proj;
 
 	t_mat4				scale;
 	t_mat4				trans;
@@ -108,14 +109,14 @@ struct			s_glenv
 	float				degree;
 
 	/*CAMERA*/
-	t_vec3				cam_pos;
-	t_vec3				cam_dir;
-	t_vec3				cam_tar;
-	t_vec3				cam_right;
-	t_vec3				cam_up;
+	// t_vec3				cam_pos;
+	// t_vec3				cam_dir;
+	// t_vec3				cam_tar;
+	// t_vec3				cam_right;
+	// t_vec3				cam_up;
 
 	bool				autorotate;
-
+	bool				framed;
 };
 
 struct			s_vec4
