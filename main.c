@@ -6,7 +6,7 @@
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/28 18:01:29 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/13 17:56:27 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/14 11:32:37 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,18 +77,19 @@ void				input_key(t_glenv *env)
 {
 	if (glfwGetKey(env->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(env->window, true);
-	else if (glfwGetKey(env->window, GLFW_KEY_DOWN) == GLFW_PRESS)
+	else if (glfwGetKey(env->window, GLFW_KEY_E) == GLFW_PRESS)
 		env->new_pos.y += 0.2f;
-	else if (glfwGetKey(env->window, GLFW_KEY_UP) == GLFW_PRESS)
+	else if (glfwGetKey(env->window, GLFW_KEY_Q) == GLFW_PRESS)
 		env->new_pos.y -= 0.2f;
-	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)
+	else if (glfwGetKey(env->window, GLFW_KEY_D) == GLFW_PRESS)
 		env->new_pos.x -= 0.2f;
-	else if (glfwGetKey(env->window, GLFW_KEY_LEFT) == GLFW_PRESS)
+	else if (glfwGetKey(env->window, GLFW_KEY_A) == GLFW_PRESS)
 		env->new_pos.x += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_W) == GLFW_PRESS)
 		env->new_pos.z += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
 		env->new_pos.z -= 0.2f;
+
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
 			env->rotx += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
@@ -99,7 +100,8 @@ void				input_key(t_glenv *env)
 		env->scaling += 0.1;
 	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
 		env->scaling -= 0.1;
-	else if (glfwGetKey(env->window, GLFW_KEY_A) == GLFW_PRESS)
+
+	else if (glfwGetKey(env->window, GLFW_KEY_G) == GLFW_PRESS)
 	{
 		if (env->autorotate == false)
 			env->autorotate = true;
@@ -363,7 +365,7 @@ int					parse_obj(t_glenv *env, char *srcpath)
 	int 	i;
 	float color[9] = {
 		1.0f, 0.0f, 0.0f,	// bottom right
-		0.0f, 1.0f, 0.0f,	// bottom left
+		1.0f, 1.0f, 0.0f,	// bottom left
 		0.0f, 0.0f, 1.0f};
 
 	float tex_coords[8] = {
