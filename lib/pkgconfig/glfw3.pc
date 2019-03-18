@@ -1,4 +1,4 @@
-prefix=/Users/arive-de/.brew/Cellar/glfw/3.2.1
+prefix=/Users/notraore/.brew/Cellar/glfw/3.2.1
 exec_prefix=${prefix}
 includedir=${prefix}/include
 libdir=${exec_prefix}/lib

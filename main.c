@@ -89,7 +89,6 @@ void				input_key(t_glenv *env)
 		env->new_pos.z += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
 		env->new_pos.z -= 0.2f;
-
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
 			env->rotx += 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
@@ -100,8 +99,7 @@ void				input_key(t_glenv *env)
 		env->scaling += 0.1;
 	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
 		env->scaling -= 0.1;
-
-	else if (glfwGetKey(env->window, GLFW_KEY_G) == GLFW_PRESS)
+	else if (glfwGetKey(env->window, GLFW_KEY_R) == GLFW_PRESS)
 	{
 		if (env->autorotate == false)
 			env->autorotate = true;
@@ -121,10 +119,10 @@ void				input_key(t_glenv *env)
 		env->rotx = 0.0f;
 		env->roty = 0.0f;
 		env->rotz = 0.0f;
-
 		env->new_pos.x = 0.0f;
 		env->new_pos.y = 0.0f;
 		env->new_pos.z = -50.0f;
+		env->fov = 45.0f;
 	}
 }
 
@@ -145,7 +143,7 @@ void				win_update(void *f(float), GLFWwindow *win)
 
 void				auto_roty(t_glenv *env)
 {
-	env->roty += 0.2f;
+	env->roty -= 0.2f;
 }
 
 int					check_shader(GLuint shader, GLint compiled)
@@ -225,6 +223,7 @@ void				init_glversion(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	glfwWindowHint(GLFW_SAMPLES, 16);
 }
 
 void				create_shader_prog(t_glenv *env)
@@ -256,7 +255,7 @@ void				create_shader_prog(t_glenv *env)
 
 void				create_env(t_glenv *env)
 {
-	if (!(env->window = glfwCreateWindow(980, 700, "Scop - 42", NULL, NULL)))
+	if (!(env->window = glfwCreateWindow(980, 980, "Scop - 42", NULL, NULL)))
 		ft_kill("Can't create window.");
 	glfwMakeContextCurrent(env->window);
 	glfwSetFramebufferSizeCallback(env->window, framebuffer_size_callback);
@@ -343,11 +342,11 @@ int					store_faces(t_glenv *env)
 void				load_texture(t_glenv *env)
 {
 	glGenTextures(1, &env->texture);
-	glBindTexture(GL_TEXTURE_2D, env->texture);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_3D, env->texture);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	stbi_set_flip_vertically_on_load(true);
 	env->data = stbi_load("texture/wall.jpg", &env->tex_width, &env->tex_height, &env->nrChannels, 0);
 	if (env->data)
@@ -365,17 +364,20 @@ int					parse_obj(t_glenv *env, char *srcpath)
 	int 	i;
 	float color[9] = {
 		1.0f, 0.0f, 0.0f,	// bottom right
-		1.0f, 1.0f, 0.0f,	// bottom left
+		0.0f, 1.0f, 0.0f,	// bottom left
 		0.0f, 0.0f, 1.0f};
 
 	float tex_coords[8] = {
 		1.0, 1.0,
-		1.0, 0.0,
-		0.0, 0.0,
-		0.0, 1.0,
+		1.0, 1.0,
+		1.0, 1.0,
+		1.0, 1.0,
 	};
 
 	i = 0;
+	// srand((unsigned int)time(NULL));
+
+	// float nbr = 255;
 	env->fd = open(srcpath, O_RDONLY);
 	if (env->fd == -1)
 		ft_kill("Open error");
@@ -386,9 +388,17 @@ int					parse_obj(t_glenv *env, char *srcpath)
 		{
 			if (!ft_atof(env->split[1], &env->vertices[i]) || !ft_atof(env->split[2], &env->vertices[i + 1]) || !ft_atof(env->split[3], &env->vertices[i + 2]))
 				return (0);
+			// env->vertices[i + 3] = color[i % 9];
+			// env->vertices[i + 4] = color[(i + 1) % 9];
+			// env->vertices[i + 5] = color[(i + 2) % 9];
+
 			env->vertices[i + 3] = color[i % 9];
 			env->vertices[i + 4] = color[(i + 1) % 9];
 			env->vertices[i + 5] = color[(i + 2) % 9];
+
+			// env->vertices[i + 3] = (((float)rand() / (float)(RAND_MAX)) * nbr) / 255;
+			// env->vertices[i + 4] = (((float)rand() / (float)(RAND_MAX)) * nbr) / 255;
+			// env->vertices[i + 5] = (((float)rand() / (float)(RAND_MAX)) * nbr) / 255;
 			env->vertices[i + 6] = tex_coords[(i) % 8];
 			env->vertices[i + 7] = tex_coords[(i + 1) % 8];
 			env->vtx_nbr++;
@@ -482,9 +492,10 @@ void				init_variables(t_glenv *env)
 	env->new_axis = create_tvec3(1, 0, 0);
 	env->transform = create_mat4(1.0f);
 	env->scaling = 9.0f;
+	env->fov = 45.0f;
 	env->new_pos.z = -50;
 	env->proj = create_mat4(1.0f);
-	env->proj = perspective(45.0f, 4 / 3, 1.0f, 100.0f);
+	env->proj = perspective(env->fov, 16 / 9, 1.0f, 100.0f);
 	env->nbr = 1;
 	env->ind = 0;
 	env->autorotate = true;
@@ -518,8 +529,9 @@ int					main(int argc, char **argv)
 	{
 		input_key(&env);
 		print_fps_counter(&env);
-		glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+		glClearColor(0.12f, 0.12f, 0.12f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_MULTISAMPLE);  
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 		render(&env);
 		glfwPollEvents();

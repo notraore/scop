@@ -10,6 +10,7 @@
 #include <glfw3.h>
 #include <glad.h>
 #include <math.h>
+#include <time.h>
 #include "stb_image.h"
 // #include "glad/khrplatform.h"
 // #include <GLFW/glfw3.h>
@@ -107,6 +108,7 @@ struct			s_glenv
 	t_vec3				new_rot;
 	t_vec3				new_axis;
 	float				degree;
+	float				fov;
 
 	/*CAMERA*/
 	// t_vec3				cam_pos;
