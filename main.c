@@ -362,7 +362,12 @@ void				load_texture(t_glenv *env)
 		ft_putendl("Failed to load the texture.");
 	stbi_image_free(env->data);
 }
+
+int					parse_vertex()
+{
 	
+}
+
 int					parse_obj(t_glenv *env, char *srcpath)
 {
 	int 	i;
@@ -388,7 +393,8 @@ int					parse_obj(t_glenv *env, char *srcpath)
 	while (get_next_line(env->fd, &env->line))
 	{
 		env->split = ft_strsplit(env->line, ' ');
-		if (env->line[0] == 'v')
+		// printf("env->line = %s\n", env->line);
+		if (env->line[0] == 'v' && env->line[1] == ' ')
 		{
 			if (!ft_atof(env->split[1], &env->vertices[i]) || !ft_atof(env->split[2], &env->vertices[i + 1]) || !ft_atof(env->split[3], &env->vertices[i + 2]))
 				return (0);
@@ -408,11 +414,16 @@ int					parse_obj(t_glenv *env, char *srcpath)
 			env->vtx_nbr++;
 			i += 8;
 		}
-		else if (ft_strcmp(env->line, "vt") == 0)
+		else if (env->line[0] == 'v' && env->line[1] == 't' && env->line[2] == ' ')
 		{
+			if (!pos_atof(env->split[1], &env->v_uv[i]) || !pos_atof(env->split[2], &env->v_uv[i + 1]))
+				return (0);
 		}
-		else if (ft_strcmp(env->line, "vn") == 0)
+		else if (env->line[0] == 'v' && env->line[1] == 'n' && env->line[2] == ' ')
 		{
+			if (!ft_atof(env->split[1], &env->v_vn[i]) || !ft_atof(env->split[2], &env->v_vn[i + 1]) || !ft_atof(env->split[3], &env->v_vn[i + 2]))
+				return (0);
+
 		}
 		else if (env->line[0] == 'f')
 		{
@@ -532,6 +543,7 @@ int					main(int argc, char **argv)
 		ft_kill("Can't init GLFW.");
 	init_glversion();
 	ft_bzero(&env, sizeof(env));
+	printf("ici\n");
 	if (argc == 2)
 		if (!parse_obj(&env, argv[1]))
 			ft_kill("Error parser.");

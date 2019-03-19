@@ -30,6 +30,7 @@ typedef struct		s_list
 	struct s_list	*next;
 }					t_list;
 
+double				pos_atof(char *str, float *stock);
 int					ft_count_c(char *str, char c);
 int					tab_len(char **tab);
 int					pos_atoi(char *str, unsigned int *a);
