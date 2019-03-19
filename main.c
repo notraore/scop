@@ -113,7 +113,7 @@ void				input_key(t_glenv *env)
 		else
 			env->framed = false;
 	}
-	else if (glfwGetKey(env->window, GLFW_KEY_R) == GLFW_PRESS)
+	else if (glfwGetKey(env->window, GLFW_KEY_U) == GLFW_PRESS)
 	{
 		env->scaling = 9.0f;
 		env->rotx = 0.0f;
@@ -521,7 +521,8 @@ int					main(int argc, char **argv)
 	init_glversion();
 	ft_bzero(&env, sizeof(env));
 	if (argc == 2)
-		parse_obj(&env, argv[1]);
+		if (!parse_obj(&env, argv[1]))
+			ft_kill("Error parser.");
 	while (i < env.vtx_nbr * 3)
 		i += 3;
 	env_shader_texture_vertices_var(&env);
