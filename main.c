@@ -143,7 +143,7 @@ void				win_update(void *f(float), GLFWwindow *win)
 
 void				auto_roty(t_glenv *env)
 {
-	env->roty -= 0.2f;
+	env->roty += 0.2f;
 }
 
 int					check_shader(GLuint shader, GLint compiled)
@@ -267,7 +267,7 @@ int					store_faces(t_glenv *env)
 {
 	int i;
 	int tmp;
-	char **str;
+	char **tab;
 
 	i = 1;
 	tmp = env->ind + 3;
@@ -280,40 +280,44 @@ int					store_faces(t_glenv *env)
 		{
 			if (ft_isdigit(env->split[1][0]) && (ft_count_c(env->split[i], '/') == 1 || ft_count_c(env->split[i], '/') == 2))
 			{
-				str = ft_strsplit(env->split[i], '/');
+				tab = ft_strsplit(env->split[i], '/');
 
-				if (tab_len(str) != 2 && tab_len(str) != 3)
+				if (tab_len(tab) != 2 && tab_len(tab) != 3)
 				{
-					free(str);
+					printf("1\n");
+					free(tab);
 					return (0);
 				}
-				if (tab_len(str) == 2 && pos_atoi(str[0], &env->indices[env->ind]) && pos_atoi(str[1], &env->textures[env->ind]))
+				if (tab_len(tab) == 2 && pos_atoi(tab[0], &env->indices[env->ind]) && pos_atoi(tab[1], &env->textures[env->ind]))
 				{
 					env->indices[env->ind] -= 1;
 					env->textures[env->ind] -=1;
 					if (!ft_isdigit(env->split[1][ft_strlen(env->split[1]) - 1]))
 					{
-						free(str);
+						printf("2\n");
+						free(tab);
 						return (0);
 					}
 				}
-				else if (tab_len(str) == 3 && pos_atoi(str[0], &env->indices[env->ind]) && pos_atoi(str[1], &env->textures[env->ind]) && pos_atoi(str[2], &env->normales[env->ind]))
+				else if (tab_len(tab) == 3 && pos_atoi(tab[0], &env->indices[env->ind]) && pos_atoi(tab[1], &env->textures[env->ind]) && pos_atoi(tab[2], &env->normales[env->ind]))
 				{
 					env->indices[env->ind] -= 1;
 					env->textures[env->ind] -= 1;
 					env->normales[env->ind] -= 1;
 					if (!ft_isdigit(env->split[2][ft_strlen(env->split[2]) - 1]))
 					{
-						free(str);
+						printf("3\n");
+						free(tab);
 						return (0);
 					}
 				}
 				else
 				{
-					free(str);
+					printf("4\n");
+					free(tab);
 					return 0;
 				}
-				free(str);
+				free(tab);
 			}
 			else
 				return (0);				
@@ -420,7 +424,7 @@ int					parse_obj(t_glenv *env, char *srcpath)
 		{
 			if (tab_len(env->split) > 2)
 				return (0);
-			if (ft_strcmp(env->split[1], "on") == 0)
+			if (ft_strcmp(env->split[1], "1") == 0)
 			{
 
 			}
@@ -429,7 +433,9 @@ int					parse_obj(t_glenv *env, char *srcpath)
 
 			}
 			else
+			{
 				return (0);
+			}
 		}
 		free_tab(env->split);
 	}
