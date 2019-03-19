@@ -18,8 +18,6 @@ int		tab_len(char **tab)
 
 	i = 0;
 	while (tab[i] != '\0')
-	{
 		i++;
-	}
 	return (i);
 }

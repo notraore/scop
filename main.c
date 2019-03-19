@@ -44,6 +44,7 @@ static const char *vf =
 "void main()\n"
 "{\n"
 	"FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);\n"
+	// "FragColor = texture(ourTexture, TexCoord);\n"
 "}\n";
 
 void				print_fps_counter(t_glenv *env)
@@ -284,7 +285,6 @@ int					store_faces(t_glenv *env)
 
 				if (tab_len(tab) != 2 && tab_len(tab) != 3)
 				{
-					printf("1\n");
 					free(tab);
 					return (0);
 				}
@@ -294,7 +294,6 @@ int					store_faces(t_glenv *env)
 					env->textures[env->ind] -=1;
 					if (!ft_isdigit(env->split[1][ft_strlen(env->split[1]) - 1]))
 					{
-						printf("2\n");
 						free(tab);
 						return (0);
 					}
@@ -306,14 +305,12 @@ int					store_faces(t_glenv *env)
 					env->normales[env->ind] -= 1;
 					if (!ft_isdigit(env->split[2][ft_strlen(env->split[2]) - 1]))
 					{
-						printf("3\n");
 						free(tab);
 						return (0);
 					}
 				}
 				else
 				{
-					printf("4\n");
 					free(tab);
 					return 0;
 				}
@@ -346,13 +343,13 @@ int					store_faces(t_glenv *env)
 void				load_texture(t_glenv *env)
 {
 	glGenTextures(1, &env->texture);
-	glBindTexture(GL_TEXTURE_3D, env->texture);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_S, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_WRAP_T, GL_REPEAT);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-	glTexParameteri(GL_TEXTURE_3D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glBindTexture(GL_TEXTURE_2D, env->texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	stbi_set_flip_vertically_on_load(true);
-	env->data = stbi_load("texture/wall.jpg", &env->tex_width, &env->tex_height, &env->nrChannels, 0);
+	env->data = stbi_load("texture/terre.jpg", &env->tex_width, &env->tex_height, &env->nrChannels, 0);
 	if (env->data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->tex_width, env->tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, env->data);
@@ -363,27 +360,66 @@ void				load_texture(t_glenv *env)
 	stbi_image_free(env->data);
 }
 
-int					parse_vertex()
+int					unite_all(t_glenv *env)
 {
-	
+	int			index;
+	int			face_i;
+	int			tex_i;
+	int			nbr;
+
+	nbr = 1;
+	srand((unsigned int)time(NULL));
+
+	index = 0;
+	face_i = 0;
+	tex_i = 0;
+	printf("face_nbr = %d\n", env->vtx_nbr);
+	while (index < env->vtx_nbr * 3)
+	{
+		env->vertices[index] = (env->v_v[face_i]);
+		env->vertices[index + 1] = (env->v_v[face_i + 1]);
+		env->vertices[index + 2] = (env->v_v[face_i + 2]);
+		// printf("v0 = %f || v1 = %f || v2 = %u\n", env->v_v[face_i], env->v_v[face_i + 1], env->indices[face_i + 2]);
+		env->vertices[index + 3] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+		env->vertices[index + 4] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+		env->vertices[index + 5] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+
+		env->vertices[index + 6] = env->v_uv[tex_i];
+		env->vertices[index + 7] = env->v_uv[tex_i + 1];
+		// printf("v0 = %f || v1 = %f || v2 = %f\n", env->vertices[index], env->vertices[index + 1], env->vertices[index + 2]);
+		// printf("v0 = %f || v1 = %f || v2 = %u\n", env->v_v[0], env->v_v[1], env->indices[2]);
+		// printf("env->vertices[%d] = %f, env->vertices[%d] = %f, env->vertices[%d] = %f\n", index, env->vertices[index], index + 1, env->vertices[index + 1], index + 2, env->vertices[index + 2]);
+		// printf("env->vertices[%d] = %f, env->vertices[%d] = %f, env->vertices[%d] = %f\n", index + 3, env->vertices[index + 3], index + 4, env->vertices[index + 4], index + 5, env->vertices[index + 5]);
+		// printf("env->vertices[%d] = %f, env->vertices[%d] = %f\n", index + 6, env->vertices[index + 6], index + 7, env->vertices[index + 7]);
+		index += 8;
+		face_i += 3;
+		tex_i += 2;
+	}
+	// index = 0;
+	// face_i = 0;
+	// while (index < 12 * 8)
+	// {
+	// 	env->vertices[index + 6] = env->v_uv[env->indices[face_i]* 2 - 2];
+	// 	env->vertices[index + 7] = env->v_uv[env->indices[face_i]* 2 + 1 - 2];
+	// 	printf("env->vertices[%d] = %f, env->vertices[%d] = %f\n", index + 6, env->vertices[index + 6], index + 7, env->vertices[index + 7]);
+	// 	// printf("vt = %f || vt = %f\n", env->vertices[index + 6], env->vertices[index + 7]);
+	// 	index += 8;
+	// 	face_i += 1;
+	// }
+	// index = 0;
+	return (0);
 }
 
 int					parse_obj(t_glenv *env, char *srcpath)
 {
-	int 	i;
-	float color[9] = {
-		1.0f, 0.0f, 0.0f,	// bottom right
-		0.0f, 1.0f, 0.0f,	// bottom left
-		0.0f, 0.0f, 1.0f};
+	int 	v;
+	int 	vt;
+	int 	vn;
 
-	float tex_coords[8] = {
-		1.0, 1.0,
-		1.0, 1.0,
-		1.0, 1.0,
-		1.0, 1.0,
-	};
-
-	i = 0;
+	v = 0;
+	vt = 0;
+	vn = 0;
+	env->vtx_nbr = 0;
 	// srand((unsigned int)time(NULL));
 
 	// float nbr = 255;
@@ -393,37 +429,26 @@ int					parse_obj(t_glenv *env, char *srcpath)
 	while (get_next_line(env->fd, &env->line))
 	{
 		env->split = ft_strsplit(env->line, ' ');
-		// printf("env->line = %s\n", env->line);
 		if (env->line[0] == 'v' && env->line[1] == ' ')
 		{
-			if (!ft_atof(env->split[1], &env->vertices[i]) || !ft_atof(env->split[2], &env->vertices[i + 1]) || !ft_atof(env->split[3], &env->vertices[i + 2]))
+			if (!ft_atof(env->split[1], &env->v_v[env->vtx_nbr]) || !ft_atof(env->split[2], &env->v_v[env->vtx_nbr + 1]) || !ft_atof(env->split[3], &env->v_v[env->vtx_nbr + 2]))
 				return (0);
-			// env->vertices[i + 3] = color[i % 9];
-			// env->vertices[i + 4] = color[(i + 1) % 9];
-			// env->vertices[i + 5] = color[(i + 2) % 9];
-
-			env->vertices[i + 3] = color[i % 9];
-			env->vertices[i + 4] = color[(i + 1) % 9];
-			env->vertices[i + 5] = color[(i + 2) % 9];
-
-			// env->vertices[i + 3] = (((float)rand() / (float)(RAND_MAX)) * nbr) / 255;
-			// env->vertices[i + 4] = (((float)rand() / (float)(RAND_MAX)) * nbr) / 255;
-			// env->vertices[i + 5] = (((float)rand() / (float)(RAND_MAX)) * nbr) / 255;
-			env->vertices[i + 6] = tex_coords[(i) % 8];
-			env->vertices[i + 7] = tex_coords[(i + 1) % 8];
-			env->vtx_nbr++;
-			i += 8;
+			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_v[v], env->v_v[v + 1], env->v_v[v + 2]);
+			env->vtx_nbr += 3;
 		}
 		else if (env->line[0] == 'v' && env->line[1] == 't' && env->line[2] == ' ')
 		{
-			if (!pos_atof(env->split[1], &env->v_uv[i]) || !pos_atof(env->split[2], &env->v_uv[i + 1]))
+			if (!pos_atof(env->split[1], &env->v_uv[vt]) || !pos_atof(env->split[2], &env->v_uv[vt + 1]))
 				return (0);
+			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_uv[vt], env->v_uv[vt + 1], env->v_uv[vt + 2]);
+			vt += 2;
 		}
 		else if (env->line[0] == 'v' && env->line[1] == 'n' && env->line[2] == ' ')
 		{
-			if (!ft_atof(env->split[1], &env->v_vn[i]) || !ft_atof(env->split[2], &env->v_vn[i + 1]) || !ft_atof(env->split[3], &env->v_vn[i + 2]))
+			if (!ft_atof(env->split[1], &env->v_vn[vn]) || !ft_atof(env->split[2], &env->v_vn[vn + 1]) || !ft_atof(env->split[3], &env->v_vn[vn + 2]))
 				return (0);
-
+			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_vn[vn], env->v_vn[vn + 1], env->v_vn[vn + 2]);
+			vn += 3;
 		}
 		else if (env->line[0] == 'f')
 		{
@@ -529,6 +554,7 @@ void				env_shader_texture_vertices_var(t_glenv *env)
 	create_env(env);
 	create_shader_prog(env);
 	load_texture(env);
+	unite_all(env);
 	vertices_setter(env);
 	init_variables(env);
 }

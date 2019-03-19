@@ -70,8 +70,10 @@ struct			s_glenv
 	bool				four;
 
 	float				vertices[200000];
+	float				v_v[200000];
 	float				v_uv[200000];
 	float				v_vn[200000];
+
 	unsigned int		indices[200000];
 	unsigned int		textures[200000];
 	unsigned int		normales[200000];
