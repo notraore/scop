@@ -408,6 +408,12 @@ int					parse_obj(t_glenv *env, char *srcpath)
 			env->vtx_nbr++;
 			i += 8;
 		}
+		else if (ft_strcmp(env->line, "vt") == 0)
+		{
+		}
+		else if (ft_strcmp(env->line, "vn") == 0)
+		{
+		}
 		else if (env->line[0] == 'f')
 		{
 			if (tab_len(env->split) > 5)
