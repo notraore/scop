@@ -30,6 +30,7 @@ static const char *vs =
 	// "gl_Position = mvp * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 	"ourColor = aColor;\n"
 	"TexCoord = aTexCoord;\n"
+	// "TexCoord = vec2(TexCoord.x, 1.0 - TexCoord.y);\n"
 "}\n";
 
 static const char *vf =
@@ -43,8 +44,8 @@ static const char *vf =
 
 "void main()\n"
 "{\n"
-	"FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);\n"
-	// "FragColor = texture(ourTexture, TexCoord);\n"
+	// "FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);\n"
+	"FragColor = texture(ourTexture, TexCoord);\n"
 "}\n";
 
 void				print_fps_counter(t_glenv *env)
@@ -361,8 +362,6 @@ void				load_texture(t_glenv *env)
 	else
 		ft_putendl("Failed to load the texture.");
 	stbi_image_free(env->data);
-	glUniform1i(glGetUniformLocation(env->program, "texture"), 0);
-	glUseProgram(env->program);
 }
 
 int					unite_all(t_glenv *env)
@@ -441,7 +440,7 @@ int					parse_obj(t_glenv *env, char *srcpath)
 			{
 				return (0);
 			}
-			// printf("split0 = %s || split2 = %s\n", env->split[1], env->split[2]);
+			printf("split0 = %s || split2 = %s\n", env->split[1], env->split[2]);
 			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_uv[vt], env->v_uv[vt + 1], env->v_uv[vt + 2]);
 			env->vt += 2;
 		}
@@ -536,7 +535,6 @@ void				render(t_glenv *env)
 	glUseProgram(env->program);
 	env->transformLoc = glGetUniformLocation(env->program, "mvp");
 	glUniformMatrix4fv(env->transformLoc, 1, GL_FALSE, &env->transform.m[0][0]);
-	
 	glBindTexture(GL_TEXTURE_2D, env->texture);
 	glBindVertexArray(env->vao);
 	glDrawElements(GL_TRIANGLES, env->indices_nbr, GL_UNSIGNED_INT, 0);
@@ -592,8 +590,10 @@ int					main(int argc, char **argv)
 		print_fps_counter(&env);
 		glClearColor(0.12f, 0.12f, 0.12f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
-		glEnable(GL_MULTISAMPLE);  
+		glEnable(GL_MULTISAMPLE);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		// glActiveTexture(GL_TEXTURE0);
+		// glUniform1i(glGetUniformLocation(env.program, "ourTexture"), 0);
 		render(&env);
 		glfwPollEvents();
 	}
