@@ -39,11 +39,11 @@ static const char *vf =
 "in vec3 ourColor;\n"
 "in vec2 TexCoord;\n"
 
-"uniform sampler2D tex;\n"
+"uniform sampler2D ourTexture;\n"
 
 "void main()\n"
 "{\n"
-	"FragColor = texture(tex, TexCoord) * vec4(ourColor, 1.0f);\n"
+	"FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);\n"
 	// "FragColor = texture(ourTexture, TexCoord);\n"
 "}\n";
 
@@ -361,8 +361,8 @@ void				load_texture(t_glenv *env)
 	else
 		ft_putendl("Failed to load the texture.");
 	stbi_image_free(env->data);
+	glUniform1i(glGetUniformLocation(env->program, "texture"), 0);
 	glUseProgram(env->program);
-	glUniform1i(glGetUniformLocation(env->program, "tex"), 0);
 }
 
 int					unite_all(t_glenv *env)
@@ -384,34 +384,22 @@ int					unite_all(t_glenv *env)
 		env->vertices[index] = (env->v_v[face_i]);
 		env->vertices[index + 1] = (env->v_v[face_i + 1]);
 		env->vertices[index + 2] = (env->v_v[face_i + 2]);
-		// printf("v0 = %f || v1 = %f || v2 = %u\n", env->v_v[face_i], env->v_v[face_i + 1], env->indices[face_i + 2]);
-		env->vertices[index + 3] = (((float)rand() / (float)(RAND_MAX)) / nbr);
-		env->vertices[index + 4] = (((float)rand() / (float)(RAND_MAX)) / nbr);
-		env->vertices[index + 5] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+
+		// env->vertices[index + 3] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+		// env->vertices[index + 4] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+		// env->vertices[index + 5] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+
+		env->vertices[index + 3] = 0.5;
+		env->vertices[index + 4] = 0.5;
+		env->vertices[index + 5] = 0.5;
 
 		env->vertices[index + 6] = env->v_uv[tex_i];
 		env->vertices[index + 7] = env->v_uv[tex_i + 1];
-		// printf("v0 = %f || v1 = %f || v2 = %f\n", env->vertices[index], env->vertices[index + 1], env->vertices[index + 2]);
-		// printf("v0 = %f || v1 = %f || v2 = %u\n", env->v_v[0], env->v_v[1], env->indices[2]);
-		// printf("env->vertices[%d] = %f, env->vertices[%d] = %f, env->vertices[%d] = %f\n", index, env->vertices[index], index + 1, env->vertices[index + 1], index + 2, env->vertices[index + 2]);
-		// printf("env->vertices[%d] = %f, env->vertices[%d] = %f, env->vertices[%d] = %f\n", index + 3, env->vertices[index + 3], index + 4, env->vertices[index + 4], index + 5, env->vertices[index + 5]);
-		// printf("env->vertices[%d] = %f, env->vertices[%d] = %f\n", index + 6, env->vertices[index + 6], index + 7, env->vertices[index + 7]);
+		printf("uv[0] = %f || uv[1] = %f\n", env->v_uv[tex_i], env->v_uv[tex_i + 1]);
 		index += 8;
 		face_i += 3;
 		tex_i += 2;
 	}
-	// index = 0;
-	// face_i = 0;
-	// while (index < 12 * 8)
-	// {
-	// 	env->vertices[index + 6] = env->v_uv[env->indices[face_i]* 2 - 2];
-	// 	env->vertices[index + 7] = env->v_uv[env->indices[face_i]* 2 + 1 - 2];
-	// 	printf("env->vertices[%d] = %f, env->vertices[%d] = %f\n", index + 6, env->vertices[index + 6], index + 7, env->vertices[index + 7]);
-	// 	// printf("vt = %f || vt = %f\n", env->vertices[index + 6], env->vertices[index + 7]);
-	// 	index += 8;
-	// 	face_i += 1;
-	// }
-	// index = 0;
 	return (0);
 }
 
@@ -544,6 +532,8 @@ void				render(t_glenv *env)
 	glUseProgram(env->program);
 	env->transformLoc = glGetUniformLocation(env->program, "mvp");
 	glUniformMatrix4fv(env->transformLoc, 1, GL_FALSE, &env->transform.m[0][0]);
+	
+	glBindTexture(GL_TEXTURE_2D, env->texture);
 	glBindVertexArray(env->vao);
 	glDrawElements(GL_TRIANGLES, env->indices_nbr, GL_UNSIGNED_INT, 0);
 	glfwSwapBuffers(env->window);
