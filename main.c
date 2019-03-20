@@ -39,11 +39,11 @@ static const char *vf =
 "in vec3 ourColor;\n"
 "in vec2 TexCoord;\n"
 
-"uniform sampler2D ourTexture;\n"
+"uniform sampler2D tex;\n"
 
 "void main()\n"
 "{\n"
-	"FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);\n"
+	"FragColor = texture(tex, TexCoord) * vec4(ourColor, 1.0f);\n"
 	// "FragColor = texture(ourTexture, TexCoord);\n"
 "}\n";
 
@@ -272,10 +272,13 @@ int					store_faces(t_glenv *env)
 
 	i = 1;
 	tmp = env->ind + 3;
+	printf("env-> ind = %s\n", env->split[i]);
 	while (env->ind < tmp)
 	{
-		if (pos_atoi(env->split[i], &env->indices[env->ind])) {
+		if (pos_atoi(env->split[i], &env->indices[env->ind]))
+		{
 			env->indices[env->ind] -= 1;
+			printf("env-> ind = %d\n", env->ind);
 		}
 		else
 		{
@@ -349,7 +352,7 @@ void				load_texture(t_glenv *env)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	stbi_set_flip_vertically_on_load(true);
-	env->data = stbi_load("texture/terre.jpg", &env->tex_width, &env->tex_height, &env->nrChannels, 0);
+	env->data = stbi_load("texture/minecraft_dirt.png", &env->tex_width, &env->tex_height, &env->nrChannels, 0);
 	if (env->data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->tex_width, env->tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, env->data);
@@ -358,6 +361,8 @@ void				load_texture(t_glenv *env)
 	else
 		ft_putendl("Failed to load the texture.");
 	stbi_image_free(env->data);
+	glUseProgram(env->program);
+	glUniform1i(glGetUniformLocation(env->program, "tex"), 0);
 }
 
 int					unite_all(t_glenv *env)
@@ -373,7 +378,7 @@ int					unite_all(t_glenv *env)
 	index = 0;
 	face_i = 0;
 	tex_i = 0;
-	printf("face_nbr = %d\n", env->vtx_nbr);
+	printf("vtx_nbr = %d\n", env->vtx_nbr);
 	while (index < env->vtx_nbr * 3)
 	{
 		env->vertices[index] = (env->v_v[face_i]);
@@ -432,34 +437,46 @@ int					parse_obj(t_glenv *env, char *srcpath)
 		if (env->line[0] == 'v' && env->line[1] == ' ')
 		{
 			if (!ft_atof(env->split[1], &env->v_v[env->vtx_nbr]) || !ft_atof(env->split[2], &env->v_v[env->vtx_nbr + 1]) || !ft_atof(env->split[3], &env->v_v[env->vtx_nbr + 2]))
+			{
 				return (0);
+			}
+
 			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_v[v], env->v_v[v + 1], env->v_v[v + 2]);
 			env->vtx_nbr += 3;
 		}
 		else if (env->line[0] == 'v' && env->line[1] == 't' && env->line[2] == ' ')
 		{
-			if (!pos_atof(env->split[1], &env->v_uv[vt]) || !pos_atof(env->split[2], &env->v_uv[vt + 1]))
+			if (!ft_atof(env->split[1], &env->v_uv[vt]) || !ft_atof(env->split[2], &env->v_uv[vt + 1]))
+			{
 				return (0);
+			}
 			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_uv[vt], env->v_uv[vt + 1], env->v_uv[vt + 2]);
 			vt += 2;
 		}
 		else if (env->line[0] == 'v' && env->line[1] == 'n' && env->line[2] == ' ')
 		{
 			if (!ft_atof(env->split[1], &env->v_vn[vn]) || !ft_atof(env->split[2], &env->v_vn[vn + 1]) || !ft_atof(env->split[3], &env->v_vn[vn + 2]))
+			{
 				return (0);
+			}		
 			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_vn[vn], env->v_vn[vn + 1], env->v_vn[vn + 2]);
 			vn += 3;
 		}
 		else if (env->line[0] == 'f')
 		{
 			if (tab_len(env->split) > 5)
+			{
+
 				return (0);
+			}
 			if (env->split[4])
 				env->four = true;
 			else
 				env->four = false;
 			if (!store_faces(env))
+			{
 				return (0);
+			}
 			env->face_nbr++;
 		}
 		else if (env->line[0] == 's')
@@ -569,7 +586,6 @@ int					main(int argc, char **argv)
 		ft_kill("Can't init GLFW.");
 	init_glversion();
 	ft_bzero(&env, sizeof(env));
-	printf("ici\n");
 	if (argc == 2)
 		if (!parse_obj(&env, argv[1]))
 			ft_kill("Error parser.");
