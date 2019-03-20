@@ -67,6 +67,7 @@ struct			s_glenv
 	/*File Info*/
 	int					face_nbr;
 	int					vtx_nbr;
+	int					vt;
 	bool				four;
 
 	float				vertices[200000];

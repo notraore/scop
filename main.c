@@ -352,7 +352,7 @@ void				load_texture(t_glenv *env)
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	stbi_set_flip_vertically_on_load(true);
-	env->data = stbi_load("texture/minecraft_dirt.png", &env->tex_width, &env->tex_height, &env->nrChannels, 0);
+	env->data = stbi_load("texture/color.jpg", &env->tex_width, &env->tex_height, &env->nrChannels, 0);
 	if (env->data)
 	{
 		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->tex_width, env->tex_height, 0, GL_RGB, GL_UNSIGNED_BYTE, env->data);
@@ -385,20 +385,25 @@ int					unite_all(t_glenv *env)
 		env->vertices[index + 1] = (env->v_v[face_i + 1]);
 		env->vertices[index + 2] = (env->v_v[face_i + 2]);
 
-		// env->vertices[index + 3] = (((float)rand() / (float)(RAND_MAX)) / nbr);
-		// env->vertices[index + 4] = (((float)rand() / (float)(RAND_MAX)) / nbr);
-		// env->vertices[index + 5] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+		env->vertices[index + 3] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+		env->vertices[index + 4] = (((float)rand() / (float)(RAND_MAX)) / nbr);
+		env->vertices[index + 5] = (((float)rand() / (float)(RAND_MAX)) / nbr);
 
-		env->vertices[index + 3] = 0.5;
-		env->vertices[index + 4] = 0.5;
-		env->vertices[index + 5] = 0.5;
-
-		env->vertices[index + 6] = env->v_uv[tex_i];
-		env->vertices[index + 7] = env->v_uv[tex_i + 1];
-		printf("uv[0] = %f || uv[1] = %f\n", env->v_uv[tex_i], env->v_uv[tex_i + 1]);
+		// env->vertices[index + 3] = 0.5;
+		// env->vertices[index + 4] = 0.5;
+		// env->vertices[index + 5] = 0.5;
 		index += 8;
 		face_i += 3;
+	}
+	index = 0;
+	face_i = 0;
+	while (index < env->vt * 3)
+	{
+		env->vertices[index + 6] = env->v_uv[tex_i];
+		env->vertices[index + 7] = env->v_uv[tex_i + 1];
+		index += 8;
 		tex_i += 2;
+		printf("uv[0] = %f || uv[1] = %f\n", env->v_uv[tex_i], env->v_uv[tex_i + 1]);
 	}
 	return (0);
 }
@@ -406,11 +411,9 @@ int					unite_all(t_glenv *env)
 int					parse_obj(t_glenv *env, char *srcpath)
 {
 	int 	v;
-	int 	vt;
 	int 	vn;
 
 	v = 0;
-	vt = 0;
 	vn = 0;
 	env->vtx_nbr = 0;
 	// srand((unsigned int)time(NULL));
@@ -434,12 +437,13 @@ int					parse_obj(t_glenv *env, char *srcpath)
 		}
 		else if (env->line[0] == 'v' && env->line[1] == 't' && env->line[2] == ' ')
 		{
-			if (!ft_atof(env->split[1], &env->v_uv[vt]) || !ft_atof(env->split[2], &env->v_uv[vt + 1]))
+			if (!ft_atof(env->split[1], &env->v_uv[env->vt]) || !ft_atof(env->split[2], &env->v_uv[env->vt + 1]))
 			{
 				return (0);
 			}
+			// printf("split0 = %s || split2 = %s\n", env->split[1], env->split[2]);
 			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_uv[vt], env->v_uv[vt + 1], env->v_uv[vt + 2]);
-			vt += 2;
+			env->vt += 2;
 		}
 		else if (env->line[0] == 'v' && env->line[1] == 'n' && env->line[2] == ' ')
 		{
