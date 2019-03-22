@@ -21,7 +21,13 @@ SRCS		= 	main.c \
 				matrice.c \
 				vector.c \
 				rotation.c \
-				init.c
+				init.c \
+				faces_parser.c \
+				vertex_parser.c \
+				utils.c \
+				input_key.c \
+				texture.c \
+				check.c
 
 OBJS		= 	$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 

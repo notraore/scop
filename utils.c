@@ -1,7 +1,7 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   vector.c                                           :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
@@ -12,40 +12,45 @@
 
 #include "scop.h"
 
-t_vec3		create_tvec3(double x, double y, double z)
+double		dot_product(t_vec3 *a, t_vec3 *b)
 {
-	t_vec3	new;
-
-	new.x = x;
-	new.y = y;
-	new.z = z;
-	return (new);
+	return (a->x * b->x + a->y * b->y + a->z * b->z);
 }
 
-t_vec4		create_tvec4(double x, double y, double z, double w)
+t_vec3		v_v_subs(t_vec3 *a, t_vec3 *b)
 {
-	t_vec4	new;
+	t_vec3	r;
 
-	new.x = x;
-	new.y = y;
-	new.z = z;
-	new.w = w;
-	return (new);
+	r.x = a->x - b->x;
+	r.y = a->y - b->y;
+	r.z = a->z - b->z;
+	return (r);
 }
 
-float		magnitude(t_vec3 *a)
+t_vec3		v_v_mult(t_vec3 *a, t_vec3 *b)
 {
-	return (sqrtf(a->x * a->x + a->y * a->y + a->z * a->z));
+	t_vec3	r;
+
+	r.x = (a->y * b->z) - (a->z * b->y);
+	r.y = (a->z * b->x) - (a->x * b->z);
+	r.z = (a->x * b->y) - (a->y * b->x);
+	return (r);
 }
 
-t_vec3		normalize(t_vec3 *a)
+double		degree_to_radian(double degree_angle)
 {
-	t_vec3	normalized;
-	float	magn;
+	return (degree_angle * ((float)PI / 180.0));
+}
 
-	magn = magnitude(a);
-	normalized.x = a->x / magn;
-	normalized.y = a->y / magn;
-	normalized.z = a->z / magn;
-	return (normalized);
+void		print_fps_counter(t_glenv *env)
+{
+	env->current_time = glfwGetTime();
+	env->frames++;
+	if (env->current_time - env->last_time >= 0.2f)
+	{
+		ft_putnbr(env->frames);
+		ft_putendl(" FPS");
+		env->frames = 0;
+		env->last_time += 1.0;
+	}
 }
