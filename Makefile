@@ -20,7 +20,8 @@ STBLIB		=	stb/libstb.a
 SRCS		= 	main.c \
 				matrice.c \
 				vector.c \
-				rotation.c
+				rotation.c \
+				init.c
 
 OBJS		= 	$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 

@@ -115,6 +115,8 @@ struct			s_glenv
 	float				degree;
 	float				fov;
 
+	bool				tpressed;
+
 	/*CAMERA*/
 	// t_vec3				cam_pos;
 	// t_vec3				cam_dir;
@@ -192,5 +194,16 @@ t_mat4		make_rot_x(float degree);
 t_mat4		make_rot_y(float degree);
 t_mat4		make_rot_z(float degree);
 t_mat4		make_translation(t_vec3 *src);
+
+void				env_shader_texture_vertices_var(t_glenv *env);
+
+
+int					unite_all(t_glenv *env, bool tpressed);
+
+void	create_env(t_glenv *env);
+void	create_shader_prog(t_glenv *env);
+void	load_texture(t_glenv *env);
+void	vertices_setter(t_glenv *env);
+void	init_variables(t_glenv *env);
 
 #endif

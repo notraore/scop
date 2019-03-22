@@ -27,10 +27,8 @@ static const char *vs =
 "void main()\n"
 "{\n"
 	"gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0) * mvp;\n"
-	// "gl_Position = mvp * vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
 	"ourColor = aColor;\n"
 	"TexCoord = aTexCoord;\n"
-	// "TexCoord = vec2(TexCoord.x, 1.0 - TexCoord.y);\n"
 "}\n";
 
 static const char *vf =
@@ -44,9 +42,11 @@ static const char *vf =
 
 "void main()\n"
 "{\n"
-	// "FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);\n"
-	"FragColor = texture(ourTexture, TexCoord);\n"
+	// "FragColor = vec4(ourColor, 1.0f);\n"
+	"FragColor = texture(ourTexture, TexCoord) * vec4(ourColor, 1.0f);\n"
 "}\n";
+
+
 
 void				print_fps_counter(t_glenv *env)
 {
@@ -75,6 +75,78 @@ void				framebuffer_size_callback(GLFWwindow *window, int width, int height)
 	glViewport(0, 0, width, height);
 }
 
+int					unite_all(t_glenv *env, bool tpressed)
+{
+	int			index;
+	int			face_i;
+	int			tex_i;
+	int			nbr;
+	int		clr;
+
+	clr = 0;
+
+	nbr = 1;
+	srand((unsigned int)time(NULL));
+
+	index = 0;
+	face_i = 0;
+	tex_i = 0;
+	// printf("vtx_nbr = %d\n", env->vtx_nbr);
+	// env->vertices = {0};
+	while (index < env->vtx_nbr * 8)
+	{
+		env->vertices[index] = (env->v_v[face_i]);
+		env->vertices[index + 1] = (env->v_v[face_i + 1]);
+		env->vertices[index + 2] = (env->v_v[face_i + 2]);
+
+		if (clr >= 0 && clr <= 2)
+		{
+			env->vertices[index + 3] = 1;
+			env->vertices[index + 4] = 0;
+			env->vertices[index + 5] = 0;
+		// 	printf("red\n");
+		}
+		else if (clr >= 3 && clr <= 5)
+		{
+			env->vertices[index + 3] = 0;
+			env->vertices[index + 4] = 1;
+			env->vertices[index + 5] = 0;
+		// 	printf("green\n");
+		}
+		else if (clr >= 6 && clr <= 8)
+		{
+			env->vertices[index + 3] = 0;
+			env->vertices[index + 4] = 0;
+			env->vertices[index + 5] = 1;
+		}
+		clr++;
+		if (clr == 9)
+			clr = 0;
+
+		// env->vertices[index + 3] = 0.5;
+		// env->vertices[index + 4] = 0.5;
+		// env->vertices[index + 5] = 0.5;
+		// printf("ver[0] = %f || ver[1] = %f || ver[3] = %f\n", env->vertices[face_i], env->vertices[face_i + 1], env->vertices[face_i + 2]);
+		index += 8;
+		face_i += 3;
+	}
+	index = 0;
+	face_i = 0;
+	((void)tpressed);
+	if (tpressed)
+		while (index < 29 * 8)
+		{
+			env->vertices[index + 6] = env->v_uv[tex_i];
+			env->vertices[index + 7] = env->v_uv[tex_i + 1];
+			index += 8;
+			tex_i += 2;
+			// printf("uv[0] = %f || uv[1] = %f\n", env->v_uv[tex_i], env->v_uv[tex_i + 1]);
+		}
+	// 	else
+	// 		return 0;
+	return (0);
+}
+
 void				input_key(t_glenv *env)
 {
 	if (glfwGetKey(env->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -92,15 +164,24 @@ void				input_key(t_glenv *env)
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
 		env->new_pos.z -= 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
-			env->rotx += 0.2f;
+			env->rotx += 1.0f;
 	else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
-			env->roty += 0.2f;
+			env->roty += 1.0f;
 	else if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_PRESS)
-			env->rotz += 0.2f;
+			env->rotz += 1.0f;
 	else if (glfwGetKey(env->window, GLFW_KEY_X) == GLFW_PRESS)
 		env->scaling += 0.1;
 	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
 		env->scaling -= 0.1;
+	else if (glfwGetKey(env->window, GLFW_KEY_T) == GLFW_PRESS)
+	{
+		if (env->tpressed == true)
+			env->tpressed = false;
+		else if (env->tpressed == false)
+			env->tpressed = true;
+		env_shader_texture_vertices_var(env);
+	}
+
 	else if (glfwGetKey(env->window, GLFW_KEY_R) == GLFW_PRESS)
 	{
 		if (env->autorotate == false)
@@ -225,7 +306,7 @@ void				init_glversion(void)
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE);
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
-	glfwWindowHint(GLFW_SAMPLES, 16);
+	glfwWindowHint(GLFW_SAMPLES, 8);
 }
 
 void				create_shader_prog(t_glenv *env)
@@ -273,13 +354,13 @@ int					store_faces(t_glenv *env)
 
 	i = 1;
 	tmp = env->ind + 3;
-	printf("env-> ind = %s\n", env->split[i]);
+	// printf("env-> ind = %s\n", env->split[i]);
 	while (env->ind < tmp)
 	{
 		if (pos_atoi(env->split[i], &env->indices[env->ind]))
 		{
 			env->indices[env->ind] -= 1;
-			printf("env-> ind = %d\n", env->ind);
+			// printf("env-> ind = %d\n", env->ind);
 		}
 		else
 		{
@@ -364,49 +445,6 @@ void				load_texture(t_glenv *env)
 	stbi_image_free(env->data);
 }
 
-int					unite_all(t_glenv *env)
-{
-	int			index;
-	int			face_i;
-	int			tex_i;
-	int			nbr;
-
-	nbr = 1;
-	srand((unsigned int)time(NULL));
-
-	index = 0;
-	face_i = 0;
-	tex_i = 0;
-	printf("vtx_nbr = %d\n", env->vtx_nbr);
-	while (index < env->vtx_nbr * 3)
-	{
-		env->vertices[index] = (env->v_v[face_i]);
-		env->vertices[index + 1] = (env->v_v[face_i + 1]);
-		env->vertices[index + 2] = (env->v_v[face_i + 2]);
-
-		env->vertices[index + 3] = (((float)rand() / (float)(RAND_MAX)) / nbr);
-		env->vertices[index + 4] = (((float)rand() / (float)(RAND_MAX)) / nbr);
-		env->vertices[index + 5] = (((float)rand() / (float)(RAND_MAX)) / nbr);
-
-		// env->vertices[index + 3] = 0.5;
-		// env->vertices[index + 4] = 0.5;
-		// env->vertices[index + 5] = 0.5;
-		index += 8;
-		face_i += 3;
-	}
-	index = 0;
-	face_i = 0;
-	while (index < env->vt * 3)
-	{
-		env->vertices[index + 6] = env->v_uv[tex_i];
-		env->vertices[index + 7] = env->v_uv[tex_i + 1];
-		index += 8;
-		tex_i += 2;
-		printf("uv[0] = %f || uv[1] = %f\n", env->v_uv[tex_i], env->v_uv[tex_i + 1]);
-	}
-	return (0);
-}
-
 int					parse_obj(t_glenv *env, char *srcpath)
 {
 	int 	v;
@@ -440,18 +478,9 @@ int					parse_obj(t_glenv *env, char *srcpath)
 			{
 				return (0);
 			}
-			printf("split0 = %s || split2 = %s\n", env->split[1], env->split[2]);
+			// printf("split0 = %s || split2 = %s\n", env->split[1], env->split[2]);
 			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_uv[vt], env->v_uv[vt + 1], env->v_uv[vt + 2]);
 			env->vt += 2;
-		}
-		else if (env->line[0] == 'v' && env->line[1] == 'n' && env->line[2] == ' ')
-		{
-			if (!ft_atof(env->split[1], &env->v_vn[vn]) || !ft_atof(env->split[2], &env->v_vn[vn + 1]) || !ft_atof(env->split[3], &env->v_vn[vn + 2]))
-			{
-				return (0);
-			}		
-			// printf("v0 = %f || v1 = %f || v2 = %f\n", env->v_vn[vn], env->v_vn[vn + 1], env->v_vn[vn + 2]);
-			vn += 3;
 		}
 		else if (env->line[0] == 'f')
 		{
@@ -558,16 +587,6 @@ void				init_variables(t_glenv *env)
 	env->autorotate = true;
 }
 
-void				env_shader_texture_vertices_var(t_glenv *env)
-{
-	create_env(env);
-	create_shader_prog(env);
-	load_texture(env);
-	unite_all(env);
-	vertices_setter(env);
-	init_variables(env);
-}
-
 int					main(int argc, char **argv)
 {
 	t_glenv		env;
@@ -590,10 +609,13 @@ int					main(int argc, char **argv)
 		print_fps_counter(&env);
 		glClearColor(0.12f, 0.12f, 0.12f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
+		glEnable(GL_TEXTURE_2D);
 		glEnable(GL_MULTISAMPLE);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-		// glActiveTexture(GL_TEXTURE0);
-		// glUniform1i(glGetUniformLocation(env.program, "ourTexture"), 0);
+		glTexEnvf( GL_TEXTURE_ENV, GL_TEXTURE_ENV_MODE, GL_MODULATE );
+glDisable(GL_LIGHTING);
+glColorMaterial( GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE );
+		glActiveTexture(GL_TEXTURE0);
 		render(&env);
 		glfwPollEvents();
 	}
