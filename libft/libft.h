@@ -31,6 +31,7 @@ typedef struct		s_list
 }					t_list;
 
 double				pos_atof(char *str, float *stock);
+int					tab_tab_len(char *tab);
 int					ft_count_c(char *str, char c);
 int					tab_len(char **tab);
 int					pos_atoi(char *str, unsigned int *a);

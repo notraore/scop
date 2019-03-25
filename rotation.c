@@ -24,6 +24,7 @@ t_mat4		make_rot_x(float degree)
 	return (to_rotate);
 }
 
+
 t_mat4		make_rot_y(float degree)
 {
 	t_mat4		to_rotate;
@@ -35,6 +36,7 @@ t_mat4		make_rot_y(float degree)
 	to_rotate.m[2][2] = cosf((degree * PI) / 180);
 	return (to_rotate);
 }
+
 
 t_mat4		make_rot_z(float degree)
 {

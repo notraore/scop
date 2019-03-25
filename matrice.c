@@ -11,6 +11,27 @@
 /* ************************************************************************** */
 
 #include "scop.h"
+//			A RETIRER					//
+void		print_mat4(t_mat4 to_print)
+{
+	printf( "[%f ", to_print.m[0][0]);
+	printf( "%f ", to_print.m[0][1]);
+	printf( "%f ", to_print.m[0][2]);
+	printf( "%f]\n", to_print.m[0][3]);
+	printf( "[%f ", to_print.m[1][0]);
+	printf( "%f ", to_print.m[1][1]);
+	printf( "%f ", to_print.m[1][2]);
+	printf( "%f]\n", to_print.m[1][3]);
+	printf( "[%f ", to_print.m[2][0]);
+	printf( "%f ", to_print.m[2][1]);
+	printf( "%f ", to_print.m[2][2]);
+	printf( "%f]\n", to_print.m[2][3]);
+	printf( "[%f ", to_print.m[3][0]);
+	printf( "%f ", to_print.m[3][1]);
+	printf( "%f ", to_print.m[3][2]);
+	printf( "%f]\n", to_print.m[3][3]);
+}
+/*************************************/
 
 void		make_rescale(t_mat4 *to_scale, t_vec3 *vector)
 {
