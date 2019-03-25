@@ -21,3 +21,13 @@ int		tab_len(char **tab)
 		i++;
 	return (i);
 }
+
+int		tab_tab_len(char *tab)
+{
+	int i;
+
+	i = 0;
+	while (tab[i] != '\0')
+		i++;
+	return (i);
+}

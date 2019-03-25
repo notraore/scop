@@ -73,19 +73,20 @@ struct			s_glenv
 	float				vertices[200000];
 	float				v_v[200000];
 	float				v_uv[200000];
+	float				uv_new[200000];
 	float				v_vn[200000];
 
 	unsigned int		indices[200000];
 	unsigned int		textures[200000];
 	unsigned int		normales[200000];
-	unsigned int		indices_nbr;
+	int					indices_nbr;
 
 	/*TEXTURE*/
 	unsigned int		texture;
 	int					tex_width;
 	int					tex_height;
 	int					nrChannels;
-	unsigned char		*data;
+	char		*data;
 	int					nbr;
 	int					ind;
 
@@ -116,6 +117,19 @@ struct			s_glenv
 	float				fov;
 
 	bool				tpressed;
+
+	GLuint				greyloc;
+	GLuint				texloc;
+	GLuint				smoothieloc;
+	GLuint				alphmodeloc;
+
+	bool				greymode;
+	bool				texmode;
+	bool				alphmode;
+	bool				smoothiemode;
+
+
+	double					mult;
 
 	/*CAMERA*/
 	// t_vec3				cam_pos;
@@ -205,5 +219,5 @@ void	create_shader_prog(t_glenv *env);
 void	load_texture(t_glenv *env);
 void	vertices_setter(t_glenv *env);
 void	init_variables(t_glenv *env);
-
+void				separate_texture(t_glenv *env);
 #endif
