@@ -63,7 +63,6 @@ static const char *vf =
 		"else\n"
 			"FragColor = vec4(grey, grey, grey, 1.0f);\n"
 	"}\n"
-
 	"else if (texmode)\n"
 		"FragColor = texture(ourTexture, TexCoord);\n"
 	"else if (alphmode)\n"
