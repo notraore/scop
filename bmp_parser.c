@@ -45,13 +45,11 @@ unsigned char		*read_bmp(FILE *file, unsigned char *header, t_glenv *env)
 	return (data);
 }
 
-unsigned char *parse_bmp(char const *pathname, t_glenv *env)
+unsigned char		*parse_bmp(char const *pathname, t_glenv *env)
 {
-	FILE		*file;
-	unsigned char header[54];
+	FILE			*file;
+	unsigned char	header[54];
 
-	env->tex_width = 360;
-	env->tex_height = 351;
 	file = fopen(pathname, "rb");
 	if (!file)
 		ft_kill("Image impossible to open.");

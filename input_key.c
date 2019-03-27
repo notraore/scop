@@ -1,6 +1,18 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   input_key.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 17:32:40 by notraore          #+#    #+#             */
+/*   Updated: 2019/03/27 17:33:15 by notraore         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "scop.h"
 
-void				input_key(t_glenv *env)
+void		input_key(t_glenv *env)
 {
 	if (glfwGetKey(env->window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
 		glfwSetWindowShouldClose(env->window, true);
@@ -17,16 +29,17 @@ void				input_key(t_glenv *env)
 	else if (glfwGetKey(env->window, GLFW_KEY_S) == GLFW_PRESS)
 		env->new_pos.z -= 0.2f;
 	else if (glfwGetKey(env->window, GLFW_KEY_I) == GLFW_PRESS)
-			env->rotx += 1.0f;
+		env->rotx += 1.0f;
 	else if (glfwGetKey(env->window, GLFW_KEY_O) == GLFW_PRESS)
-			env->roty += 1.0f;
+		env->roty += 1.0f;
 	else if (glfwGetKey(env->window, GLFW_KEY_P) == GLFW_PRESS)
-			env->rotz += 1.0f;
+		env->rotz += 1.0f;
 	else if (glfwGetKey(env->window, GLFW_KEY_X) == GLFW_PRESS)
 		env->scaling += 0.1;
 	else if (glfwGetKey(env->window, GLFW_KEY_Z) == GLFW_PRESS)
 		env->scaling -= 0.1;
 }
+
 void		input_key2(t_glenv *env)
 {
 	if (glfwGetKey(env->window, GLFW_KEY_R) == GLFW_PRESS)
@@ -37,11 +50,11 @@ void		input_key2(t_glenv *env)
 			env->autorotate = false;
 	}
 	else if (glfwGetKey(env->window, GLFW_KEY_L) == GLFW_PRESS)
-			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 	else if (glfwGetKey(env->window, GLFW_KEY_K) == GLFW_PRESS)
-			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 	else if (glfwGetKey(env->window, GLFW_KEY_SEMICOLON) == GLFW_PRESS)
-			glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
+		glPolygonMode(GL_FRONT_AND_BACK, GL_POINT);
 	else if (glfwGetKey(env->window, GLFW_KEY_U) == GLFW_PRESS)
 		reset_model(env);
 	else if (glfwGetKey(env->window, GLFW_KEY_RIGHT) == GLFW_PRESS)

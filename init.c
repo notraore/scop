@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 17:32:36 by notraore          #+#    #+#             */
+/*   Updated: 2019/03/27 17:33:23 by notraore         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "scop.h"
 
@@ -23,7 +34,7 @@ void				init_variables(t_glenv *env)
 {
 	env->last_time = glfwGetTime();
 	env->new_size = create_tvec3(1, 1, 1);
-	env->new_pos = create_tvec3(0 , 0, 0);
+	env->new_pos = create_tvec3(0, 0, 0);
 	env->new_axis = create_tvec3(1, 0, 0);
 	env->transform = create_mat4(1.0f);
 	env->scaling = 9.0f;
@@ -58,4 +69,3 @@ void				env_shader_texture_vertices_var(t_glenv *env)
 	unite_all(env);
 	vertices_setter(env);
 }
-

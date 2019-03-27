@@ -28,7 +28,8 @@ SRCS		= 	main.c \
 				bmp_parser.c \
 				vector.c \
 				matrice.c \
-				rotation.c
+				rotation.c \
+				faces_parser.c
 
 OBJS		= 	$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 

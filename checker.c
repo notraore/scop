@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   checker.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 17:32:10 by notraore          #+#    #+#             */
+/*   Updated: 2019/03/27 17:33:17 by notraore         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "scop.h"
 
 int					check_shader(GLuint shader, GLint compiled)
@@ -25,8 +37,8 @@ int					check_shader(GLuint shader, GLint compiled)
 
 int					check_program(GLuint program, GLint compiled)
 {
-	GLint info_len;
-	char 	*info_log2;
+	GLint	info_len;
+	char	*info_log2;
 
 	info_len = 0;
 	if (!compiled)

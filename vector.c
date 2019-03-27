@@ -30,7 +30,7 @@ float		magnitude(t_vec3 *a)
 t_vec3		normalize(t_vec3 *a)
 {
 	t_vec3	normalized;
-	float		magn;
+	float	magn;
 
 	magn = magnitude(a);
 	normalized.x = a->x / magn;

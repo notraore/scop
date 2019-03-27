@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   render_model.c                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 17:32:52 by notraore          #+#    #+#             */
+/*   Updated: 2019/03/27 17:33:24 by notraore         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "scop.h"
 
 void				apply_grey_shader(t_glenv *env)
@@ -49,13 +61,14 @@ void				render(t_glenv *env)
 	create_final_matrix(env);
 	if (env->autorotate)
 		auto_roty(env);
-	env->transformLoc = glGetUniformLocation(env->program, "mvp");
+	env->transform_loc = glGetUniformLocation(env->program, "mvp");
 	env->greyloc = glGetUniformLocation(env->program, "greymode");
 	env->texloc = glGetUniformLocation(env->program, "texmode");
 	env->alphmodeloc = glGetUniformLocation(env->program, "alphmode");
 	env->smoothieloc = glGetUniformLocation(env->program, "smoothie");
 	glUseProgram(env->program);
-	glUniformMatrix4fv(env->transformLoc, 1, GL_FALSE, &env->transform.m[0][0]);
+	glUniformMatrix4fv(env->transform_loc, 1,
+	GL_FALSE, &env->transform.m[0][0]);
 	glUniform1i(env->greyloc, env->greymode);
 	glUniform1i(env->texloc, env->texmode);
 	glUniform1i(env->alphmodeloc, env->alphmode);

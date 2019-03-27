@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   frames_counter.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 17:32:21 by notraore          #+#    #+#             */
+/*   Updated: 2019/03/27 17:33:21 by notraore         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "scop.h"
 
 void				print_fps_counter(t_glenv *env)
@@ -12,6 +24,7 @@ void				print_fps_counter(t_glenv *env)
 		env->last_time += 1.0;
 	}
 }
+
 void				win_update(void *f(float), GLFWwindow *win)
 {
 	double last;

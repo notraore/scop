@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   textures.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 17:33:03 by notraore          #+#    #+#             */
+/*   Updated: 2019/03/27 17:33:26 by notraore         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "scop.h"
 
 void				apply_texture(t_glenv *env)
@@ -7,18 +19,18 @@ void				apply_texture(t_glenv *env)
 	index = 0;
 	while (index < env->indices_nbr * 8)
 	{
-			env->vertices[index + 6] = 0.0f;
-			env->vertices[index + 7] = 0.0f;
-			index += 8;
-			env->vertices[index + 6] = 0.0f;
-			env->vertices[index + 7] = 1.0f;
-			index += 8;
-			env->vertices[index + 6] = 1.0f;
-			env->vertices[index + 7] = 1.0f;
-			index += 8;
-			env->vertices[index + 6] = 1.0;
-			env->vertices[index + 7] = 0.0;
-			index += 8;
+		env->vertices[index + 6] = 0.0f;
+		env->vertices[index + 7] = 0.0f;
+		index += 8;
+		env->vertices[index + 6] = 0.0f;
+		env->vertices[index + 7] = 1.0f;
+		index += 8;
+		env->vertices[index + 6] = 1.0f;
+		env->vertices[index + 7] = 1.0f;
+		index += 8;
+		env->vertices[index + 6] = 1.0;
+		env->vertices[index + 7] = 0.0;
+		index += 8;
 	}
 }
 
@@ -37,7 +49,8 @@ void				load_texture(t_glenv *env)
 {
 	if (env->data)
 	{
-		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->tex_width, env->tex_height, 0,
+		glTexImage2D(GL_TEXTURE_2D, 0,
+			GL_RGB, env->tex_width, env->tex_height, 0,
 		GL_RGB, GL_UNSIGNED_BYTE, env->data);
 		glGenerateMipmap(GL_TEXTURE_2D);
 	}

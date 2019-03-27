@@ -20,7 +20,7 @@ double		ft_atof_suite(char *str, int i, double a, bool neg)
 	if (str[i] == '.')
 	{
 		++i;
-		while(ft_isdigit(str[i + j]))
+		while (ft_isdigit(str[i + j]))
 			j++;
 		if (neg)
 			a = a - (double)ft_atoi(str + i) / (pow(10, j));
@@ -64,7 +64,8 @@ double		ft_atof(char *str, float *stock)
 	if (str[i] == '-')
 		neg = true;
 	a = (double)ft_atoi(str + i);
-	while (str[i] != '.' && (ft_isdigit(str[i]) || str[i] == ' ' || str[i] == '-'))
+	while (str[i] != '.' && (ft_isdigit(str[i])
+	|| str[i] == ' ' || str[i] == '-'))
 		i++;
 	*stock = ft_atof_suite(str, i, a, neg);
 	return (fail > 0 ? 0 : 1);

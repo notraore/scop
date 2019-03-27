@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   functions.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/03/27 17:32:27 by notraore          #+#    #+#             */
+/*   Updated: 2019/03/27 17:33:22 by notraore         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "scop.h"
 
 void				reset_model(t_glenv *env)
@@ -26,7 +38,6 @@ void				framebuffer_size_callback(GLFWwindow *window,
 	(void)window;
 	glViewport(0, 0, width, height);
 }
-
 
 void				auto_roty(t_glenv *env)
 {

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pos_atof.c                                          :+:      :+:    :+:   */
+/*   pos_atof.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2017/11/22 16:25:01 by notraore          #+#    #+#             */
-/*   Updated: 2017/11/22 16:25:17 by notraore         ###   ########.fr       */
+/*   Created: 2019/03/27 18:38:44 by notraore          #+#    #+#             */
+/*   Updated: 2019/03/27 18:38:46 by notraore         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ double		pos_atof_suite(char *str, int i, double a, bool neg)
 	if (str[i] == '.')
 	{
 		++i;
-		while(ft_isdigit(str[i + j]))
+		while (ft_isdigit(str[i + j]))
 			j++;
 		if (neg)
 			a = a - (double)ft_atoi(str + i) / (pow(10, j));
@@ -64,7 +64,8 @@ double		pos_atof(char *str, float *stock)
 	if (str[i] == '-')
 		neg = true;
 	a = (double)ft_atoi(str + i);
-	while (str[i] != '.' && (ft_isdigit(str[i]) || str[i] == ' ' || str[i] == '-'))
+	while (str[i] != '.' && (ft_isdigit(str[i]) || str[i] == ' '
+	|| str[i] == '-'))
 		i++;
 	*stock = pos_atof_suite(str, i, a, neg);
 	return (fail > 0 ? 0 : 1);
