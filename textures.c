@@ -1,0 +1,47 @@
+#include "scop.h"
+
+void				apply_texture(t_glenv *env)
+{
+	int				index;
+
+	index = 0;
+	while (index < env->indices_nbr * 8)
+	{
+			env->vertices[index + 6] = 0.0f;
+			env->vertices[index + 7] = 0.0f;
+			index += 8;
+			env->vertices[index + 6] = 0.0f;
+			env->vertices[index + 7] = 1.0f;
+			index += 8;
+			env->vertices[index + 6] = 1.0f;
+			env->vertices[index + 7] = 1.0f;
+			index += 8;
+			env->vertices[index + 6] = 1.0;
+			env->vertices[index + 7] = 0.0;
+			index += 8;
+	}
+}
+
+void				separate_texture(t_glenv *env)
+{
+	glGenTextures(1, &env->texture);
+	glBindTexture(GL_TEXTURE_2D, env->texture);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	env->data = parse_bmp("texture/texture.bmp", env);
+}
+
+void				load_texture(t_glenv *env)
+{
+	if (env->data)
+	{
+		glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, env->tex_width, env->tex_height, 0,
+		GL_RGB, GL_UNSIGNED_BYTE, env->data);
+		glGenerateMipmap(GL_TEXTURE_2D);
+	}
+	else
+		ft_putendl("Failed to load the texture.");
+	free(env->data);
+}

@@ -22,43 +22,12 @@ t_vec3		create_tvec3(double x, double y, double z)
 	return (new);
 }
 
-t_vec4		create_tvec4(double x, double y, double z, double w)
-{
-	t_vec4	new;
-
-	new.x = x;
-	new.y = y;
-	new.z = z;
-	new.w = w;
-	return (new);
-}
-
-void		print_vec4(t_vec4 vec)
-{
-	ft_putstr("[");
-	ft_putnbr(vec.x);
-	ft_putstr(" ");
-	ft_putnbr(vec.y);
-	ft_putstr(" ");
-	ft_putnbr(vec.z);
-	ft_putstr(" ");
-	ft_putnbr(vec.w);
-	ft_putendl("]");
-}
-
-void		print_vec3(t_vec3 vec)
-{
-	printf("[%f ", vec.x);
-	printf("%f ", vec.y);
-	printf("%f]\n", vec.z);
-}
-
 float		magnitude(t_vec3 *a)
 {
 	return (sqrtf(a->x * a->x + a->y * a->y + a->z * a->z));
 }
 
-t_vec3	normalize(t_vec3 *a)
+t_vec3		normalize(t_vec3 *a)
 {
 	t_vec3	normalized;
 	float		magn;
@@ -70,12 +39,7 @@ t_vec3	normalize(t_vec3 *a)
 	return (normalized);
 }
 
-double		dot_product(t_vec3 *a, t_vec3 *b)
-{
-	return (a->x * b->x + a->y * b->y + a->z * b->z);
-}
-
-t_vec3	v_v_subs(t_vec3 *a, t_vec3 *b)
+t_vec3		v_v_subs(t_vec3 *a, t_vec3 *b)
 {
 	t_vec3	r;
 
@@ -85,7 +49,7 @@ t_vec3	v_v_subs(t_vec3 *a, t_vec3 *b)
 	return (r);
 }
 
-t_vec3	v_v_mult(t_vec3 *a, t_vec3 *b)
+t_vec3		v_v_mult(t_vec3 *a, t_vec3 *b)
 {
 	t_vec3	r;
 

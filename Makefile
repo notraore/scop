@@ -15,13 +15,20 @@ LIBFT 		= 	libft/libft.a
 FRMWLIB		= 	lib/libglfw.3.2.dylib
 GLADLIB		=	glad/libglad.a
 
-STBLIB		=	stb/libstb.a
-
 SRCS		= 	main.c \
-				matrice.c \
+				input_key.c \
+				functions.c \
+				frames_counter.c \
+				checker.c \
+				shader.c \
+				textures.c \
+				render_model.c\
+				matrix.c \
+				init.c \
+				bmp_parser.c \
 				vector.c \
-				rotation.c \
-				init.c
+				matrice.c \
+				rotation.c
 
 OBJS		= 	$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 
@@ -42,7 +49,7 @@ all:		$(NAME)
 
 $(NAME):	$(OBJS)
 			@ make -C ./libft all
-			@ $(CC) $(LIBFT) $(CFLAGS) $(GLADPATH) $(STBPATH) $(FRMPATH) $(FRMWLIB) $(GLADLIB) $(FRMWK) -o $@ $^
+			@ $(CC) $(LIBFT) $(CFLAGS) $(GLADPATH) $(FRMPATH) $(FRMWLIB) $(GLADLIB) $(FRMWK) -o $@ $^
 			@ echo "\n\033[92m---> scop program created ✓\033[0m";
 
 objs/%.o:	srcs/%.c
