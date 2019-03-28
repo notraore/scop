@@ -107,7 +107,7 @@ struct					s_glenv
 	bool				texmode;
 	bool				blendmode;
 
-	float				bfactormode;
+	double				bfactormode;
 	bool				alphmode;
 	bool				smoothiemode;
 	bool				autorotate;

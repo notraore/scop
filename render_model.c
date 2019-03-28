@@ -61,6 +61,7 @@ void				render(t_glenv *env)
 	create_final_matrix(env);
 	if (env->autorotate)
 		auto_roty(env);
+	glUseProgram(env->program);
 	env->transform_loc = glGetUniformLocation(env->program, "mvp");
 	env->greyloc = glGetUniformLocation(env->program, "greymode");
 	env->texloc = glGetUniformLocation(env->program, "texmode");
@@ -68,7 +69,6 @@ void				render(t_glenv *env)
 	env->smoothieloc = glGetUniformLocation(env->program, "smoothie");
 	env->blendloc = glGetUniformLocation(env->program, "blend");
 	env->bfactorloc = glGetUniformLocation(env->program, "blendfactor");
-	glUseProgram(env->program);
 	glUniformMatrix4fv(env->transform_loc, 1,
 	GL_FALSE, &env->transform.m[0][0]);
 	glUniform1i(env->greyloc, env->greymode);
@@ -76,10 +76,11 @@ void				render(t_glenv *env)
 	glUniform1i(env->alphmodeloc, env->alphmode);
 	glUniform1i(env->smoothieloc, env->smoothiemode);
 	glUniform1i(env->blendloc, env->blendmode);
-	glUniform1i(env->bfactorloc, env->bfactormode);
+	glUniform1f(env->bfactorloc, env->bfactormode);
 	glBindVertexArray(env->vao);
 	glDrawElements(GL_TRIANGLES, env->indices_nbr, GL_UNSIGNED_INT, 0);
 	glfwSwapBuffers(env->window);
+	// glUseProgram(0);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

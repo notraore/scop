@@ -49,7 +49,7 @@ void				init_variables(t_glenv *env)
 	env->alphmode = false;
 	env->smoothiemode = false;
 	env->blendmode = false;
-	// env->bfactormode = 1.0f;
+	env->bfactormode = 1.0f;
 }
 
 void				init_glversion(void)
