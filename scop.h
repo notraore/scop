@@ -60,7 +60,7 @@ struct					s_glenv
 	int					face_nbr;
 	int					vtx_nbr;
 	int					vt;
-	bool				four;
+	int					nb_faces;
 	float				vertices[200000];
 	float				v_v[200000];
 	float				v_uv[200000];

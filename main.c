@@ -46,9 +46,8 @@ int					parse_obj(t_glenv *env, char *srcpath)
 		parse_vertex(env);
 		if (env->line[0] == 'f')
 		{
-			if (tab_len(env->split) > 5)
-				return (0);
-			env->four = (env->split[4]) ? true : false;
+			if (tab_len(env->split) > 3)
+				env->nb_faces = tab_len(env->split) - 1;
 			if (!store_faces(env))
 				return (0);
 			env->face_nbr++;

@@ -68,16 +68,20 @@ int					parse_faces(t_glenv *env, int i)
 	return (1);
 }
 
-void				parse_4_faces(t_glenv *env, int tmp, int i)
+void				parse_multiple_faces(t_glenv *env, int tmp, int i, int n)
 {
 	tmp = env->ind + 3;
 	while (env->ind < tmp)
 	{
-		env->indices[env->ind] = ft_atoi(env->split[i]) - 1;
+		if (n % 3 == 0)
+			env->indices[env->ind] = ft_atoi(env->split[1]) - 1;
+		else
+		{
+			env->indices[env->ind] = ft_atoi(env->split[i + 1]) - 1;
+		}
 		env->ind++;
 		i++;
-		if (i == 2)
-			i = 3;
+		n++;
 	}
 	env->indices_nbr += 3;
 }
@@ -86,6 +90,7 @@ int					store_faces(t_glenv *env)
 {
 	int i;
 	int tmp;
+	int n;
 
 	i = 1;
 	tmp = env->ind + 3;
@@ -99,8 +104,13 @@ int					store_faces(t_glenv *env)
 		i++;
 	}
 	i = 1;
-	if (env->four == true)
-		parse_4_faces(env, tmp, i);
+	n = 0;
+	while (env->nb_faces - 3 > 0)
+	{
+		parse_multiple_faces(env, tmp, i, n);
+		i++;
+		env->nb_faces -= 1;
+	}
 	env->indices_nbr += 3;
 	return (1);
 }
