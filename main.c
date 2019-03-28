@@ -36,11 +36,6 @@ int					parse_vertex(t_glenv *env)
 
 int					parse_obj(t_glenv *env, char *srcpath)
 {
-	int	v;
-	int	vn;
-
-	v = 0;
-	vn = 0;
 	env->vtx_nbr = 0;
 	env->fd = open(srcpath, O_RDONLY);
 	if (env->fd == -1)
@@ -58,6 +53,7 @@ int					parse_obj(t_glenv *env, char *srcpath)
 				return (0);
 			env->face_nbr++;
 		}
+		free(env->line);
 		free_tab(env->split);
 	}
 	return (1);

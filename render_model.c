@@ -66,6 +66,8 @@ void				render(t_glenv *env)
 	env->texloc = glGetUniformLocation(env->program, "texmode");
 	env->alphmodeloc = glGetUniformLocation(env->program, "alphmode");
 	env->smoothieloc = glGetUniformLocation(env->program, "smoothie");
+	env->blendloc = glGetUniformLocation(env->program, "blend");
+	env->bfactorloc = glGetUniformLocation(env->program, "blendfactor");
 	glUseProgram(env->program);
 	glUniformMatrix4fv(env->transform_loc, 1,
 	GL_FALSE, &env->transform.m[0][0]);
@@ -73,7 +75,8 @@ void				render(t_glenv *env)
 	glUniform1i(env->texloc, env->texmode);
 	glUniform1i(env->alphmodeloc, env->alphmode);
 	glUniform1i(env->smoothieloc, env->smoothiemode);
-	glBindTexture(GL_TEXTURE_2D, env->texture);
+	glUniform1i(env->blendloc, env->blendmode);
+	glUniform1i(env->bfactorloc, env->bfactormode);
 	glBindVertexArray(env->vao);
 	glDrawElements(GL_TRIANGLES, env->indices_nbr, GL_UNSIGNED_INT, 0);
 	glfwSwapBuffers(env->window);

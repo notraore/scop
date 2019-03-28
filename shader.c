@@ -12,15 +12,12 @@
 
 #include "scop.h"
 
-char				*parse_shader(char *path, t_glenv *env)
+char				*parse_shader(char *path)
 {
 	FILE			*vs;
-	int				i;
 	int				size_s;
 	char			*data;
 
-	(void)env;
-	i = 0;
 	vs = fopen(path, "r");
 	if (!vs)
 		ft_kill("!vs");
@@ -28,8 +25,10 @@ char				*parse_shader(char *path, t_glenv *env)
 	size_s = ftell(vs);
 	fseek(vs, 0L, SEEK_SET);
 	data = malloc(size_s * sizeof(char));
+	if (!data)
+		ft_kill("Couldn't allocate memory for shaders.");
 	if (!fread(data, 1, size_s, vs))
-		ft_kill("error while reading the file.");
+		ft_kill("error while storing the shader file into string.");
 	data[size_s] = '\0';
 	fclose(vs);
 	return (data);
@@ -59,8 +58,8 @@ void				vertices_setter(t_glenv *env)
 
 void				create_shader_prog(t_glenv *env)
 {
-	env->vs = parse_shader("./vs.shader", env);
-	env->vf = parse_shader("./vf.shader", env);
+	env->vs = parse_shader("./vs.shader");
+	env->vf = parse_shader("./vf.shader");
 	env->vtx_shader = glCreateShader(GL_VERTEX_SHADER);
 	if (env->vtx_shader == 0)
 		ft_kill("shader not created");

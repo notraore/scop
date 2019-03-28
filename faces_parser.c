@@ -31,19 +31,20 @@ int					stock_decrem(t_glenv *env, int part)
 	return (1);
 }
 
-int					parse_faces2(t_glenv *env, char **tab, int i)
+int					parse_faces2(t_glenv *env, int i)
 {
-	tab = ft_strsplit(env->split[i], '/');
-	if (tab_len(tab) == 2 && pos_atoi(tab[0], &env->indices[env->ind])
-		&& pos_atoi(tab[1], &env->textures[env->ind]))
+	env->tab = ft_strsplit(env->split[i], '/');
+	if (tab_len(env->tab) == 2 && pos_atoi(env->tab[0], &env->indices[env->ind])
+		&& pos_atoi(env->tab[1], &env->textures[env->ind]))
 		return (stock_decrem(env, 1) ? 1 : 0);
-	else if (tab_len(tab) == 3 && pos_atoi(tab[0], &env->indices[env->ind])
-		&& pos_atoi(tab[1], &env->textures[env->ind])
-		&& pos_atoi(tab[2], &env->normales[env->ind]))
+	else if (tab_len(env->tab) == 3 && pos_atoi(env->tab[0],
+	&env->indices[env->ind])
+		&& pos_atoi(env->tab[1], &env->textures[env->ind])
+		&& pos_atoi(env->tab[2], &env->normales[env->ind]))
 		return (stock_decrem(env, 2) ? 1 : 0);
 	else
 	{
-		free(tab);
+		free_tab(env->tab);
 		return (0);
 	}
 	return (1);
@@ -51,22 +52,19 @@ int					parse_faces2(t_glenv *env, char **tab, int i)
 
 int					parse_faces(t_glenv *env, int i)
 {
-	char **tab;
-
-	tab = NULL;
 	if (ft_isdigit(env->split[1][0])
 		&& (ft_count_c(env->split[i], '/') == 1
 			|| ft_count_c(env->split[i], '/') == 2))
 	{
-		if (!parse_faces2(env, tab, i))
+		if (!parse_faces2(env, i))
 		{
-			free(tab);
+			free_tab(env->tab);
 			return (0);
 		}
-		free(tab);
 	}
 	else
 		return (0);
+	free_tab(env->tab);
 	return (1);
 }
 

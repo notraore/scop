@@ -101,14 +101,20 @@ struct					s_glenv
 	GLuint				texloc;
 	GLuint				smoothieloc;
 	GLuint				alphmodeloc;
+	GLuint				blendloc;
+	GLuint				bfactorloc;
 	bool				greymode;
 	bool				texmode;
+	bool				blendmode;
+
+	float				bfactormode;
 	bool				alphmode;
 	bool				smoothiemode;
 	bool				autorotate;
 	bool				framed;
 	GLchar				*vf;
 	GLchar				*vs;
+	char				**tab;
 };
 
 struct					s_vec4
@@ -128,7 +134,7 @@ int						parse_obj(t_glenv *env, char *srcpath);
 ** faces_parser.c
 */
 int						stock_decrem(t_glenv *env, int part);
-int						parse_faces2(t_glenv *env, char **tab, int i);
+int						parse_faces2(t_glenv *env, int i);
 int						parse_faces(t_glenv *env, int i);
 void					parse_4_faces(t_glenv *env, int tmp, int i);
 int						store_faces(t_glenv *env);
@@ -172,7 +178,7 @@ int						check_program(GLuint program, GLint compiled);
 */
 void					vertices_setter(t_glenv *env);
 void					create_shader_prog(t_glenv *env);
-char					*parse_shader(char *path, t_glenv *env);
+char					*parse_shader(char *path);
 /*
 **textures.c
 */
