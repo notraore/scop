@@ -61,12 +61,12 @@ struct					s_glenv
 	int					vtx_nbr;
 	int					vt;
 	int					nb_faces;
-	float				vertices[200000];
+	float				vertices[378];
 	float				v_v[200000];
 	float				v_uv[200000];
 	float				uv_new[200000];
 	float				v_vn[200000];
-	unsigned int		indices[200000];
+	unsigned int		*indices;
 	unsigned int		textures[200000];
 	unsigned int		normales[200000];
 	int					indices_nbr;

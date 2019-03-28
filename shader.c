@@ -39,7 +39,7 @@ void				vertices_setter(t_glenv *env)
 	generate_buff_arr(env);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(env->indices), env->indices, GL_STATIC_DRAW);
+		sizeof(env->indices) * 228, env->indices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, env->vbo);
 	glBufferData(GL_ARRAY_BUFFER,
 		sizeof(env->vertices), env->vertices, GL_STATIC_DRAW);
