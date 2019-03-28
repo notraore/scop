@@ -59,7 +59,7 @@ void				vertices_setter(t_glenv *env)
 void				create_shader_prog(t_glenv *env)
 {
 	env->vs = parse_shader("./vs.shader");
-	env->vf = parse_shader("./vf.shader");
+	env->vf = parse_shader("./vs.blend.c");
 	env->vtx_shader = glCreateShader(GL_VERTEX_SHADER);
 	if (env->vtx_shader == 0)
 		ft_kill("shader not created");

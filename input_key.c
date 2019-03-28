@@ -79,20 +79,32 @@ void		input_key3(t_glenv *env)
 		env->smoothiemode = true;
 	else if (glfwGetKey(env->window, GLFW_KEY_DOWN) == GLFW_PRESS)
 		env->smoothiemode = false;
+
+	else if (glfwGetKey(env->window, GLFW_KEY_F) == GLFW_PRESS)
+	{
+		env->texmode = true;
+		if (env->bfactormode > 0.0f)
+			env->bfactormode -= 0.01;
+
+	}
+	else if (glfwGetKey(env->window, GLFW_KEY_G) == GLFW_PRESS)
+	{
+		if (env->bfactormode < 1.0f)
+			env->bfactormode += 0.01;
+		if (env->bfactormode == 1.0f)
+			env->texmode = false;
+		printf("factor = %f\n", env->bfactormode);
+	}
 	else if (glfwGetKey(env->window, GLFW_KEY_T) == GLFW_PRESS)
 	{
-		if (env->texmode == true)
-		{
-			env->texmode = false;
-		}
+		env->texmode = false;
+		// if (env->bfactormode > 0.0f)
+		// env->bfactormode -= 0.1;
 	}
 	else if (glfwGetKey(env->window, GLFW_KEY_Y) == GLFW_PRESS)
 	{
-		if (env->texmode == false)
-		{
-			env->texmode = true;
-			env->greymode = false;
-			env->alphmode = false;
-		}
+		env->texmode = true;
+		// if (env->bfactormode < 1.0f)
+		// 	env->bfactormode += 0.1;
 	}
 }
