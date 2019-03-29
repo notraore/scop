@@ -17,14 +17,12 @@ int					stock_decrem(t_glenv *env, int part)
 	if (part == 1)
 	{
 		env->indices[env->ind] -= 1;
-		env->textures[env->ind] -= 1;
 		if (!ft_isdigit(env->split[1][ft_strlen(env->split[1]) - 1]))
 			return (0);
 	}
 	else if (part == 2)
 	{
 		env->indices[env->ind] -= 1;
-		env->textures[env->ind] -= 1;
 		if (!ft_isdigit(env->split[2][ft_strlen(env->split[2]) - 1]))
 			return (0);
 	}
@@ -33,14 +31,15 @@ int					stock_decrem(t_glenv *env, int part)
 
 int					parse_faces2(t_glenv *env, int i)
 {
+	unsigned int	tmp;
 	env->tab = ft_strsplit(env->split[i], '/');
 	if (tab_len(env->tab) == 2 && pos_atoi(env->tab[0], &env->indices[env->ind])
-		&& pos_atoi(env->tab[1], &env->textures[env->ind]))
+		&& pos_atoi(env->tab[1], &tmp))
 		return (stock_decrem(env, 1) ? 1 : 0);
 	else if (tab_len(env->tab) == 3 && pos_atoi(env->tab[0],
 	&env->indices[env->ind])
-		&& pos_atoi(env->tab[1], &env->textures[env->ind])
-		&& pos_atoi(env->tab[2], &env->normales[env->ind]))
+		&& pos_atoi(env->tab[1], &tmp)
+		&& pos_atoi(env->tab[2], &tmp))
 		return (stock_decrem(env, 2) ? 1 : 0);
 	else
 	{
@@ -76,9 +75,7 @@ void				parse_multiple_faces(t_glenv *env, int tmp, int i, int n)
 		if (n % 3 == 0)
 			env->indices[env->ind] = ft_atoi(env->split[1]) - 1;
 		else
-		{
 			env->indices[env->ind] = ft_atoi(env->split[i + 1]) - 1;
-		}
 		env->ind++;
 		i++;
 		n++;

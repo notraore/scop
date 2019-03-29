@@ -93,7 +93,6 @@ void		input_key3(t_glenv *env)
 			env->bfactormode += 0.01;
 		if (env->bfactormode == 1.0f)
 			env->texmode = false;
-		printf("factor = %f\n", env->bfactormode);
 	}
 	else if (glfwGetKey(env->window, GLFW_KEY_T) == GLFW_PRESS)
 	{

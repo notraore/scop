@@ -64,11 +64,11 @@ struct					s_glenv
 	float				*vertices;
 	float				v_v[200000];
 	float				v_uv[200000];
-	float				uv_new[200000];
-	float				v_vn[200000];
+	// float				uv_new[200000];
+	// float				v_vn[200000];
 	unsigned int		*indices;
-	unsigned int		textures[200000];
-	unsigned int		normales[200000];
+	// unsigned int		textures[200000];
+	// unsigned int		normales[200000];
 	int					indices_nbr;
 	unsigned int		texture;
 	int					tex_width;
@@ -186,13 +186,13 @@ char					*parse_shader(char *path);
 **textures.c
 */
 
-void					apply_texture(t_glenv *env);
+void					apply_texture(t_glenv *env, int all);
 void					separate_texture(t_glenv *env);
 void					load_texture(t_glenv *env);
 /*
 **render_model.c
 */
-void					apply_grey_shader(t_glenv *env);
+void					apply_grey_shader(t_glenv *env, int all);
 int						unite_all(t_glenv *env);
 void					render(t_glenv *env);
 /*

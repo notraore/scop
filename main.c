@@ -23,14 +23,14 @@ int					parse_vertex(t_glenv *env)
 			return (0);
 		env->vtx_nbr += 3;
 	}
-	else if (env->line[0] == 'v'
-		&& env->line[1] == 't' && env->line[2] == ' ')
-	{
-		if (!ft_atof(env->split[1], &env->v_uv[env->vt])
-			|| !ft_atof(env->split[2], &env->v_uv[env->vt + 1]))
-			return (0);
-		env->vt += 2;
-	}
+	// else if (env->line[0] == 'v'
+	// 	&& env->line[1] == 't' && env->line[2] == ' ')
+	// {
+	// 	if (!ft_atof(env->split[1], &env->v_uv[env->vt])
+	// 		|| !ft_atof(env->split[2], &env->v_uv[env->vt + 1]))
+	// 		return (0);
+	// 	env->vt += 2;
+	// }
 	return (1);
 }
 
@@ -43,7 +43,8 @@ int					parse_obj(t_glenv *env, char *srcpath)
 	while (get_next_line(env->fd, &env->line))
 	{
 		env->split = ft_strsplit(env->line, ' ');
-		parse_vertex(env);
+		if (!parse_vertex(env))
+			return (0);
 		if (env->line[0] == 'f')
 		{
 			if (tab_len(env->split) > 3)
@@ -58,26 +59,25 @@ int					parse_obj(t_glenv *env, char *srcpath)
 	return (1);
 }
 
-void				malloc_tabs(t_glenv *env, int tmp_vertex, int tmp_indices)
+void				malloc_tabs(t_glenv *env)
 {
-	printf("tmp->vertex = %d\n", tmp_vertex);
-	printf("tmp->indices = %d\n", tmp_indices);
-	if (!(env->vertices = (float*)malloc(sizeof(float) * tmp_vertex + 4)))
+	printf("tmp->vertex = %d\n", env->ver_alloc);
+	printf("tmp->indices = %d\n", env->ind_alloc);
+	if (!(env->vertices = (float*)malloc(sizeof(float) * env->ver_alloc)))
 		ft_kill("Couldn't allocate memory for vertices");
-	if (!(env->indices = (unsigned int*)malloc(sizeof(unsigned int) * tmp_indices + 4)))
+	if (!(env->indices = (unsigned int*)malloc(sizeof(unsigned int) * env->ind_alloc)))
 		ft_kill("Couldn't allocate memory for faces");
 }
 
 void				parse_file(t_glenv *env, char *srcpath)
 {
-	int tmp_vertex;
-	int	tmp_indices;
 	int	texcor;
 	char **tab_tmp;
+	double	tmp_vertex;
 
 	tmp_vertex = 0;
 	texcor = 0;
-	tmp_indices = 0;
+	tab_tmp = NULL;
 	env->fd = open(srcpath, O_RDONLY);
 	if (env->fd == -1)
 		ft_kill("Open error");
@@ -91,21 +91,24 @@ void				parse_file(t_glenv *env, char *srcpath)
 		else if (env->line[0] == 'f')
 		{
 			tab_tmp = ft_strsplit(env->line, ' ');
-
 			if (tab_len(tab_tmp) == 3 || tab_len(tab_tmp) == 4)
-				tmp_indices += (tab_len(tab_tmp) - 1);
+				env->ind_alloc += (tab_len(tab_tmp) - 1);
 			else
-				tmp_indices += (tab_len(tab_tmp) - 3) * 3;
+				env->ind_alloc += (tab_len(tab_tmp) - 3) * 3;
+			free_tab(tab_tmp);
 		}
+		free(env->line);
 	}
-	env->ind_alloc = tmp_indices;
 	env->ver_alloc = (tmp_vertex * 2) + texcor;
-	malloc_tabs(env, (tmp_vertex * 2) + texcor, tmp_indices);
+	malloc_tabs(env);
 }
 
 int					main(int argc, char **argv)
 {
 	t_glenv		env;
+	int			i;
+
+	i = 0;
 
 	if (!glfwInit())
 		ft_kill("Can't init GLFW.");
@@ -127,6 +130,7 @@ int					main(int argc, char **argv)
 		render(&env);
 		glfwPollEvents();
 	}
+
 	end_program(&env);
 	return (0);
 }

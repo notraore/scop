@@ -12,12 +12,12 @@
 
 #include "scop.h"
 
-void				apply_texture(t_glenv *env)
+void				apply_texture(t_glenv *env, int all)
 {
 	int				index;
 
 	index = 0;
-	while (index < env->indices_nbr * 8)
+	while (index < all)
 	{
 		env->vertices[index + 6] = 0.0f;
 		env->vertices[index + 7] = 0.0f;

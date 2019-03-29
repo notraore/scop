@@ -39,10 +39,12 @@ void				vertices_setter(t_glenv *env)
 	generate_buff_arr(env);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, env->ebo);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER,
-		sizeof(env->indices) * env->ind_alloc, env->indices, GL_STATIC_DRAW);
+		sizeof(GLuint) * env->ind_alloc, env->indices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, env->vbo);
 	glBufferData(GL_ARRAY_BUFFER,
-		sizeof(env->vertices) * env->ver_alloc, env->vertices, GL_STATIC_DRAW);
+		sizeof(float) * env->ver_alloc, env->vertices, GL_STATIC_DRAW);
+	// glBufferData(GL_ARRAY_BUFFER,
+	// 	sizeof(env->vertices), env->vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3,
 		GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);

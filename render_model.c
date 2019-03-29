@@ -12,14 +12,14 @@
 
 #include "scop.h"
 
-void				apply_grey_shader(t_glenv *env)
+void				apply_grey_shader(t_glenv *env, int all)
 {
 	float		random;
 	int			index;
 
 	random = 0.5;
 	index = 0;
-	while (index < env->vtx_nbr * 8)
+	while (index < all)
 	{
 		env->vertices[index + 3] = (((float)rand() / (float)(RAND_MAX)) / 1);
 		env->vertices[index + 4] = (((float)rand() / (float)(RAND_MAX)) / 1);
@@ -34,24 +34,26 @@ int					unite_all(t_glenv *env)
 	int			face_i;
 	int			tex_i;
 	int			clr;
-	float		random;
+	int			all;
 
 	clr = 0;
 	index = 0;
 	face_i = 0;
 	tex_i = 0;
-	random = 0;
+	all = (env->vtx_nbr * 2) + ((env->vtx_nbr / 3) * 2);
 	srand((unsigned int)time(NULL));
-	while (index < env->vtx_nbr * 8)
+	// printf("vtx-nbr = %d\n", all);
+	while (index < all)
 	{
 		env->vertices[index] = (env->v_v[face_i]);
 		env->vertices[index + 1] = (env->v_v[face_i + 1]);
 		env->vertices[index + 2] = (env->v_v[face_i + 2]);
+		// printf("env->vertices[%d] = %f, env->vertices[%d] = %f, env->vertices[%d] = %f\n", index, env->vertices[index], index + 1, env->vertices[index + 1], index + 2, env->vertices[index + 2]);
 		index += 8;
 		face_i += 3;
 	}
-	apply_grey_shader(env);
-	apply_texture(env);
+	apply_grey_shader(env, all);
+	apply_texture(env, all);
 	return (0);
 }
 
