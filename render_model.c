@@ -42,13 +42,11 @@ int					unite_all(t_glenv *env)
 	tex_i = 0;
 	all = (env->vtx_nbr * 2) + ((env->vtx_nbr / 3) * 2);
 	srand((unsigned int)time(NULL));
-	// printf("vtx-nbr = %d\n", all);
 	while (index < all)
 	{
 		env->vertices[index] = (env->v_v[face_i]);
 		env->vertices[index + 1] = (env->v_v[face_i + 1]);
 		env->vertices[index + 2] = (env->v_v[face_i + 2]);
-		// printf("env->vertices[%d] = %f, env->vertices[%d] = %f, env->vertices[%d] = %f\n", index, env->vertices[index], index + 1, env->vertices[index + 1], index + 2, env->vertices[index + 2]);
 		index += 8;
 		face_i += 3;
 	}
@@ -82,7 +80,6 @@ void				render(t_glenv *env)
 	glBindVertexArray(env->vao);
 	glDrawElements(GL_TRIANGLES, env->indices_nbr, GL_UNSIGNED_INT, 0);
 	glfwSwapBuffers(env->window);
-	// glUseProgram(0);
 	glEnable(GL_BLEND);
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 }

@@ -26,3 +26,33 @@ void		free_tab(char **str)
 	free(str);
 	str = NULL;
 }
+
+void		free_itab(int **itab)
+{
+	int i;
+
+	i = 0;
+	while (itab[i])
+	{
+		free(itab[i]);
+		itab[i] = NULL;
+		i++;
+	}
+	free(itab);
+	itab = NULL;
+}
+
+void		free_ftab(float **ftab)
+{
+	int i;
+
+	i = 0;
+	while (ftab[i])
+	{
+		free(ftab[i]);
+		ftab[i] = NULL;
+		i++;
+	}
+	free(ftab);
+	ftab = NULL;
+}

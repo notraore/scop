@@ -29,18 +29,16 @@ SRCS		= 	main.c \
 				vector.c \
 				matrice.c \
 				rotation.c \
-				faces_parser.c
+				faces_parser.c \
+				parser.c
 
 OBJS		= 	$(patsubst srcs/%.c,objs/%.o,$(SRCS))
 
 CC			= 	gcc
 CFLAGS		= 	-Wall -Wextra -Werror
-INC			=	-I./includes/
 FRMPATH		=	-I./include/GLFW/
 GLADPATH	=	-I./glad/
-STBPATH		=	-I./stb/
 FRMWK		=	-framework OpenGl 
-#-lglfw -lGLEW
 
 CG = \033[92m
 CY = \033[93m
@@ -50,12 +48,12 @@ all:		$(NAME)
 
 $(NAME):	$(OBJS)
 			@ make -C ./libft all
-			@ $(CC) $(LIBFT) $(CFLAGS) $(GLADPATH) $(FRMPATH) $(FRMWLIB) $(GLADLIB) $(FRMWK) -o $@ $^
+			@ $(CC) $(LIBFT) $(CFLAGS) $(GLADPATH) $(FRMPATH) $(SCOPINC) $(FRMWLIB) $(GLADLIB) $(FRMWK) -o $@ $^
 			@ echo "\n\033[92m---> scop program created ✓\033[0m";
 
 objs/%.o:	srcs/%.c
 			@ mkdir -p objs
-		 	@ $(CC) $(INC) -c $< -o $@
+		 	@ $(CC) -c $< -o $@
 		 	@ echo "\033[K$(CY)[RT] :$(CE) $(CG)Compiling $<$(CE) \033[1A";
 
 clean:		

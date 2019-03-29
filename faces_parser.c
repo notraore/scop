@@ -32,6 +32,7 @@ int					stock_decrem(t_glenv *env, int part)
 int					parse_faces2(t_glenv *env, int i)
 {
 	unsigned int	tmp;
+
 	env->tab = ft_strsplit(env->split[i], '/');
 	if (tab_len(env->tab) == 2 && pos_atoi(env->tab[0], &env->indices[env->ind])
 		&& pos_atoi(env->tab[1], &tmp))
@@ -95,8 +96,8 @@ int					store_faces(t_glenv *env)
 	{
 		if (pos_atoi(env->split[i], &env->indices[env->ind]))
 			env->indices[env->ind] -= 1;
-		else
-			parse_faces(env, i);
+		else if (!parse_faces(env, i))
+			return (0);
 		env->ind++;
 		i++;
 	}

@@ -13,7 +13,7 @@
 #ifndef SCOP_H
 # define SCOP_H
 # define PI 3.1415926
-# include "./libft/libft.h"
+# include "../libft/libft.h"
 # include <stdio.h>
 # define GLFW_INCLUDE_NONE
 # include <glfw3.h>
@@ -22,6 +22,9 @@
 # include <time.h>
 # include <OpenGL/gl.h>
 # include <stdbool.h>
+# include <sys/types.h>
+# include <sys/stat.h>
+# include <unistd.h>
 
 typedef struct s_vec3	t_vec3;
 typedef struct s_glenv	t_glenv;
@@ -62,13 +65,8 @@ struct					s_glenv
 	int					vt;
 	int					nb_faces;
 	float				*vertices;
-	float				v_v[200000];
-	float				v_uv[200000];
-	// float				uv_new[200000];
-	// float				v_vn[200000];
+	float				*v_v;
 	unsigned int		*indices;
-	// unsigned int		textures[200000];
-	// unsigned int		normales[200000];
 	int					indices_nbr;
 	unsigned int		texture;
 	int					tex_width;
@@ -106,7 +104,6 @@ struct					s_glenv
 	bool				greymode;
 	bool				texmode;
 	bool				blendmode;
-
 	double				bfactormode;
 	bool				alphmode;
 	bool				smoothiemode;
@@ -115,9 +112,11 @@ struct					s_glenv
 	GLchar				*vf;
 	GLchar				*vs;
 	char				**tab;
-
 	int					ind_alloc;
 	int					ver_alloc;
+	int					texcor;
+	double				tmp_vertex;
+	char				**tab_tmp;
 };
 
 struct					s_vec4
@@ -131,8 +130,10 @@ struct					s_vec4
 /*
 **main.c
 */
-int						store_faces(t_glenv *env);
-int						parse_obj(t_glenv *env, char *srcpath);
+void					malloc_tabs(t_glenv *env);
+int						is_regular_file(const char *path);
+void					ft_help(void);
+void					error(char *str);
 /*
 ** faces_parser.c
 */
@@ -176,6 +177,13 @@ void					win_update(void *f(float), GLFWwindow *win);
 int						check_shader(GLuint shader, GLint compiled);
 int						check_program(GLuint program, GLint compiled);
 
+/*
+**parser.c
+*/
+int						parse_vertex(t_glenv *env);
+int						parse_indice(t_glenv *env);
+int						parse_obj(t_glenv *env, char *srcpath);
+void					parse_file(t_glenv *env, char *srcpath);
 /*
 **shader.c
 */

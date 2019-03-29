@@ -42,9 +42,7 @@ void				vertices_setter(t_glenv *env)
 		sizeof(GLuint) * env->ind_alloc, env->indices, GL_STATIC_DRAW);
 	glBindBuffer(GL_ARRAY_BUFFER, env->vbo);
 	glBufferData(GL_ARRAY_BUFFER,
-		sizeof(float) * env->ver_alloc, env->vertices, GL_STATIC_DRAW);
-	// glBufferData(GL_ARRAY_BUFFER,
-	// 	sizeof(env->vertices), env->vertices, GL_STATIC_DRAW);
+		sizeof(GLfloat) * env->ver_alloc, env->vertices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3,
 		GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
@@ -61,7 +59,7 @@ void				vertices_setter(t_glenv *env)
 void				create_shader_prog(t_glenv *env)
 {
 	env->vs = parse_shader("./vs.shader");
-	env->vf = parse_shader("./vs.blend.c");
+	env->vf = parse_shader("./vf.blend");
 	env->vtx_shader = glCreateShader(GL_VERTEX_SHADER);
 	if (env->vtx_shader == 0)
 		ft_kill("shader not created");
