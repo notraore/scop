@@ -61,7 +61,7 @@ struct					s_glenv
 	int					vtx_nbr;
 	int					vt;
 	int					nb_faces;
-	float				vertices[378];
+	float				*vertices;
 	float				v_v[200000];
 	float				v_uv[200000];
 	float				uv_new[200000];
@@ -115,6 +115,9 @@ struct					s_glenv
 	GLchar				*vf;
 	GLchar				*vs;
 	char				**tab;
+
+	int					ind_alloc;
+	int					ver_alloc;
 };
 
 struct					s_vec4
