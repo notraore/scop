@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   parser.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/28 18:01:29 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/14 11:32:37 by bano             ###   ########.fr       */
+/*   Updated: 2019/04/02 00:03:17 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,15 +16,20 @@ int					parse_vertex(t_glenv *env)
 {
 	if (env->line[0] == 'v' && env->line[1] == ' ')
 	{
-		if (!ft_atof(env->split[1], &env->v_v[env->vtx_nbr]))
-			if (!my_atoi(env->split[1], (int*)&env->v_v[env->vtx_nbr]))
-				return (0);
-		if (!ft_atof(env->split[2], &env->v_v[env->vtx_nbr + 1]))
-			if (!my_atoi(env->split[2], (int*)&env->v_v[env->vtx_nbr + 1]))
-				return (0);
-		if (!ft_atof(env->split[3], &env->v_v[env->vtx_nbr + 2]))
-			if (!my_atoi(env->split[3], (int*)&env->v_v[env->vtx_nbr + 2]))
-				return (0);
+		if (env->split[1] && env->split[2] && env->split[3])
+		{
+			if (!ft_atof(env->split[1], &env->v_v[env->vtx_nbr]))
+				if (!my_atoi(env->split[1], (int*)&env->v_v[env->vtx_nbr]))
+					return (0);
+			if (!ft_atof(env->split[2], &env->v_v[env->vtx_nbr + 1]))
+				if (!my_atoi(env->split[2], (int*)&env->v_v[env->vtx_nbr + 1]))
+					return (0);
+			if (!ft_atof(env->split[3], &env->v_v[env->vtx_nbr + 2]))
+				if (!my_atoi(env->split[3], (int*)&env->v_v[env->vtx_nbr + 2]))
+					return (0);
+		}
+		else
+			ft_kill("Vertex point is missing.");
 		env->vtx_nbr += 3;
 	}
 	return (1);

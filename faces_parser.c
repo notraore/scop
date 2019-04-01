@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   faces_parser.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: notraore <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/03/27 17:32:16 by notraore          #+#    #+#             */
-/*   Updated: 2019/03/27 17:33:19 by notraore         ###   ########.fr       */
+/*   Updated: 2019/04/02 00:11:22 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -92,23 +92,28 @@ int					store_faces(t_glenv *env)
 
 	i = 1;
 	tmp = env->ind + 3;
-	while (env->ind < tmp)
+	if (!env->split[1] && env->split[2] && env->split[3])
 	{
-		if (pos_atoi(env->split[i], &env->indices[env->ind]))
-			env->indices[env->ind] -= 1;
-		else if (!parse_faces(env, i))
-			return (0);
-		env->ind++;
-		i++;
+		while (env->ind < tmp)
+		{
+			if (pos_atoi(env->split[i], &env->indices[env->ind]))
+				env->indices[env->ind] -= 1;
+			else if (!parse_faces(env, i))
+				return (0);
+			env->ind++;
+			i++;
+		}
+		i = 1;
+		n = 0;
+		while (env->nb_faces - 3 > 0)
+		{
+			parse_multiple_faces(env, tmp, i, n);
+			i++;
+			env->nb_faces -= 1;
+		}
+		env->indices_nbr += 3;
 	}
-	i = 1;
-	n = 0;
-	while (env->nb_faces - 3 > 0)
-	{
-		parse_multiple_faces(env, tmp, i, n);
-		i++;
-		env->nb_faces -= 1;
-	}
-	env->indices_nbr += 3;
+	else
+		ft_kill("Faces must have a minimum of 3 vertex points.");
 	return (1);
 }
