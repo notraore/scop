@@ -39,10 +39,11 @@ usage : `make`<br />
 <h2> Files formats </h2> <br />
  3D objects must be set in .obj format,<br />
  Textures must be set on .bmp format named "texture.bmp"<br />
- Description scene must be set on .rt format.<br />
 
 <h2>Here is a preview of the program :</h2><br />
 
 ![bzTYxlaA08](https://user-images.githubusercontent.com/27351943/55319905-398e1e00-5476-11e9-9938-f1042e08981f.gif)
+
+![bzTYxlaA08](https://user-images.githubusercontent.com/27351943/55322038-71e42b00-547b-11e9-8b80-62411054e65e.gif)
 
 Enjoy !
