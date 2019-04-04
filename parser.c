@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   parser.c                                           :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: bano <bano@student.42.fr>                  +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/02/28 18:01:29 by notraore          #+#    #+#             */
-/*   Updated: 2019/04/02 00:03:17 by bano             ###   ########.fr       */
+/*   Updated: 2019/03/14 11:32:37 by bano             ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ int					parse_vertex(t_glenv *env)
 					return (0);
 		}
 		else
-			ft_kill("Vertex point is missing.");
+			ft_kill("Missing vertex point");
 		env->vtx_nbr += 3;
 	}
 	return (1);
@@ -82,6 +82,8 @@ void				parse_file(t_glenv *env, char *srcpath)
 		else if (env->line[0] == 'f' && env->line[1] == ' ')
 		{
 			env->tab_tmp = ft_strsplit(env->line, ' ');
+			if (tab_len(env->tab_tmp) <= 3)
+				ft_kill("faces must have a minimum of 3 indices.");
 			if (tab_len(env->tab_tmp) == 3 || tab_len(env->tab_tmp) == 4)
 				env->ind_alloc += (tab_len(env->tab_tmp) - 1);
 			else
