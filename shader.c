@@ -24,8 +24,7 @@ char				*parse_shader(char *path)
 	fseek(vs, 0L, SEEK_END);
 	size_s = ftell(vs);
 	fseek(vs, 0L, SEEK_SET);
-	data = malloc(size_s * sizeof(char));
-	if (!data)
+	if (!(data = malloc(size_s * sizeof(char))))
 		ft_kill("Couldn't allocate memory for shaders.");
 	if (!fread(data, 1, size_s, vs))
 		ft_kill("error while storing the shader file into string.");

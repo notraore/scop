@@ -39,7 +39,8 @@ unsigned char		*read_bmp(FILE *file, unsigned char *header, t_glenv *env)
 		image_size = width * height * 3;
 	if (data_pos == 0)
 		data_pos = 54;
-	data = (unsigned char *)malloc(image_size * sizeof(unsigned char));
+	if (!(data = (unsigned char *)malloc(image_size * sizeof(unsigned char))))
+		ft_kill("Couldn't memory for texture data.");
 	fread(data, 1, image_size, file);
 	fclose(file);
 	return (data);

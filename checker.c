@@ -23,7 +23,8 @@ int					check_shader(GLuint shader, GLint compiled)
 		glGetShaderiv(shader, GL_INFO_LOG_LENGTH, &info_len);
 		if (info_len > 1)
 		{
-			info_log = malloc(sizeof(char) * info_len);
+			if (!(info_log = malloc(sizeof(char) * info_len)))
+				ft_kill("Couldn't allocate memory for info_log.");
 			glGetShaderInfoLog(shader, info_len, NULL, info_log);
 			ft_putendl("Error compiling shader:");
 			ft_putendl(info_log);
@@ -46,7 +47,8 @@ int					check_program(GLuint program, GLint compiled)
 		glGetProgramiv(program, GL_INFO_LOG_LENGTH, &info_len);
 		if (info_len > 1)
 		{
-			info_log2 = malloc(sizeof(char) * info_len);
+			if (!(info_log2 = malloc(sizeof(char) * info_len)))
+				ft_kill("Couldn't allocate memory for info_log.");
 			glGetProgramInfoLog(program, info_len, NULL, info_log2);
 			ft_putendl("Error linking program:");
 			ft_putendl(info_log2);
