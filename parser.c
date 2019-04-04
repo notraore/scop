@@ -83,7 +83,7 @@ void				parse_file(t_glenv *env, char *srcpath)
 		{
 			env->tab_tmp = ft_strsplit(env->line, ' ');
 			if (tab_len(env->tab_tmp) <= 3)
-				ft_kill("faces must have a minimum of 3 indices.");
+				ft_kill("Faces must have a minimum of 3 indices.");
 			if (tab_len(env->tab_tmp) == 3 || tab_len(env->tab_tmp) == 4)
 				env->ind_alloc += (tab_len(env->tab_tmp) - 1);
 			else

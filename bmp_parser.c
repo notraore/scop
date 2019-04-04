@@ -55,6 +55,6 @@ unsigned char		*parse_bmp(char const *pathname, t_glenv *env)
 	if (!file)
 		ft_kill("Image impossible to open.");
 	if (!test_file(file, header))
-		ft_kill("killed");
+		ft_kill("Invalid header");
 	return (read_bmp(file, header, env));
 }
