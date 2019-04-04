@@ -73,7 +73,7 @@ int					main(int argc, char **argv)
 	{
 		input_key3(&env);
 		print_fps_counter(&env);
-		glClearColor(0.12f, 0.12f, 0.12f, 1.0f);
+		glClearColor(env.f, env.f, env.f, 1.0f);
 		glEnable(GL_DEPTH_TEST);
 		glEnable(GL_MULTISAMPLE);
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);

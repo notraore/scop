@@ -50,6 +50,7 @@ void				init_variables(t_glenv *env)
 	env->smoothiemode = false;
 	env->blendmode = false;
 	env->bfactormode = 1.0f;
+	env->f = 0.12f;
 }
 
 void				init_glversion(void)

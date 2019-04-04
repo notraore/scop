@@ -14,10 +14,8 @@
 
 void				apply_grey_shader(t_glenv *env, int all)
 {
-	float		random;
 	int			index;
 
-	random = 0.5;
 	index = 0;
 	while (index < all)
 	{
@@ -33,16 +31,13 @@ int					unite_all(t_glenv *env)
 	int			index;
 	int			face_i;
 	int			tex_i;
-	int			clr;
-	int			all;
 
-	clr = 0;
 	index = 0;
 	face_i = 0;
 	tex_i = 0;
-	all = (env->vtx_nbr * 2) + ((env->vtx_nbr / 3) * 2);
+	env->all = (env->vtx_nbr * 2) + ((env->vtx_nbr / 3) * 2);
 	srand((unsigned int)time(NULL));
-	while (index < all)
+	while (index < env->all)
 	{
 		env->vertices[index] = (env->v_v[face_i]);
 		env->vertices[index + 1] = (env->v_v[face_i + 1]);
@@ -50,8 +45,8 @@ int					unite_all(t_glenv *env)
 		index += 8;
 		face_i += 3;
 	}
-	apply_grey_shader(env, all);
-	apply_texture(env, all);
+	apply_grey_shader(env, env->all);
+	apply_texture(env, env->all);
 	return (0);
 }
 

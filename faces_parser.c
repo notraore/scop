@@ -90,23 +90,23 @@ int					store_faces(t_glenv *env)
 	int tmp;
 	int n;
 
-	i = 1;
+	i = 0;
 	tmp = env->ind + 3;
 	while (env->ind < tmp)
 	{
+		if (ft_atoi(env->split[++i]) > (env->tmp_vertex / 3))
+			ft_kill("Not enough vertexes");
 		if (pos_atoi(env->split[i], &env->indices[env->ind]))
 			env->indices[env->ind] -= 1;
 		else if (!parse_faces(env, i))
 			return (0);
 		env->ind++;
-		i++;
 	}
-	i = 1;
+	i = 0;
 	n = 0;
 	while (env->nb_faces - 3 > 0)
 	{
-		parse_multiple_faces(env, tmp, i, n);
-		i++;
+		parse_multiple_faces(env, tmp, ++i, n);
 		env->nb_faces -= 1;
 	}
 	env->indices_nbr += 3;

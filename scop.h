@@ -115,7 +115,9 @@ struct					s_glenv
 	int					ind_alloc;
 	int					ver_alloc;
 	int					texcor;
-	double				tmp_vertex;
+	int					tmp_vertex;
+	int					all;
+	double				f;
 	char				**tab_tmp;
 };
 

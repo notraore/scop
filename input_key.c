@@ -92,4 +92,6 @@ void		input_key3(t_glenv *env)
 		if (env->bfactormode == 1.0f)
 			env->texmode = false;
 	}
+	else if (glfwGetKey(env->window, GLFW_KEY_Y) == GLFW_PRESS)
+		env->f = (((float)rand() / (float)(RAND_MAX)) / 1);
 }
