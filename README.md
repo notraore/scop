@@ -1,4 +1,4 @@
-<h1>Scop using OpenGL 4.x</h1><br />
+<h1>Scop using OpenGL 4.x | GLFW</h1><br />
 
 usage : `make`<br />
 `./scop model/[file.obj]`<br />
